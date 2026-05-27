@@ -20,7 +20,7 @@
     </main>
 
     <footer class="site-footer">
-      <p>© {{ new Date().getFullYear() }} Blue-Eyed Reef Aquaculture. All rights reserved.</p>
+      <p>© {{ new Date().getFullYear() }} Blue-Eyed Clowns Reef Aquaculture. All rights reserved.</p>
     </footer>
   </div>
 </template>

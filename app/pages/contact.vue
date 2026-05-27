@@ -42,9 +42,10 @@
         <aside class="details">
           <h2>Quick details</h2>
           <ul>
-            <li><strong>Email</strong> orders@example.com</li>
-            <li><strong>Location</strong> Shipments from the continental United States</li>
-            <li><strong>Shipping days</strong> Monday–Wednesday to avoid weekend delays</li>
+            <li><strong>Support email</strong> support@blueeyedclowns.com</li>
+            <li><strong>Facility</strong> Captive-breeding and quarantine systems in the U.S.</li>
+            <li><strong>Live shipping schedule</strong> Monday–Wednesday, overnight delivery only</li>
+            <li><strong>Response time</strong> Most messages answered within 1 business day</li>
           </ul>
         </aside>
       </div>
