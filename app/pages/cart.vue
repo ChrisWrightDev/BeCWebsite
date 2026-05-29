@@ -57,13 +57,16 @@
           </li>
         </ul>
 
-        <aside class="cart-summary">
-          <div class="summary-row">
-            <span>Subtotal ({{ cartCount }} items)</span>
-            <span>{{ formatPrice(cartTotal) }}</span>
+        <aside class="cart-sidebar">
+          <div class="cart-summary">
+            <div class="summary-row">
+              <span>Subtotal ({{ cartCount }} items)</span>
+              <span>{{ formatPrice(cartTotal) }}</span>
+            </div>
+            <NuxtLink to="/checkout" class="btn btn-checkout">Proceed to checkout</NuxtLink>
+            <NuxtLink to="/shop" class="btn btn-ghost">Continue shopping</NuxtLink>
           </div>
-          <NuxtLink to="/checkout" class="btn btn-checkout">Proceed to checkout</NuxtLink>
-          <NuxtLink to="/shop" class="btn btn-ghost">Continue shopping</NuxtLink>
+          <CheckoutTrustPanel />
         </aside>
       </div>
     </div>
@@ -235,13 +238,19 @@ function formatPrice(cents) {
   color: #f87171;
 }
 
+.cart-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: sticky;
+  top: 6rem;
+}
+
 .cart-summary {
   padding: 1.5rem;
   border-radius: 1rem;
   background: rgba(15, 23, 42, 0.8);
   border: 1px solid rgba(148, 163, 184, 0.3);
-  position: sticky;
-  top: 6rem;
 }
 
 .summary-row {
@@ -321,7 +330,7 @@ function formatPrice(cents) {
     height: 60px;
   }
 
-  .cart-summary {
+  .cart-sidebar {
     position: static;
   }
 }

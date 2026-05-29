@@ -1,9 +1,44 @@
 <script setup>
+const config = useRuntimeConfig()
+const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
+
 useSiteSeo({
   title: 'Contact — Shipping & Support',
   description:
     'Questions about clownfish, shipping, or wholesale? We reply within one business day.',
 })
+
+useJsonLd(buildContactPageSchema(siteUrl))
+
+const submitted = ref(false)
+const formError = ref('')
+
+const form = reactive({
+  name: '',
+  email: '',
+  subject: '',
+  message: '',
+})
+
+function handleSubmit() {
+  formError.value = ''
+  const subject = form.subject.trim() || 'Blue-Eyed Clowns inquiry'
+  const body = [
+    `Name: ${form.name}`,
+    `Email: ${form.email}`,
+    '',
+    form.message,
+  ].join('\n')
+
+  const mailto = `mailto:support@blueeyedclowns.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+
+  try {
+    window.location.href = mailto
+    submitted.value = true
+  } catch {
+    formError.value = 'Could not open your email client. Email us directly at support@blueeyedclowns.com.'
+  }
+}
 </script>
 
 <template>
@@ -13,38 +48,65 @@ useSiteSeo({
         <h1>Contact us</h1>
         <p>
           Have a question about a specific clownfish, shipping, or wholesale? Send us a note and
-          we’ll get back within one business day.
+          we'll get back within one business day.
         </p>
       </header>
 
       <div class="grid">
-        <form
-          class="form"
-          action="mailto:orders@example.com"
-          method="post"
-          enctype="text/plain"
-        >
+        <form class="form" @submit.prevent="handleSubmit">
+          <p v-if="submitted" class="form-success" role="status">
+            Your email client should open with a draft to support@blueeyedclowns.com. Send it when
+            ready — we'll reply within one business day.
+          </p>
+          <p v-if="formError" class="form-error" role="alert">{{ formError }}</p>
+
           <label>
             Name
-            <input type="text" name="name" required />
+            <input
+              v-model="form.name"
+              type="text"
+              name="name"
+              autocomplete="name"
+              required
+            />
           </label>
 
           <label>
             Email
-            <input type="email" name="email" required />
+            <input
+              v-model="form.email"
+              type="email"
+              name="email"
+              autocomplete="email"
+              required
+            />
           </label>
 
           <label>
             Subject
-            <input type="text" name="subject" />
+            <input
+              v-model="form.subject"
+              type="text"
+              name="subject"
+              autocomplete="off"
+            />
           </label>
 
           <label>
             Message
-            <textarea name="message" rows="5" required></textarea>
+            <textarea
+              v-model="form.message"
+              name="message"
+              rows="5"
+              required
+            ></textarea>
           </label>
 
           <button type="submit" class="btn">Send message</button>
+          <p class="form-note">
+            Prefer email directly?
+            <a href="mailto:support@blueeyedclowns.com">support@blueeyedclowns.com</a>
+          </p>
         </form>
 
         <aside class="details">
@@ -118,10 +180,35 @@ textarea {
   outline: none;
 }
 
-input:focus,
-textarea:focus {
+input:focus-visible,
+textarea:focus-visible {
   border-color: #7dd3fc;
-  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.4);
+}
+
+.form-success {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(8, 47, 73, 0.5);
+  color: #bae6fd;
+  font-size: 0.9rem;
+}
+
+.form-error {
+  margin: 0;
+  color: #fecaca;
+  font-size: 0.9rem;
+}
+
+.form-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.form-note a {
+  color: #7dd3fc;
 }
 
 .btn {
@@ -140,6 +227,11 @@ textarea:focus {
 
 .btn:hover {
   filter: brightness(1.04);
+}
+
+.btn:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
 }
 
 .details h2 {
@@ -163,4 +255,3 @@ textarea:focus {
   }
 }
 </style>
-

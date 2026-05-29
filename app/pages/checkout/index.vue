@@ -12,6 +12,7 @@
       </div>
 
       <form v-else class="checkout-form" @submit.prevent="handleSubmit">
+        <CheckoutTrustPanel class="trust-top" />
         <div class="two-col">
           <div class="panel">
             <h2>Contact & shipping</h2>
@@ -282,6 +283,10 @@ async function handleSubmit() {
 
 .checkout-form {
   margin-top: 2rem;
+}
+
+.trust-top {
+  margin-bottom: 1.5rem;
 }
 
 .two-col {

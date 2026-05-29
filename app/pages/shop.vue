@@ -9,20 +9,22 @@
         </p>
       </header>
 
-      <section class="filters" v-if="uniquePatterns.length">
+      <section class="filters" v-if="uniquePatterns.length" aria-label="Filter by pattern">
         <button
           v-for="pattern in ['All', ...uniquePatterns]"
           :key="pattern"
+          type="button"
           class="filter-chip"
-          :class="{ active: selectedPattern === pattern || (!selectedPattern && pattern === 'All') }"
+          :class="{ active: isPatternActive(pattern) }"
+          :aria-pressed="isPatternActive(pattern)"
           @click="handlePatternClick(pattern)"
         >
           {{ pattern }}
         </button>
       </section>
 
-      <div v-if="loading" class="state">Loading clownfish from the hatchery…</div>
-      <div v-else-if="error" class="state error">
+      <div v-if="pending" class="state">Loading clownfish from the hatchery…</div>
+      <div v-else-if="fetchError" class="state error">
         There was a problem loading clownfish. Please try again shortly.
       </div>
       <div v-else-if="filteredClownfish.length === 0" class="state">
@@ -35,14 +37,25 @@
             {{ fish.pattern }}
           </div>
 
-          <div
-            class="image"
-            :style="fish.image_url ? { backgroundImage: `url(${fish.image_url})` } : null"
-          >
-            <span v-if="!fish.image_url" class="placeholder">Clownfish preview</span>
-          </div>
+          <NuxtLink :to="`/shop/${fish.slug}`" class="image-link">
+            <img
+              v-if="fish.image_url"
+              :src="fish.image_url"
+              :alt="clownfishImageAlt(fish)"
+              class="image"
+              width="320"
+              height="150"
+              loading="lazy"
+              decoding="async"
+            />
+            <div v-else class="image image-placeholder">
+              <span class="placeholder">Clownfish preview</span>
+            </div>
+          </NuxtLink>
 
-          <h2>{{ fish.name }}</h2>
+          <h2>
+            <NuxtLink :to="`/shop/${fish.slug}`" class="product-link">{{ fish.name }}</NuxtLink>
+          </h2>
           <p class="category" v-if="fish.category_name">
             Category: {{ fish.category_name }}
           </p>
@@ -51,7 +64,7 @@
           </p>
 
           <div class="meta">
-            <span class="price">{{ formatPrice(fish.price_cents) }}</span>
+            <span class="price">{{ formatPriceCents(fish.price_cents) }}</span>
             <span class="stock" :class="{ 'stock-out': !fish.in_stock }">
               {{ fish.in_stock ? 'In stock' : 'Temporarily unavailable' }}
             </span>
@@ -73,19 +86,30 @@
 </template>
 
 <script setup>
+import { clownfishImageAlt, formatPriceCents } from '~/utils/clownfish'
+
+const config = useRuntimeConfig()
+const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
+const route = useRoute()
+const router = useRouter()
+
 useSiteSeo({
   title: 'Shop Tank-Bred Clownfish',
   description:
     'Browse captive-bred clownfish — ocellaris, snowflake, black ice & more. In-stock updates weekly.',
 })
 
-const route = useRoute()
-const router = useRouter()
-const { $supabase } = useNuxtApp()
+const { data: clownfish, pending, error: fetchError } = await useAsyncData('shop-clownfish', () =>
+  $fetch('/api/shop/clownfish')
+)
 
-const clownfish = ref([])
-const loading = ref(true)
-const error = ref(null)
+if (clownfish.value?.length) {
+  useJsonLd([
+    buildItemListSchema(clownfish.value, siteUrl),
+    ...clownfish.value.map((fish) => buildProductSchema(fish, siteUrl)),
+  ])
+}
+
 const selectedPattern = ref(null)
 const addingId = ref(null)
 const cart = useCart()
@@ -117,20 +141,22 @@ function syncPatternFromRoute() {
 
 const uniquePatterns = computed(() => {
   const patterns = new Set()
-  clownfish.value.forEach((fish) => {
-    if (fish.pattern) {
-      patterns.add(fish.pattern)
-    }
+  ;(clownfish.value || []).forEach((fish) => {
+    if (fish.pattern) patterns.add(fish.pattern)
   })
   return Array.from(patterns)
 })
 
 const filteredClownfish = computed(() => {
-  if (!selectedPattern.value || selectedPattern.value === 'All') {
-    return clownfish.value
-  }
-  return clownfish.value.filter((fish) => fish.pattern === selectedPattern.value)
+  const list = clownfish.value || []
+  if (!selectedPattern.value || selectedPattern.value === 'All') return list
+  return list.filter((fish) => fish.pattern === selectedPattern.value)
 })
+
+function isPatternActive(pattern) {
+  if (pattern === 'All') return !selectedPattern.value || selectedPattern.value === 'All'
+  return selectedPattern.value === pattern
+}
 
 function handlePatternClick(pattern) {
   const next = pattern === 'All' ? null : pattern
@@ -148,40 +174,7 @@ watch(
   }
 )
 
-function formatPrice(cents) {
-  if (typeof cents !== 'number') return '$—'
-  return `$${(cents / 100).toFixed(2)}`
-}
-
-onMounted(async () => {
-  syncPatternFromRoute()
-
-  try {
-    if (!$supabase) {
-      error.value = new Error(
-        'Shop data is not configured. Add NUXT_SUPABASE_URL and NUXT_SUPABASE_ANON_KEY to your .env and create the clownfish table in Supabase.'
-      )
-      return
-    }
-
-    const { data, error: supabaseError } = await $supabase
-      .from('clownfish')
-      .select('id, name, description, price_cents, pattern, image_url, in_stock, category_name')
-      .order('price_cents')
-
-    if (supabaseError) {
-      throw supabaseError
-    }
-
-    clownfish.value = data || []
-    syncPatternFromRoute()
-  } catch (err) {
-    console.error('[shop] error loading clownfish', err)
-    error.value = err
-  } finally {
-    loading.value = false
-  }
-})
+watch(clownfish, () => syncPatternFromRoute(), { immediate: true })
 
 function addToCart(fish) {
   addingId.value = fish.id
@@ -238,6 +231,11 @@ function addToCart(fish) {
   color: #0f172a;
 }
 
+.filter-chip:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+}
+
 .state {
   margin-top: 2.5rem;
   color: #cbd5f5;
@@ -277,15 +275,24 @@ function addToCart(fish) {
   border-radius: 999px;
   background: rgba(8, 47, 73, 0.9);
   color: #e0f2fe;
+  z-index: 1;
+}
+
+.image-link {
+  display: block;
+  text-decoration: none;
 }
 
 .image {
+  width: 100%;
   height: 150px;
   border-radius: 1rem;
-  background-color: #020617;
-  background-size: cover;
-  background-position: center center;
+  object-fit: cover;
   margin-bottom: 0.5rem;
+  background-color: #020617;
+}
+
+.image-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -300,6 +307,15 @@ function addToCart(fish) {
 h2 {
   font-size: 1.1rem;
   margin: 0;
+}
+
+.product-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-link:hover {
+  color: #7dd3fc;
 }
 
 .category {
@@ -365,4 +381,3 @@ h2 {
   }
 }
 </style>
-
