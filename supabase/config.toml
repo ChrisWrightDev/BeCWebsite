@@ -1,0 +1,14 @@
+# Supabase CLI config — project janwtypmneybfzeiauzt (Blue-Eyed Clowns)
+# Link: npx supabase link --project-ref janwtypmneybfzeiauzt
+# Push:  npx supabase db push
+
+project_id = "janwtypmneybfzeiauzt"
+
+[db]
+major_version = 15
+
+[api]
+enabled = true
+
+[db.migrations]
+enabled = true
