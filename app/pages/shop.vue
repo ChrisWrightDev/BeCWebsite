@@ -98,7 +98,21 @@ function patternFromQuery(query) {
 }
 
 function syncPatternFromRoute() {
-  selectedPattern.value = patternFromQuery(route.query)
+  const fromQuery = patternFromQuery(route.query)
+  if (!fromQuery) {
+    selectedPattern.value = null
+    return
+  }
+  if (uniquePatterns.value.length && !uniquePatterns.value.includes(fromQuery)) {
+    selectedPattern.value = null
+    if (route.query.pattern) {
+      const query = { ...route.query }
+      delete query.pattern
+      router.replace({ path: route.path, query })
+    }
+    return
+  }
+  selectedPattern.value = fromQuery
 }
 
 const uniquePatterns = computed(() => {
@@ -160,6 +174,7 @@ onMounted(async () => {
     }
 
     clownfish.value = data || []
+    syncPatternFromRoute()
   } catch (err) {
     console.error('[shop] error loading clownfish', err)
     error.value = err
