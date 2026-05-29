@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const siteUrl = (process.env.NUXT_PUBLIC_SITE_URL || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -16,7 +18,7 @@ export default defineNuxtConfig({
         },
         { property: 'og:site_name', content: 'Blue-Eyed Clowns' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:image', content: 'https://www.blueeyedclowns.com/images/og-default.svg' },
+        { property: 'og:image', content: `${siteUrl}/images/og-default.png` },
         { name: 'twitter:card', content: 'summary_large_image' },
       ],
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],

@@ -3,7 +3,7 @@ useSiteSeo({
   title: 'Tank-Bred Clownfish for Sale',
   description:
     'Captive-bred ocellaris, snowflake & designer clownfish. 30-day health guarantee, safe overnight shipping. Shop premium tank-raised clownfish.',
-  ogImage: '/images/hero-reef.svg',
+  ogImage: '/images/og-default.png',
 })
 
 const featuredFish = [

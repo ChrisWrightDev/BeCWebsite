@@ -1,8 +1,23 @@
--- Breeding operations: tanks, pairs, water readings, batches.
--- Domain shapes from Paperclip CLI prototype; Supabase conventions (UUID, timestamptz, RLS).
--- Backward-safe: new tables only; no destructive alters on existing commerce tables.
+-- BLU-12: Breeding ops schema — idempotent for production legacy + fresh installs.
+-- Drop legacy empty tables first, reconcile legacy-shaped tanks, then create canonical DDL.
 
-create table public.tanks (
+drop table if exists public.hatches cascade;
+drop table if exists public.mated_pairs cascade;
+
+do $$
+begin
+  if exists (
+    select 1 from information_schema.tables
+    where table_schema = 'public' and table_name = 'tanks'
+  ) and not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'tanks' and column_name = 'code'
+  ) then
+    drop table public.tanks cascade;
+  end if;
+end $$;
+
+create table if not exists public.tanks (
   id uuid primary key default gen_random_uuid(),
   code text not null unique,
   name text not null,
@@ -15,7 +30,7 @@ create table public.tanks (
   updated_at timestamptz not null default now()
 );
 
-create table public.breeding_pairs (
+create table if not exists public.breeding_pairs (
   id uuid primary key default gen_random_uuid(),
   code text not null unique,
   tank_id uuid not null references public.tanks (id) on delete restrict,
@@ -30,7 +45,7 @@ create table public.breeding_pairs (
   updated_at timestamptz not null default now()
 );
 
-create table public.water_readings (
+create table if not exists public.water_readings (
   id uuid primary key default gen_random_uuid(),
   tank_id uuid not null references public.tanks (id) on delete restrict,
   recorded_at timestamptz not null default now(),
@@ -45,7 +60,7 @@ create table public.water_readings (
   created_at timestamptz not null default now()
 );
 
-create table public.batches (
+create table if not exists public.batches (
   id uuid primary key default gen_random_uuid(),
   code text not null unique,
   pair_id uuid not null references public.breeding_pairs (id) on delete restrict,
@@ -67,13 +82,12 @@ create table public.batches (
   updated_at timestamptz not null default now()
 );
 
-create index idx_water_readings_tank_recorded
+create index if not exists idx_water_readings_tank_recorded
   on public.water_readings (tank_id, recorded_at desc);
-create index idx_batches_pair on public.batches (pair_id);
-create index idx_batches_status on public.batches (status);
-create index idx_breeding_pairs_tank on public.breeding_pairs (tank_id);
+create index if not exists idx_batches_pair on public.batches (pair_id);
+create index if not exists idx_batches_status on public.batches (status);
+create index if not exists idx_breeding_pairs_tank on public.breeding_pairs (tank_id);
 
--- RLS: enabled with no public policies. All ops writes via service-role server routes (**Least privilege**).
 alter table public.tanks enable row level security;
 alter table public.breeding_pairs enable row level security;
 alter table public.water_readings enable row level security;

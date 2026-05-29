@@ -1,5 +1,5 @@
 const SITE_NAME = 'Blue-Eyed Clowns'
-const DEFAULT_OG_IMAGE = '/images/og-default.svg'
+const DEFAULT_OG_IMAGE = '/images/og-default.png'
 
 /**
  * Per-page SEO: title, description, canonical, Open Graph, Twitter, robots.

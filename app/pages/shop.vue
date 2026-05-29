@@ -79,6 +79,8 @@ useSiteSeo({
     'Browse captive-bred clownfish — ocellaris, snowflake, black ice & more. In-stock updates weekly.',
 })
 
+const route = useRoute()
+const router = useRouter()
 const { $supabase } = useNuxtApp()
 
 const clownfish = ref([])
@@ -87,6 +89,17 @@ const error = ref(null)
 const selectedPattern = ref(null)
 const addingId = ref(null)
 const cart = useCart()
+
+function patternFromQuery(query) {
+  const raw = query.pattern
+  if (!raw || raw === 'All') return null
+  const value = Array.isArray(raw) ? raw[0] : raw
+  return typeof value === 'string' && value.trim() ? value.trim() : null
+}
+
+function syncPatternFromRoute() {
+  selectedPattern.value = patternFromQuery(route.query)
+}
 
 const uniquePatterns = computed(() => {
   const patterns = new Set()
@@ -106,8 +119,20 @@ const filteredClownfish = computed(() => {
 })
 
 function handlePatternClick(pattern) {
-  selectedPattern.value = pattern === 'All' ? null : pattern
+  const next = pattern === 'All' ? null : pattern
+  selectedPattern.value = next
+  const query = { ...route.query }
+  if (next) query.pattern = next
+  else delete query.pattern
+  router.replace({ path: route.path, query })
 }
+
+watch(
+  () => route.query.pattern,
+  () => {
+    syncPatternFromRoute()
+  }
+)
 
 function formatPrice(cents) {
   if (typeof cents !== 'number') return '$—'
@@ -115,6 +140,8 @@ function formatPrice(cents) {
 }
 
 onMounted(async () => {
+  syncPatternFromRoute()
+
   try {
     if (!$supabase) {
       error.value = new Error(

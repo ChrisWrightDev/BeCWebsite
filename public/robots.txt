@@ -1,5 +1,0 @@
-User-Agent: *
-Disallow: /ops/
-Disallow: /api/
-
-Sitemap: https://www.blueeyedclowns.com/sitemap.xml
