@@ -1,3 +1,11 @@
+<script setup>
+useSiteSeo({
+  title: 'Contact — Shipping & Support',
+  description:
+    'Questions about clownfish, shipping, or wholesale? We reply within one business day.',
+})
+</script>
+
 <template>
   <section class="page">
     <div class="inner">

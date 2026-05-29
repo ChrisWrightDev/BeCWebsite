@@ -73,6 +73,12 @@
 </template>
 
 <script setup>
+useSiteSeo({
+  title: 'Shop Tank-Bred Clownfish',
+  description:
+    'Browse captive-bred clownfish — ocellaris, snowflake, black ice & more. In-stock updates weekly.',
+})
+
 const { $supabase } = useNuxtApp()
 
 const clownfish = ref([])

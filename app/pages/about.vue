@@ -1,10 +1,18 @@
+<script setup>
+useSiteSeo({
+  title: 'About Us — Captive Clownfish Breeders',
+  description:
+    'Meet our marine biologists. Learn how we breed healthy, sustainable clownfish for reef aquariums.',
+})
+</script>
+
 <template>
   <section class="page">
     <div class="inner">
       <header class="header">
-        <h1>About Blue Eyed Clowns</h1>
+        <h1>About Blue-Eyed Clowns</h1>
         <p>
-          Welcome to Blue Eyed Clowns, where passion for marine life meets quality aquaculture. We
+          Welcome to Blue-Eyed Clowns, where passion for marine life meets quality aquaculture. We
           specialize in breeding and providing the healthiest, most vibrant clownfish for aquarium
           enthusiasts.
         </p>
