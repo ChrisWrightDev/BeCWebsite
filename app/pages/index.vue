@@ -1,10 +1,15 @@
 <script setup>
+const config = useRuntimeConfig()
+const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
+
 useSiteSeo({
   title: 'Tank-Bred Clownfish for Sale',
   description:
     'Captive-bred ocellaris, snowflake & designer clownfish. 30-day health guarantee, safe overnight shipping. Shop premium tank-raised clownfish.',
   ogImage: '/images/og-default.png',
 })
+
+useJsonLd([buildOrganizationSchema(siteUrl), buildWebSiteSchema(siteUrl)])
 
 const featuredFish = [
   {

@@ -12,7 +12,15 @@
           Your payment was successful. We've created a work order and will prepare your clownfish for
           shipping.
         </p>
-        <p class="detail">You will receive an email confirmation at {{ customerEmail }}.</p>
+        <p class="detail">
+          <template v-if="customerEmail">
+            You will receive a shipping confirmation at {{ customerEmail }} within one business day.
+          </template>
+          <template v-else>
+            You will receive a shipping confirmation email within one business day.
+          </template>
+          Live animals ship Monday–Wednesday via overnight delivery.
+        </p>
         <NuxtLink to="/shop" class="btn btn-primary">Continue shopping</NuxtLink>
       </div>
     </div>
