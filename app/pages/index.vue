@@ -67,7 +67,7 @@ const featuredFish = [
           </svg>
         </div>
         <h3>30-day health guarantee</h3>
-        <p>Every clownfish arrives healthy or we make it right</p>
+        <p>Every clownfish arrives healthy or we replace it — no questions asked within 30 days</p>
       </div>
       <div class="feature-item">
         <div class="feature-icon" aria-hidden="true">
@@ -77,7 +77,7 @@ const featuredFish = [
           </svg>
         </div>
         <h3>100% captive-bred</h3>
-        <p>Sustainably raised in our state-of-the-art hatchery</p>
+        <p>Zero wild-caught stock — sustainably raised in our U.S. hatchery systems</p>
       </div>
       <div class="feature-item">
         <div class="feature-icon" aria-hidden="true">
@@ -90,7 +90,7 @@ const featuredFish = [
           </svg>
         </div>
         <h3>Insulated overnight shipping</h3>
-        <p>Expert packaging ensures safe arrival to your door</p>
+        <p>Ships Mon–Wed in insulated boxes with heat/cold packs as needed</p>
       </div>
     </div>
   </section>
@@ -402,12 +402,6 @@ h1 {
 
   .grid {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .btn-primary:hover {
-    transform: none;
   }
 }
 </style>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-labelledby="title">
+  <title>Designer clownfish pair in aquaculture system</title>
+  <rect width="320" height="200" fill="#020617"/>
+  <rect x="16" y="24" width="288" height="152" rx="6" fill="#1e1b4b"/>
+  <rect x="20" y="40" width="280" height="132" fill="#312e81" opacity="0.7"/>
+  <ellipse cx="120" cy="100" rx="32" ry="20" fill="#1e293b"/>
+  <ellipse cx="120" cy="100" rx="24" ry="16" fill="#334155"/>
+  <circle cx="110" cy="97" r="3" fill="#f8fafc"/>
+  <ellipse cx="200" cy="110" rx="32" ry="20" fill="#1e293b"/>
+  <ellipse cx="200" cy="110" rx="24" ry="16" fill="#475569"/>
+  <circle cx="190" cy="107" r="3" fill="#f8fafc"/>
+  <rect x="40" y="150" width="240" height="8" rx="2" fill="#64748b" opacity="0.4"/>
+</svg>

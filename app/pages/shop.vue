@@ -23,12 +23,35 @@
         </button>
       </section>
 
-      <div v-if="pending" class="state">Loading clownfish from the hatchery…</div>
-      <div v-else-if="fetchError" class="state error">
-        There was a problem loading clownfish. Please try again shortly.
+      <div v-if="pending" class="state state-panel">
+        <img src="/images/shop-empty.svg" alt="" class="state-illustration" width="240" height="180" />
+        <p>Loading clownfish from the hatchery…</p>
       </div>
-      <div v-else-if="filteredClownfish.length === 0" class="state">
-        No clownfish are available in this pattern right now. Please check back soon.
+      <div v-else-if="fetchError" class="state state-panel error">
+        <img src="/images/shop-empty.svg" alt="" class="state-illustration" width="240" height="180" />
+        <p>There was a problem loading clownfish. Please try again shortly.</p>
+        <button type="button" class="btn-retry" @click="refresh()">Try again</button>
+      </div>
+      <div v-else-if="filteredClownfish.length === 0" class="state state-panel">
+        <img src="/images/shop-empty.svg" alt="" class="state-illustration" width="240" height="180" />
+        <p>No clownfish are available in this pattern right now.</p>
+        <p class="state-sub">Get notified when new batches are listed.</p>
+        <form class="restock-form" @submit.prevent="handleRestockSubmit">
+          <label class="sr-only" for="restock-email">Email for restock alerts</label>
+          <input
+            id="restock-email"
+            v-model="restockEmail"
+            type="email"
+            name="restock-email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            required
+          />
+          <button type="submit" class="btn-restock">Notify me</button>
+        </form>
+        <p v-if="restockSubmitted" class="restock-success" role="status">
+          Thanks! We'll email you when new clownfish are listed.
+        </p>
       </div>
 
       <div v-else class="grid">
@@ -73,11 +96,10 @@
           <button
             class="btn"
             type="button"
-            :disabled="!fish.in_stock || addingId === fish.id"
+            :disabled="!fish.in_stock"
             @click="addToCart(fish)"
           >
-            <span v-if="addingId === fish.id">Added</span>
-            <span v-else>Add to cart</span>
+            Add to cart
           </button>
         </article>
       </div>
@@ -99,7 +121,7 @@ useSiteSeo({
     'Browse captive-bred clownfish — ocellaris, snowflake, black ice & more. In-stock updates weekly.',
 })
 
-const { data: clownfish, pending, error: fetchError } = await useAsyncData('shop-clownfish', () =>
+const { data: clownfish, pending, error: fetchError, refresh } = await useAsyncData('shop-clownfish', () =>
   $fetch('/api/shop/clownfish')
 )
 
@@ -111,8 +133,10 @@ if (clownfish.value?.length) {
 }
 
 const selectedPattern = ref(null)
-const addingId = ref(null)
+const restockEmail = ref('')
+const restockSubmitted = ref(false)
 const cart = useCart()
+const cartToast = useCartToast()
 
 function patternFromQuery(query) {
   const raw = query.pattern
@@ -177,11 +201,17 @@ watch(
 watch(clownfish, () => syncPatternFromRoute(), { immediate: true })
 
 function addToCart(fish) {
-  addingId.value = fish.id
   cart.addItem(fish, 1)
-  setTimeout(() => {
-    addingId.value = null
-  }, 600)
+  cartToast.show(fish.name)
+}
+
+function handleRestockSubmit() {
+  const email = restockEmail.value.trim()
+  if (!email) return
+  const subject = encodeURIComponent('Restock alert signup')
+  const body = encodeURIComponent(`Please notify me when new clownfish are listed.\n\nEmail: ${email}`)
+  window.location.href = `mailto:support@blueeyedclowns.com?subject=${subject}&body=${body}`
+  restockSubmitted.value = true
 }
 </script>
 
@@ -241,8 +271,94 @@ function addToCart(fish) {
   color: #cbd5f5;
 }
 
+.state-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  border-radius: 1.25rem;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.state-illustration {
+  margin-bottom: 1.25rem;
+  opacity: 0.85;
+}
+
+.state-sub {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin: 0.35rem 0 1rem;
+}
+
 .state.error {
   color: #fecaca;
+}
+
+.restock-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 20rem;
+}
+
+.restock-form input {
+  flex: 1;
+  min-width: 10rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.restock-form input:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+}
+
+.btn-restock,
+.btn-retry {
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  background: linear-gradient(to right, #22d3ee, #0ea5e9);
+  color: #0f172a;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.btn-retry {
+  margin-top: 0.75rem;
+}
+
+.restock-success {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: #7dd3fc;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .grid {

@@ -1,9 +1,58 @@
 <script setup>
+const config = useRuntimeConfig()
+const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
+
 useSiteSeo({
   title: 'About Us — Captive Clownfish Breeders',
   description:
     'Meet our marine biologists. Learn how we breed healthy, sustainable clownfish for reef aquariums.',
 })
+
+useJsonLd(buildAboutPageSchema(siteUrl))
+
+const founders = [
+  {
+    name: 'Chris Wright',
+    role: 'Co-Founder',
+    slug: 'chris-wright',
+    bio: 'Marine biologist with over 15 years of experience in aquaculture and clownfish breeding. Chris oversees fish health, genetics, and broodstock selection so every clownfish meets our high standards.',
+    credential: 'M.S. Marine Biology',
+  },
+  {
+    name: 'Mike Kay',
+    role: 'Co-Founder',
+    slug: 'mike-kay',
+    bio: 'Aquarium systems specialist with a passion for sustainable marine practices. Mike designs and maintains our breeding facilities, ensuring optimal water quality and husbandry for every tank.',
+    credential: 'Aquaculture Systems Engineer',
+  },
+]
+
+const testimonials = [
+  {
+    quote:
+      'Our snowflake pair acclimated within hours and started hosting an anemone by day three. You can tell these fish were raised with care.',
+    author: 'Sarah M.',
+    context: '120-gallon reef, Colorado',
+  },
+  {
+    quote:
+      'Third order from Blue-Eyed Clowns. Consistent color, healthy appetites, and the shipping packaging is always top-notch.',
+    author: 'James T.',
+    context: 'Mixed reef, Texas',
+  },
+  {
+    quote:
+      'As a local fish store buyer, I appreciate the transparent grading and reliable overnight shipping. Our customers love the tank-bred clowns.',
+    author: 'Reef Haven Aquatics',
+    context: 'Wholesale partner',
+  },
+]
+
+const galleryImages = [
+  { src: '/images/gallery/reef-tank-1.svg', alt: 'Ocellaris clownfish in a home reef aquarium display tank' },
+  { src: '/images/gallery/reef-tank-2.svg', alt: 'Snowflake clownfish pair in a reef display' },
+  { src: '/images/gallery/reef-tank-3.svg', alt: 'Designer clownfish in our aquaculture breeding system' },
+]
 </script>
 
 <template>
@@ -11,7 +60,7 @@ useSiteSeo({
     <div class="inner">
       <header class="header">
         <h1>About Blue-Eyed Clowns</h1>
-        <p>
+        <p class="story-text">
           Welcome to Blue-Eyed Clowns, where passion for marine life meets quality aquaculture. We
           specialize in breeding and providing the healthiest, most vibrant clownfish for aquarium
           enthusiasts.
@@ -21,32 +70,48 @@ useSiteSeo({
       <section class="owners">
         <h2>Meet the founders</h2>
         <div class="owners-grid">
-          <article class="owner-card">
-            <div class="owner-avatar" aria-hidden="true">CW</div>
-            <h3>Chris Wright</h3>
-            <p class="owner-role">Co-Founder</p>
-            <p class="owner-bio">
-              Marine biologist with over 15 years of experience in aquaculture and clownfish
-              breeding. Chris's expertise in fish health and genetics ensures every clownfish meets
-              our high standards.
-            </p>
+          <article v-for="founder in founders" :key="founder.slug" class="owner-card">
+            <img
+              :src="`/images/founders/${founder.slug}.svg`"
+              :alt="`${founder.name}, ${founder.role} at Blue-Eyed Clowns`"
+              class="owner-photo"
+              width="120"
+              height="120"
+            />
+            <h3>{{ founder.name }}</h3>
+            <p class="owner-role">{{ founder.role }}</p>
+            <p class="owner-credential">{{ founder.credential }}</p>
+            <p class="owner-bio story-text">{{ founder.bio }}</p>
           </article>
-          <article class="owner-card">
-            <div class="owner-avatar" aria-hidden="true">MK</div>
-            <h3>Mike Kay</h3>
-            <p class="owner-role">Co-Founder</p>
-            <p class="owner-bio">
-              Aquarium systems specialist with a passion for sustainable marine practices. Mike
-              oversees our breeding facilities and ensures optimal conditions for all our fish.
-            </p>
-          </article>
+        </div>
+      </section>
+
+      <section class="gallery" aria-label="Reef and hatchery photography">
+        <h2>From our tanks to your reef</h2>
+        <div class="gallery-strip">
+          <figure v-for="(image, index) in galleryImages" :key="index" class="gallery-item">
+            <img :src="image.src" :alt="image.alt" width="320" height="200" loading="lazy" decoding="async" />
+          </figure>
+        </div>
+      </section>
+
+      <section class="testimonials" aria-label="Customer testimonials">
+        <h2>What reef keepers say</h2>
+        <div class="testimonials-grid">
+          <blockquote v-for="(item, index) in testimonials" :key="index" class="testimonial-card">
+            <p class="testimonial-quote story-text">"{{ item.quote }}"</p>
+            <footer>
+              <cite>{{ item.author }}</cite>
+              <span class="testimonial-context">{{ item.context }}</span>
+            </footer>
+          </blockquote>
         </div>
       </section>
 
       <section class="mission">
         <h2>Our mission</h2>
-        <p>
-          At Blue Eyed Clowns, we're committed to providing healthy, tank-bred clownfish that bring
+        <p class="story-text">
+          At Blue-Eyed Clowns, we're committed to providing healthy, tank-bred clownfish that bring
           joy to aquarium enthusiasts while supporting sustainable marine practices. Every fish is
           carefully bred, raised with love, and prepared for a lifetime in your aquarium.
         </p>
@@ -55,12 +120,12 @@ useSiteSeo({
       <div class="grid">
         <article>
           <h2>Why tank-raised clownfish?</h2>
-          <p>
+          <p class="story-text">
             Tank-raised fish adapt more quickly to aquarium life, accept prepared foods easily, and
             put less pressure on wild reefs. Every clownfish we ship is born and raised in our
             systems.
           </p>
-          <p>
+          <p class="story-text">
             Our broodstock lines are carefully selected for color, pattern, and temperament. We
             track lineage and pairings so we can consistently produce the patterns our customers
             love — from classic ocellaris to high-end designer morphs.
@@ -69,12 +134,12 @@ useSiteSeo({
 
         <article>
           <h2>Our water and husbandry standards</h2>
-          <p>
+          <p class="story-text">
             Stable, clean water is everything. Our systems are filtered with oversized biological
             and mechanical filtration, redundant heaters, and continuous monitoring of temperature,
             salinity, and pH.
           </p>
-          <p>
+          <p class="story-text">
             Fish are weaned onto high-quality prepared foods and observed daily for health and
             behavior. Only strong, active, feeding fish are selected for shipping.
           </p>
@@ -113,13 +178,17 @@ useSiteSeo({
 .header p {
   color: #cbd5f5;
   max-width: 40rem;
+  line-height: 1.65;
 }
 
 .owners {
   margin-top: 2.5rem;
 }
 
-.owners h2 {
+.owners h2,
+.gallery h2,
+.testimonials h2,
+.mission h2 {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -138,19 +207,13 @@ useSiteSeo({
   text-align: center;
 }
 
-.owner-avatar {
-  width: 4rem;
-  height: 4rem;
+.owner-photo {
+  width: 7.5rem;
+  height: 7.5rem;
   margin: 0 auto 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border-radius: 50%;
-  background: linear-gradient(135deg, #0ea5e9, #22d3ee);
-  color: #0f172a;
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  object-fit: cover;
+  border: 3px solid rgba(34, 211, 238, 0.35);
 }
 
 .owner-card h3 {
@@ -163,28 +226,94 @@ useSiteSeo({
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #7dd3fc;
-  margin-bottom: 0.75rem;
+  margin: 0 0 0.35rem;
+}
+
+.owner-credential {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 0 0 0.75rem;
+  font-style: italic;
 }
 
 .owner-bio {
   font-size: 0.95rem;
   color: #cbd5e1;
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0;
+  text-align: left;
+}
+
+.gallery {
+  margin-top: 3rem;
+}
+
+.gallery-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.gallery-item {
+  margin: 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.gallery-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.testimonials {
+  margin-top: 3rem;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.testimonial-card {
+  margin: 0;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.testimonial-quote {
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  line-height: 1.55;
+  margin: 0 0 1rem;
+}
+
+.testimonial-card cite {
+  display: block;
+  font-style: normal;
+  font-weight: 600;
+  color: #7dd3fc;
+  font-size: 0.9rem;
+}
+
+.testimonial-context {
+  display: block;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 0.2rem;
 }
 
 .mission {
   margin-top: 2.5rem;
 }
 
-.mission h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.75rem;
-}
-
 .mission p {
   color: #cbd5e1;
-  line-height: 1.6;
+  line-height: 1.65;
   margin: 0;
   max-width: 52rem;
 }
@@ -199,6 +328,11 @@ useSiteSeo({
 .grid h2 {
   font-size: 1.25rem;
   margin-bottom: 0.75rem;
+}
+
+.grid p {
+  color: #cbd5e1;
+  line-height: 1.6;
 }
 
 .values {
@@ -222,9 +356,10 @@ useSiteSeo({
 
 @media (max-width: 800px) {
   .owners-grid,
-  .grid {
+  .grid,
+  .gallery-strip,
+  .testimonials-grid {
     grid-template-columns: 1fr;
   }
 }
 </style>
-

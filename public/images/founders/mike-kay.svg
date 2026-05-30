@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="title">
+  <title>Mike Kay, Co-Founder</title>
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#134e4a"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="skin2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f5d0a9"/>
+      <stop offset="100%" stop-color="#d4a574"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="100" fill="url(#bg2)"/>
+  <ellipse cx="100" cy="78" rx="38" ry="42" fill="url(#skin2)"/>
+  <path d="M42 185c8-38 32-58 58-58s50 20 58 58" fill="#115e59"/>
+  <ellipse cx="100" cy="68" rx="44" ry="22" fill="#78350f"/>
+  <circle cx="86" cy="76" r="4" fill="#1e293b"/>
+  <circle cx="114" cy="76" r="4" fill="#1e293b"/>
+  <path d="M92 88 Q100 94 108 88" stroke="#92400e" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>
