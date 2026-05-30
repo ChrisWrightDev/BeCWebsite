@@ -9,9 +9,9 @@
         </p>
       </header>
 
-      <section class="filters" v-if="uniquePatterns.length" aria-label="Filter by pattern">
+      <section class="filters" aria-label="Filter by pattern">
         <button
-          v-for="pattern in ['All', ...uniquePatterns]"
+          v-for="pattern in ['All', ...PATTERN_CATEGORIES]"
           :key="pattern"
           type="button"
           class="filter-chip"
@@ -109,6 +109,11 @@
 
 <script setup>
 import { clownfishImageAlt, formatPriceCents } from '~/utils/clownfish'
+import {
+  fishMatchesPatternCategory,
+  isKnownPatternQuery,
+  PATTERN_CATEGORIES,
+} from '~/utils/patternCategories'
 
 const config = useRuntimeConfig()
 const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
@@ -132,12 +137,6 @@ if (clownfish.value?.length) {
   ])
 }
 
-const selectedPattern = ref(null)
-const restockEmail = ref('')
-const restockSubmitted = ref(false)
-const cart = useCart()
-const cartToast = useCartToast()
-
 function patternFromQuery(query) {
   const raw = query.pattern
   if (!raw || raw === 'All') return null
@@ -145,13 +144,25 @@ function patternFromQuery(query) {
   return typeof value === 'string' && value.trim() ? value.trim() : null
 }
 
+function patternSelectionFromQuery(query) {
+  const fromQuery = patternFromQuery(query)
+  if (!fromQuery || !isKnownPatternQuery(fromQuery)) return null
+  return fromQuery
+}
+
+const selectedPattern = ref(patternSelectionFromQuery(route.query))
+const restockEmail = ref('')
+const restockSubmitted = ref(false)
+const cart = useCart()
+const cartToast = useCartToast()
+
 function syncPatternFromRoute() {
   const fromQuery = patternFromQuery(route.query)
   if (!fromQuery) {
     selectedPattern.value = null
     return
   }
-  if (uniquePatterns.value.length && !uniquePatterns.value.includes(fromQuery)) {
+  if (!isKnownPatternQuery(fromQuery)) {
     selectedPattern.value = null
     if (route.query.pattern) {
       const query = { ...route.query }
@@ -163,18 +174,10 @@ function syncPatternFromRoute() {
   selectedPattern.value = fromQuery
 }
 
-const uniquePatterns = computed(() => {
-  const patterns = new Set()
-  ;(clownfish.value || []).forEach((fish) => {
-    if (fish.pattern) patterns.add(fish.pattern)
-  })
-  return Array.from(patterns)
-})
-
 const filteredClownfish = computed(() => {
   const list = clownfish.value || []
   if (!selectedPattern.value || selectedPattern.value === 'All') return list
-  return list.filter((fish) => fish.pattern === selectedPattern.value)
+  return list.filter((fish) => fishMatchesPatternCategory(fish, selectedPattern.value))
 })
 
 function isPatternActive(pattern) {
@@ -195,10 +198,9 @@ watch(
   () => route.query.pattern,
   () => {
     syncPatternFromRoute()
-  }
+  },
+  { immediate: true }
 )
-
-watch(clownfish, () => syncPatternFromRoute(), { immediate: true })
 
 function addToCart(fish) {
   cart.addItem(fish, 1)
