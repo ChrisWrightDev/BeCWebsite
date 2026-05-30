@@ -1,8 +1,12 @@
 <template>
   <div class="app-shell">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <header class="site-header">
-      <nav class="nav">
-        <div class="logo">Blue-Eyed Clownfish</div>
+      <nav class="nav" aria-label="Main navigation">
+        <NuxtLink to="/" class="logo" aria-label="Blue-Eyed Clowns home">
+          Blue-Eyed Clowns
+        </NuxtLink>
         <ul class="nav-links">
           <li><NuxtLink to="/">Home</NuxtLink></li>
           <li><NuxtLink to="/shop">Clownfish</NuxtLink></li>
@@ -15,17 +19,56 @@
       </nav>
     </header>
 
-    <main class="main-content">
+    <main id="main-content" class="main-content" tabindex="-1">
       <NuxtPage />
     </main>
 
     <footer class="site-footer">
-      <p>© {{ new Date().getFullYear() }} Blue-Eyed Clowns Reef Aquaculture. All rights reserved.</p>
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <p class="footer-name">Blue-Eyed Clowns</p>
+          <p class="footer-tagline">Premium tank-bred clownfish</p>
+        </div>
+
+        <div class="footer-columns">
+          <div class="footer-col">
+            <h2 class="footer-heading">Shop</h2>
+            <ul>
+              <li><NuxtLink to="/shop">All clownfish</NuxtLink></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h2 class="footer-heading">Support</h2>
+            <ul>
+              <li><NuxtLink to="/contact">Contact</NuxtLink></li>
+              <li><span class="footer-placeholder">Shipping FAQ (coming soon)</span></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h2 class="footer-heading">Policies</h2>
+            <ul>
+              <li><span class="footer-placeholder">Privacy Policy (coming soon)</span></li>
+              <li><span class="footer-placeholder">Terms of Service (coming soon)</span></li>
+              <li><span class="footer-placeholder">Live Arrival Guarantee (coming soon)</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <p class="footer-copy">
+        © {{ new Date().getFullYear() }} Blue-Eyed Clowns. All rights reserved.
+      </p>
     </footer>
   </div>
 </template>
 
 <style>
+:root {
+  color-scheme: dark;
+}
+
 *,
 *::before,
 *::after {
@@ -37,6 +80,23 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #f5f7ff;
   background-color: #020617;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: #0ea5e9;
+  color: #0f172a;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.skip-link:focus {
+  left: 1rem;
 }
 
 .app-shell {
@@ -71,6 +131,15 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #e0f2fe;
+  text-decoration: none;
+}
+
+.logo:focus-visible,
+.nav-links a:focus-visible,
+.footer-col a:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 .nav-links {
@@ -108,13 +177,96 @@ body {
   flex: 1;
 }
 
+.main-content:focus {
+  outline: none;
+}
+
 .site-footer {
   border-top: 1px solid rgba(148, 163, 184, 0.2);
-  padding: 1.5rem 1.5rem 2rem;
+  padding: 2.5rem 1.5rem 2rem;
   background: radial-gradient(circle at top, #020617 0, #000 100%);
   color: #94a3b8;
   font-size: 0.875rem;
+}
+
+.footer-inner {
+  max-width: 1120px;
+  margin: 0 auto 2rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+}
+
+.footer-name {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e0f2fe;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.footer-tagline {
+  margin: 0;
+  color: #cbd5e1;
+}
+
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.footer-heading {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #e2e8f0;
+}
+
+.footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-col li + li {
+  margin-top: 0.5rem;
+}
+
+.footer-col a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-col a:hover {
+  color: #7dd3fc;
+}
+
+.footer-placeholder {
+  color: #64748b;
+  font-style: italic;
+}
+
+.footer-copy {
+  max-width: 1120px;
+  margin: 0 auto;
   text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+@media (max-width: 768px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-columns {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -126,6 +278,13 @@ body {
   .nav-links {
     width: 100%;
     justify-content: space-between;
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-links a {
+    transition: none;
   }
 }
 </style>

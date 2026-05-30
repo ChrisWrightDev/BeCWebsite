@@ -84,6 +84,12 @@
 </template>
 
 <script setup>
+useSiteSeo({
+  title: 'Checkout',
+  noindex: true,
+  nofollow: true,
+})
+
 const cart = useCart()
 const config = useRuntimeConfig()
 const publishableKey = config.public.stripePublishableKey

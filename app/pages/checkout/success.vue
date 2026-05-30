@@ -20,6 +20,12 @@
 </template>
 
 <script setup>
+useSiteSeo({
+  title: 'Order Confirmed',
+  noindex: true,
+  nofollow: true,
+})
+
 const route = useRoute()
 const status = ref('loading')
 const errorMessage = ref('')

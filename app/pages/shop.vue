@@ -73,6 +73,14 @@
 </template>
 
 <script setup>
+useSiteSeo({
+  title: 'Shop Tank-Bred Clownfish',
+  description:
+    'Browse captive-bred clownfish — ocellaris, snowflake, black ice & more. In-stock updates weekly.',
+})
+
+const route = useRoute()
+const router = useRouter()
 const { $supabase } = useNuxtApp()
 
 const clownfish = ref([])
@@ -81,6 +89,31 @@ const error = ref(null)
 const selectedPattern = ref(null)
 const addingId = ref(null)
 const cart = useCart()
+
+function patternFromQuery(query) {
+  const raw = query.pattern
+  if (!raw || raw === 'All') return null
+  const value = Array.isArray(raw) ? raw[0] : raw
+  return typeof value === 'string' && value.trim() ? value.trim() : null
+}
+
+function syncPatternFromRoute() {
+  const fromQuery = patternFromQuery(route.query)
+  if (!fromQuery) {
+    selectedPattern.value = null
+    return
+  }
+  if (uniquePatterns.value.length && !uniquePatterns.value.includes(fromQuery)) {
+    selectedPattern.value = null
+    if (route.query.pattern) {
+      const query = { ...route.query }
+      delete query.pattern
+      router.replace({ path: route.path, query })
+    }
+    return
+  }
+  selectedPattern.value = fromQuery
+}
 
 const uniquePatterns = computed(() => {
   const patterns = new Set()
@@ -100,8 +133,20 @@ const filteredClownfish = computed(() => {
 })
 
 function handlePatternClick(pattern) {
-  selectedPattern.value = pattern === 'All' ? null : pattern
+  const next = pattern === 'All' ? null : pattern
+  selectedPattern.value = next
+  const query = { ...route.query }
+  if (next) query.pattern = next
+  else delete query.pattern
+  router.replace({ path: route.path, query })
 }
+
+watch(
+  () => route.query.pattern,
+  () => {
+    syncPatternFromRoute()
+  }
+)
 
 function formatPrice(cents) {
   if (typeof cents !== 'number') return '$—'
@@ -109,6 +154,8 @@ function formatPrice(cents) {
 }
 
 onMounted(async () => {
+  syncPatternFromRoute()
+
   try {
     if (!$supabase) {
       error.value = new Error(
@@ -127,6 +174,7 @@ onMounted(async () => {
     }
 
     clownfish.value = data || []
+    syncPatternFromRoute()
   } catch (err) {
     console.error('[shop] error loading clownfish', err)
     error.value = err

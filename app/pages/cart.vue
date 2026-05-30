@@ -71,6 +71,11 @@
 </template>
 
 <script setup>
+useSiteSeo({
+  title: 'Your Cart',
+  noindex: true,
+})
+
 const cart = useCart()
 
 const cartItems = computed(() => {
