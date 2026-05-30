@@ -50,10 +50,10 @@
           <button
             class="btn"
             type="button"
-            :disabled="!fish.in_stock || adding"
+            :disabled="!fish.in_stock"
             @click="addToCart"
           >
-            {{ adding ? 'Added' : 'Add to cart' }}
+            Add to cart
           </button>
 
           <NuxtLink to="/shop" class="back-link">← Browse all clownfish</NuxtLink>
@@ -96,16 +96,13 @@ if (fish.value) {
   useSiteSeo({ title: 'Product Not Found', noindex: true })
 }
 
-const adding = ref(false)
 const cart = useCart()
+const cartToast = useCartToast()
 
 function addToCart() {
   if (!fish.value?.in_stock) return
-  adding.value = true
   cart.addItem(fish.value, 1)
-  setTimeout(() => {
-    adding.value = false
-  }, 600)
+  cartToast.show(fish.value.name)
 }
 </script>
 

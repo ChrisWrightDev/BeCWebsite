@@ -1,18 +1,57 @@
+<script setup>
+const navOpen = ref(false)
+const route = useRoute()
+
+function toggleNav() {
+  navOpen.value = !navOpen.value
+}
+
+function closeNav() {
+  navOpen.value = false
+}
+
+watch(
+  () => route.path,
+  () => closeNav()
+)
+</script>
+
 <template>
   <div class="app-shell">
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <header class="site-header">
       <nav class="nav" aria-label="Main navigation">
-        <NuxtLink to="/" class="logo" aria-label="Blue-Eyed Clowns home">
-          Blue-Eyed Clowns
-        </NuxtLink>
-        <ul class="nav-links">
-          <li><NuxtLink to="/">Home</NuxtLink></li>
-          <li><NuxtLink to="/shop">Clownfish</NuxtLink></li>
-          <li><NuxtLink to="/about">About</NuxtLink></li>
-          <li><NuxtLink to="/contact">Contact</NuxtLink></li>
-          <li class="nav-cart">
+        <div class="nav-top">
+          <NuxtLink to="/" class="logo" aria-label="Blue-Eyed Clowns home">
+            Blue-Eyed Clowns
+          </NuxtLink>
+
+          <div class="nav-actions">
+            <span class="nav-cart-desktop">
+              <CartIcon />
+            </span>
+            <button
+              type="button"
+              class="nav-toggle"
+              :aria-expanded="navOpen"
+              aria-controls="primary-nav"
+              @click="toggleNav"
+            >
+              <span class="sr-only">{{ navOpen ? 'Close menu' : 'Open menu' }}</span>
+              <span class="nav-toggle-bar" aria-hidden="true"></span>
+              <span class="nav-toggle-bar" aria-hidden="true"></span>
+              <span class="nav-toggle-bar" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+        <ul id="primary-nav" class="nav-links" :class="{ open: navOpen }">
+          <li><NuxtLink to="/" @click="closeNav">Home</NuxtLink></li>
+          <li><NuxtLink to="/shop" @click="closeNav">Clownfish</NuxtLink></li>
+          <li><NuxtLink to="/about" @click="closeNav">About</NuxtLink></li>
+          <li><NuxtLink to="/contact" @click="closeNav">Contact</NuxtLink></li>
+          <li class="nav-cart-mobile">
             <CartIcon />
           </li>
         </ul>
@@ -22,6 +61,8 @@
     <main id="main-content" class="main-content" tabindex="-1">
       <NuxtPage />
     </main>
+
+    <CartToast />
 
     <footer class="site-footer">
       <div class="footer-inner">
@@ -42,7 +83,7 @@
             <h2 class="footer-heading">Support</h2>
             <ul>
               <li><NuxtLink to="/contact">Contact</NuxtLink></li>
-              <li><span class="footer-placeholder">Shipping FAQ (coming soon)</span></li>
+              <li><NuxtLink to="/contact#faq">Shipping FAQ</NuxtLink></li>
             </ul>
           </div>
 
@@ -77,7 +118,6 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #f5f7ff;
   background-color: #020617;
 }
@@ -97,6 +137,18 @@ body {
 
 .skip-link:focus {
   left: 1rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .app-shell {
@@ -119,10 +171,13 @@ body {
   max-width: 1120px;
   margin: 0 auto;
   padding: 1rem 1.5rem;
+}
+
+.nav-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .logo {
@@ -136,10 +191,39 @@ body {
 
 .logo:focus-visible,
 .nav-links a:focus-visible,
-.footer-col a:focus-visible {
+.footer-col a:focus-visible,
+.nav-toggle:focus-visible {
   outline: 2px solid #22d3ee;
   outline-offset: 3px;
   border-radius: 2px;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 0.5rem;
+  background: rgba(15, 23, 42, 0.8);
+  cursor: pointer;
+}
+
+.nav-toggle-bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #e2e8f0;
+  border-radius: 1px;
 }
 
 .nav-links {
@@ -169,8 +253,8 @@ body {
   border-color: #7dd3fc;
 }
 
-.nav-cart {
-  margin-left: 0.5rem;
+.nav-cart-mobile {
+  display: none;
 }
 
 .main-content {
@@ -270,21 +354,41 @@ body {
 }
 
 @media (max-width: 640px) {
-  .nav {
-    flex-direction: column;
-    align-items: flex-start;
+  .nav-toggle {
+    display: flex;
+  }
+
+  .nav-cart-desktop {
+    display: none;
+  }
+
+  .nav-cart-mobile {
+    display: block;
+    margin-top: 0.5rem;
   }
 
   .nav-links {
-    width: 100%;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.25);
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links li {
+    width: 100%;
+  }
+
   .nav-links a {
-    transition: none;
+    display: block;
+    padding: 0.75rem 0;
+    border-bottom: none;
   }
 }
 </style>

@@ -104,3 +104,32 @@ export function buildContactPageSchema(siteUrl) {
     },
   }
 }
+
+export function buildAboutPageSchema(siteUrl) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: 'About Blue-Eyed Clowns',
+    url: `${siteUrl}/about`,
+    mainEntity: {
+      '@type': 'Organization',
+      name: 'Blue-Eyed Clowns',
+      url: siteUrl,
+      founder: [
+        buildPersonSchema('Chris Wright', 'Co-Founder', siteUrl),
+        buildPersonSchema('Mike Kay', 'Co-Founder', siteUrl),
+      ],
+    },
+  }
+}
+
+function buildPersonSchema(name, jobTitle, siteUrl) {
+  const slug = name.toLowerCase().replace(/\s+/g, '-')
+  return {
+    '@type': 'Person',
+    name,
+    jobTitle,
+    worksFor: { '@type': 'Organization', name: 'Blue-Eyed Clowns', url: siteUrl },
+    image: `${siteUrl}/images/founders/${slug}.svg`,
+  }
+}

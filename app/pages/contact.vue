@@ -13,6 +13,34 @@ useJsonLd(buildContactPageSchema(siteUrl))
 const submitted = ref(false)
 const formError = ref('')
 
+const faqItems = [
+  {
+    question: 'When do you ship live fish?',
+    answer:
+      'We ship Monday through Wednesday only, via overnight delivery. This keeps transit time minimal and gives your clownfish the best chance of arriving healthy. Orders placed after our cutoff may ship the following eligible day.',
+  },
+  {
+    question: 'How should I acclimate new clownfish?',
+    answer:
+      'Float the sealed bag in your tank for 15–20 minutes to equalize temperature. Then drip-acclimate over 30–45 minutes, slowly mixing tank water into the bag. Net the fish into your display — avoid adding bag water. Keep lights dim for the first few hours.',
+  },
+  {
+    question: 'What is your health guarantee?',
+    answer:
+      'Every clownfish is covered by our 30-day health guarantee. If your fish arrives unhealthy or declines within 30 days due to a pre-existing condition, contact us with photos and we will work with you on a replacement or refund.',
+  },
+  {
+    question: 'What if my fish arrives DOA?',
+    answer:
+      'Take clear photos of the unopened bag within two hours of delivery and email support@blueeyedclowns.com. We will replace or refund per our Live Arrival Guarantee policy. Do not discard the fish until we confirm next steps.',
+  },
+  {
+    question: 'Do you offer wholesale or local pickup?',
+    answer:
+      'Yes — we work with select local fish stores and serious hobbyists on wholesale orders. Use the contact form below and select a wholesale inquiry in your subject line, or email support@blueeyedclowns.com directly.',
+  },
+]
+
 const form = reactive({
   name: '',
   email: '',
@@ -51,6 +79,20 @@ function handleSubmit() {
           we'll get back within one business day.
         </p>
       </header>
+
+      <section id="faq" class="faq" aria-labelledby="faq-heading">
+        <h2 id="faq-heading">Shipping &amp; acclimation FAQ</h2>
+        <p class="faq-intro">
+          Common questions before you reach out — most orders ship within one business day of
+          confirmation.
+        </p>
+        <div class="faq-list">
+          <details v-for="(item, index) in faqItems" :key="index" class="faq-item">
+            <summary>{{ item.question }}</summary>
+            <p>{{ item.answer }}</p>
+          </details>
+        </div>
+      </section>
 
       <div class="grid">
         <form class="form" @submit.prevent="handleSubmit">
@@ -143,6 +185,70 @@ function handleSubmit() {
 .header p {
   color: #cbd5f5;
   max-width: 40rem;
+}
+
+.faq {
+  margin-top: 2.5rem;
+}
+
+.faq h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.faq-intro {
+  color: #94a3b8;
+  margin: 0 0 1.25rem;
+  max-width: 40rem;
+}
+
+.faq-list {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 52rem;
+}
+
+.faq-item {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.5);
+  overflow: hidden;
+}
+
+.faq-item summary {
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: '+';
+  float: right;
+  color: #22d3ee;
+  font-weight: 700;
+}
+
+.faq-item[open] summary::after {
+  content: '−';
+}
+
+.faq-item summary:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: -2px;
+}
+
+.faq-item p {
+  margin: 0;
+  padding: 0 1rem 1rem;
+  color: #cbd5e1;
+  line-height: 1.55;
+  font-size: 0.95rem;
 }
 
 .grid {

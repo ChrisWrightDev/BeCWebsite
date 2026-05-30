@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-labelledby="title">
+  <title>Reef tank with clownfish</title>
+  <rect width="320" height="200" fill="#020617"/>
+  <rect x="16" y="24" width="288" height="152" rx="6" fill="#0c4a6e"/>
+  <rect x="20" y="40" width="280" height="132" fill="#155e75" opacity="0.8"/>
+  <ellipse cx="160" cy="110" rx="40" ry="24" fill="#f97316"/>
+  <ellipse cx="160" cy="110" rx="32" ry="20" fill="#fb923c"/>
+  <circle cx="148" cy="106" r="4" fill="#1e293b"/>
+  <path d="M200 110 L220 104 L220 116 Z" fill="#ea580c"/>
+  <circle cx="80" cy="140" r="12" fill="#059669" opacity="0.7"/>
+  <circle cx="240" cy="80" r="10" fill="#7c3aed" opacity="0.6"/>
+  <path d="M40 60 Q100 40 160 55 Q220 70 280 50" stroke="#22d3ee" stroke-width="2" fill="none" opacity="0.4"/>
+</svg>
