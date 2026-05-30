@@ -4,24 +4,10 @@
       <header class="header">
         <h1>Tank-raised clownfish</h1>
         <p>
-          Browse our current availability of captive-bred clownfish. Filter by pattern category and
-          choose the fish that fits your reef.
+          Browse our current availability of captive-bred clownfish and choose the fish that fits
+          your reef.
         </p>
       </header>
-
-      <section class="filters" aria-label="Filter by pattern">
-        <button
-          v-for="pattern in ['All', ...PATTERN_CATEGORIES]"
-          :key="pattern"
-          type="button"
-          class="filter-chip"
-          :class="{ active: isPatternActive(pattern) }"
-          :aria-pressed="isPatternActive(pattern)"
-          @click="handlePatternClick(pattern)"
-        >
-          {{ pattern }}
-        </button>
-      </section>
 
       <div v-if="pending" class="state state-panel">
         <img src="/images/shop-empty.svg" alt="" class="state-illustration" width="240" height="180" />
@@ -32,9 +18,9 @@
         <p>There was a problem loading clownfish. Please try again shortly.</p>
         <button type="button" class="btn-retry" @click="refresh()">Try again</button>
       </div>
-      <div v-else-if="filteredClownfish.length === 0" class="state state-panel">
+      <div v-else-if="!clownfish?.length" class="state state-panel">
         <img src="/images/shop-empty.svg" alt="" class="state-illustration" width="240" height="180" />
-        <p>No clownfish are available in this pattern right now.</p>
+        <p>No clownfish are available right now.</p>
         <p class="state-sub">Get notified when new batches are listed.</p>
         <form class="restock-form" @submit.prevent="handleRestockSubmit">
           <label class="sr-only" for="restock-email">Email for restock alerts</label>
@@ -55,7 +41,7 @@
       </div>
 
       <div v-else class="grid">
-        <article v-for="fish in filteredClownfish" :key="fish.id" class="card">
+        <article v-for="fish in clownfish" :key="fish.id" class="card">
           <div class="badge" v-if="fish.pattern">
             {{ fish.pattern }}
           </div>
@@ -79,9 +65,6 @@
           <h2>
             <NuxtLink :to="`/shop/${fish.slug}`" class="product-link">{{ fish.name }}</NuxtLink>
           </h2>
-          <p class="category" v-if="fish.category_name">
-            Category: {{ fish.category_name }}
-          </p>
           <p class="description">
             {{ fish.description || 'Tank-raised clownfish ready for your reef aquarium.' }}
           </p>
@@ -109,16 +92,9 @@
 
 <script setup>
 import { clownfishImageAlt, formatPriceCents } from '~/utils/clownfish'
-import {
-  fishMatchesPatternCategory,
-  isKnownPatternQuery,
-  PATTERN_CATEGORIES,
-} from '~/utils/patternCategories'
 
 const config = useRuntimeConfig()
 const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
-const route = useRoute()
-const router = useRouter()
 
 useSiteSeo({
   title: 'Shop Tank-Bred Clownfish',
@@ -137,70 +113,10 @@ if (clownfish.value?.length) {
   ])
 }
 
-function patternFromQuery(query) {
-  const raw = query.pattern
-  if (!raw || raw === 'All') return null
-  const value = Array.isArray(raw) ? raw[0] : raw
-  return typeof value === 'string' && value.trim() ? value.trim() : null
-}
-
-function patternSelectionFromQuery(query) {
-  const fromQuery = patternFromQuery(query)
-  if (!fromQuery || !isKnownPatternQuery(fromQuery)) return null
-  return fromQuery
-}
-
-const selectedPattern = ref(patternSelectionFromQuery(route.query))
 const restockEmail = ref('')
 const restockSubmitted = ref(false)
 const cart = useCart()
 const cartToast = useCartToast()
-
-function syncPatternFromRoute() {
-  const fromQuery = patternFromQuery(route.query)
-  if (!fromQuery) {
-    selectedPattern.value = null
-    return
-  }
-  if (!isKnownPatternQuery(fromQuery)) {
-    selectedPattern.value = null
-    if (route.query.pattern) {
-      const query = { ...route.query }
-      delete query.pattern
-      router.replace({ path: route.path, query })
-    }
-    return
-  }
-  selectedPattern.value = fromQuery
-}
-
-const filteredClownfish = computed(() => {
-  const list = clownfish.value || []
-  if (!selectedPattern.value || selectedPattern.value === 'All') return list
-  return list.filter((fish) => fishMatchesPatternCategory(fish, selectedPattern.value))
-})
-
-function isPatternActive(pattern) {
-  if (pattern === 'All') return !selectedPattern.value || selectedPattern.value === 'All'
-  return selectedPattern.value === pattern
-}
-
-function handlePatternClick(pattern) {
-  const next = pattern === 'All' ? null : pattern
-  selectedPattern.value = next
-  const query = { ...route.query }
-  if (next) query.pattern = next
-  else delete query.pattern
-  router.replace({ path: route.path, query })
-}
-
-watch(
-  () => route.query.pattern,
-  () => {
-    syncPatternFromRoute()
-  },
-  { immediate: true }
-)
 
 function addToCart(fish) {
   cart.addItem(fish, 1)
@@ -237,35 +153,6 @@ function handleRestockSubmit() {
 .header p {
   color: #cbd5f5;
   max-width: 40rem;
-}
-
-.filters {
-  margin-top: 2rem;
-  margin-bottom: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
-.filter-chip {
-  border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.5);
-  padding: 0.45rem 0.85rem;
-  background: rgba(15, 23, 42, 0.8);
-  color: #e5e7eb;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-.filter-chip.active {
-  background: linear-gradient(to right, #22d3ee, #0ea5e9);
-  border-color: transparent;
-  color: #0f172a;
-}
-
-.filter-chip:focus-visible {
-  outline: 2px solid #22d3ee;
-  outline-offset: 2px;
 }
 
 .state {
@@ -434,11 +321,6 @@ h2 {
 
 .product-link:hover {
   color: #7dd3fc;
-}
-
-.category {
-  font-size: 0.85rem;
-  color: #a5b4fc;
 }
 
 .description {

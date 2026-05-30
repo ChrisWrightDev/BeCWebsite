@@ -1,7 +1,7 @@
 import { useSupabaseAdmin } from './supabaseAdmin.js'
 
 const CLOWNFISH_COLUMNS =
-  'id, name, description, price_cents, pattern, image_url, in_stock, category_name'
+  'id, name, description, price_cents, pattern, image_url, in_stock'
 
 export function slugifyClownfishName(name) {
   if (!name || typeof name !== 'string') return ''

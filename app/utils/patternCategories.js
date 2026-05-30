@@ -13,9 +13,6 @@ export function fishPatternCategory(fish) {
   if (fish.pattern && PATTERN_TO_CATEGORY[fish.pattern]) {
     return PATTERN_TO_CATEGORY[fish.pattern]
   }
-  if (fish.category_name && PATTERN_CATEGORIES.includes(fish.category_name)) {
-    return fish.category_name
-  }
   return null
 }
 

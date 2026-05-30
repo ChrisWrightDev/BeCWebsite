@@ -35,7 +35,6 @@
         <div class="details">
           <p v-if="fish.pattern" class="pattern-tag">{{ fish.pattern }}</p>
           <h1>{{ fish.name }}</h1>
-          <p v-if="fish.category_name" class="category">Category: {{ fish.category_name }}</p>
           <p class="description">
             {{ fish.description || 'Tank-raised clownfish ready for your reef aquarium.' }}
           </p>
@@ -187,12 +186,6 @@ function addToCart() {
 h1 {
   font-size: 1.75rem;
   margin: 0 0 0.5rem;
-}
-
-.category {
-  font-size: 0.9rem;
-  color: #a5b4fc;
-  margin: 0 0 1rem;
 }
 
 .description {
