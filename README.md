@@ -1,75 +1,68 @@
-# Nuxt Minimal Starter
+# Blue-Eyed Clowns Website
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Nuxt storefront for Blue-Eyed Clowns, a captive-bred clownfish aquaculture business.
 
 ## Setup
 
-Make sure to install dependencies:
+Install dependencies:
 
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+npm ci
 ```
+
+Copy the example environment file when you need live Stripe or Supabase integrations:
+
+```bash
+cp .env.example .env
+```
+
+## Local preview data
+
+Shop listing and product detail preview routes work without Supabase credentials. When `NUXT_SUPABASE_URL` or `NUXT_SUPABASE_SERVICE_ROLE_KEY` is missing, the server APIs return a small safe local clownfish catalog so reviewers can smoke-test `/shop` and `/shop/standard-ocellaris` without access to production data.
+
+For production-like data-backed previews, set these values in `.env`:
+
+```bash
+NUXT_SUPABASE_URL=https://your-project.supabase.co
+NUXT_SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+```
+
+The browser client also uses `NUXT_SUPABASE_ANON_KEY` where Supabase client-side features are enabled.
 
 ## Development Server
 
 Start the development server on `http://localhost:3000`:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+For review smoke tests on a fixed host/port:
+
+```bash
+npm run dev -- --host 127.0.0.1 --port 3000
+```
+
+## Production build
 
 Build the application for production:
 
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
+Preview the production build locally:
 
 ```bash
-# npm
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Dependency audit
+
+Run the audit with:
+
+```bash
+npm audit --audit-level=high
+```
+
+As of this branch, `npm audit fix --dry-run` indicates that remediation would change Nuxt/Vite-related dependency versions in the lockfile. Treat the audit as deferred until a dependency-upgrade pass can validate the full Nuxt build and preview flow after the upgrades.
