@@ -2,12 +2,28 @@
   <section class="page">
     <div class="inner">
       <header class="header">
+        <p class="eyebrow">Captive-bred clownfish for sale</p>
         <h1>Tank-raised clownfish</h1>
         <p>
-          Browse our current availability of captive-bred clownfish and choose the fish that fits
-          your reef.
+          Browse current availability, compare beginner-friendly and premium designer morphs, and
+          choose a feeding-ready clownfish for your reef.
         </p>
       </header>
+
+      <section class="chooser" aria-label="Shopping help and guarantees">
+        <div>
+          <strong>Need help choosing?</strong>
+          <span>Start with hardy Ocellaris or compare designer morphs before you add to cart.</span>
+        </div>
+        <NuxtLink to="/guides/clownfish-morphs">Read the morph guide</NuxtLink>
+      </section>
+
+      <div class="reassurance-strip" aria-label="Purchase reassurance">
+        <span>30-day health guarantee</span>
+        <span>Overnight live-fish shipping</span>
+        <span>Ships Monday–Wednesday</span>
+        <span>Captive-bred and feeding well</span>
+      </div>
 
       <div v-if="pending" class="state state-panel">
         <img src="/images/shop-empty.svg" alt="" class="state-illustration" width="240" height="180" />
@@ -42,8 +58,8 @@
 
       <div v-else class="grid">
         <article v-for="fish in clownfish" :key="fish.id" class="card">
-          <div class="badge" v-if="fish.pattern">
-            {{ fish.pattern }}
+          <div class="badge">
+            {{ clownfishCategory(fish) }}
           </div>
 
           <NuxtLink :to="`/shop/${fish.slug}`" class="image-link">
@@ -65,8 +81,9 @@
           <h2>
             <NuxtLink :to="`/shop/${fish.slug}`" class="product-link">{{ fish.name }}</NuxtLink>
           </h2>
+          <p class="best-for">{{ clownfishBestFor(fish) }}</p>
           <p class="description">
-            {{ fish.description || 'Tank-raised clownfish ready for your reef aquarium.' }}
+            {{ compactDescription(fish) }}
           </p>
 
           <div class="meta">
@@ -76,14 +93,17 @@
             </span>
           </div>
 
-          <button
-            class="btn"
-            type="button"
-            :disabled="!fish.in_stock"
-            @click="addToCart(fish)"
-          >
-            Add to cart
-          </button>
+          <div class="card-actions">
+            <NuxtLink :to="`/shop/${fish.slug}`" class="btn btn-secondary">View details</NuxtLink>
+            <button
+              class="btn"
+              type="button"
+              :disabled="!fish.in_stock"
+              @click="addToCart(fish)"
+            >
+              Add to cart
+            </button>
+          </div>
         </article>
       </div>
     </div>
@@ -91,7 +111,13 @@
 </template>
 
 <script setup>
-import { clownfishImageAlt, formatPriceCents } from '~/utils/clownfish'
+import {
+  clownfishBestFor,
+  clownfishCategory,
+  clownfishImageAlt,
+  compactDescription,
+  formatPriceCents,
+} from '~/utils/clownfish'
 
 const config = useRuntimeConfig()
 const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
@@ -150,9 +176,71 @@ function handleRestockSubmit() {
   margin-bottom: 0.75rem;
 }
 
+.eyebrow {
+  margin: 0 0 0.45rem;
+  color: #7dd3fc;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .header p {
   color: #cbd5f5;
   max-width: 40rem;
+}
+
+.chooser,
+.reassurance-strip {
+  margin-top: 1.25rem;
+  border: 1px solid rgba(125, 211, 252, 0.22);
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.68);
+}
+
+.chooser {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+}
+
+.chooser div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.chooser strong {
+  color: #e0f2fe;
+}
+
+.chooser span {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.chooser a {
+  color: #7dd3fc;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.reassurance-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.reassurance-strip span {
+  border-radius: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  background: rgba(8, 47, 73, 0.42);
+  color: #dbeafe;
+  font-size: 0.88rem;
+  text-align: center;
 }
 
 .state {
@@ -329,6 +417,14 @@ h2 {
   flex: 1;
 }
 
+.best-for {
+  margin: 0;
+  color: #bae6fd;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 .meta {
   display: flex;
   align-items: center;
@@ -349,10 +445,16 @@ h2 {
   color: #fed7aa;
 }
 
-.btn {
+.card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
   margin-top: 0.75rem;
+}
+
+.btn {
   border-radius: 999px;
-  border: none;
+  border: 1px solid transparent;
   padding: 0.6rem 1.1rem;
   background: linear-gradient(to right, #22d3ee, #0ea5e9);
   color: #0f172a;
@@ -361,6 +463,14 @@ h2 {
   text-transform: uppercase;
   font-size: 0.8rem;
   cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #e2e8f0;
+  border-color: rgba(148, 163, 184, 0.5);
 }
 
 .btn:disabled {
@@ -376,6 +486,17 @@ h2 {
 }
 
 @media (max-width: 720px) {
+  .chooser,
+  .reassurance-strip,
+  .card-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .chooser {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .grid {
     grid-template-columns: 1fr;
   }

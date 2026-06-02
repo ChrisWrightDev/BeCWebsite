@@ -33,11 +33,6 @@ export function buildWebSiteSchema(siteUrl) {
     '@type': 'WebSite',
     name: 'Blue-Eyed Clowns',
     url: siteUrl,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: `${siteUrl}/shop?pattern={search_term_string}`,
-      'query-input': 'required name=search_term_string',
-    },
   }
 }
 

@@ -22,6 +22,7 @@ useJsonLd([buildOrganizationSchema(siteUrl), buildWebSiteSchema(siteUrl)])
       </p>
       <div class="hero-actions">
         <NuxtLink to="/shop" class="btn btn-primary">Shop Clownfish</NuxtLink>
+        <NuxtLink to="/guides/clownfish-care" class="btn btn-ghost">Why captive-bred matters</NuxtLink>
       </div>
     </div>
   </section>
@@ -74,27 +75,44 @@ useJsonLd([buildOrganizationSchema(siteUrl), buildWebSiteSchema(siteUrl)])
       </header>
 
       <div class="grid">
-        <article class="card">
+        <NuxtLink to="/shop/standard-ocellaris" class="card featured-link">
           <div class="card-tag">Classic</div>
-          <h3>Ocellaris Clownfish</h3>
-          <p>Mellow temperament and iconic orange-and-white barring. Perfect for community reefs.</p>
-          <p class="price">$40.00</p>
-        </article>
+          <h3>Standard Ocellaris</h3>
+          <p>Best starter clownfish — hardy, peaceful, captive-bred, and easy to feed.</p>
+          <p class="price">View details</p>
+        </NuxtLink>
 
-        <article class="card">
+        <NuxtLink to="/shop/snowflakes" class="card featured-link">
           <div class="card-tag">Pattern</div>
           <h3>Snowflake Ocellaris</h3>
-          <p>High-contrast white patterns with deep orange highlights for high-impact displays.</p>
-          <p class="price">$65.00</p>
-        </article>
+          <p>Unique white patterning; no two fish look the same in a reef display.</p>
+          <p class="price">View details</p>
+        </NuxtLink>
 
-        <article class="card">
-          <div class="card-tag">Designer</div>
-          <h3>Black Ice Clownfish</h3>
-          <p>Striking dark barring with crisp white edges — a centerpiece fish for modern reefs.</p>
-          <p class="price">$85.00</p>
-        </article>
+        <NuxtLink to="/shop/blue-ghost-storm" class="card featured-link">
+          <div class="card-tag">Premium</div>
+          <h3>Blue Ghost Storm</h3>
+          <p>Premium designer morph with icy highlights for a showpiece aquarium.</p>
+          <p class="price">View details</p>
+        </NuxtLink>
       </div>
+
+      <section class="ordering" aria-labelledby="ordering-heading">
+        <h2 id="ordering-heading">How ordering works</h2>
+        <ol>
+          <li><strong>Choose your clownfish.</strong> Compare quick facts, morph notes, and availability.</li>
+          <li><strong>We confirm safe shipping.</strong> Fish are checked for health, feeding response, and weather timing.</li>
+          <li><strong>Your fish ships overnight.</strong> Acclimation and support details are ready when it arrives.</li>
+        </ol>
+      </section>
+
+      <section class="signup" aria-labelledby="signup-heading">
+        <div>
+          <h2 id="signup-heading">Want first notice on new morph drops?</h2>
+          <p>Join the Blue-Eyed Clowns release list for new batches, premium designer morphs, and wholesale availability.</p>
+        </div>
+        <a href="mailto:support@blueeyedclowns.com?subject=New%20morph%20release%20list" class="btn btn-primary">Notify me</a>
+      </section>
 
       <div class="section-cta">
         <NuxtLink to="/shop" class="btn btn-outline">Browse all clownfish</NuxtLink>
@@ -271,6 +289,17 @@ h1 {
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.85);
 }
 
+.featured-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.featured-link:hover {
+  border-color: #7dd3fc;
+  transform: translateY(-1px);
+}
+
 .card-tag {
   position: absolute;
   top: 1.25rem;
@@ -303,6 +332,44 @@ h1 {
 
 .section-cta {
   margin-top: 2.5rem;
+}
+
+.ordering,
+.signup {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  background: rgba(15, 23, 42, 0.68);
+  border: 1px solid rgba(125, 211, 252, 0.22);
+}
+
+.ordering h2,
+.signup h2 {
+  margin: 0 0 1rem;
+  font-size: 1.35rem;
+}
+
+.ordering ol {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.ordering li + li {
+  margin-top: 0.65rem;
+}
+
+.signup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.signup p {
+  margin: 0;
+  color: #cbd5e1;
 }
 
 .btn-outline {
@@ -338,6 +405,11 @@ h1 {
 
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .signup {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 </style>
