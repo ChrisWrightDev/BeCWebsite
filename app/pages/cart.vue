@@ -10,6 +10,17 @@
 
       <div v-if="cartEmpty" class="empty">
         <p>Your cart is empty.</p>
+        <p class="empty-sub">Popular starting points: hardy Standard Ocellaris, patterned Snowflakes, and premium Blue Ghost Storm clownfish.</p>
+        <div class="empty-links">
+          <NuxtLink to="/shop/standard-ocellaris">Standard Ocellaris</NuxtLink>
+          <NuxtLink to="/shop/snowflakes">Snowflakes</NuxtLink>
+          <NuxtLink to="/shop/blue-ghost-storm">Blue Ghost Storm</NuxtLink>
+        </div>
+        <div class="empty-reassurance">
+          <span>30-day health guarantee</span>
+          <span>Overnight shipping Mon–Wed</span>
+          <span>Questions before checkout? <NuxtLink to="/contact">Contact us</NuxtLink></span>
+        </div>
         <NuxtLink to="/shop" class="btn btn-primary">Shop clownfish</NuxtLink>
       </div>
 
@@ -138,6 +149,37 @@ function formatPrice(cents) {
 
 .empty p {
   margin-bottom: 1rem;
+}
+
+.empty-sub {
+  max-width: 34rem;
+  margin-left: auto;
+  margin-right: auto;
+  color: #cbd5e1;
+}
+
+.empty-links,
+.empty-reassurance {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 1rem auto;
+}
+
+.empty-links a,
+.empty-reassurance span {
+  border-radius: 999px;
+  padding: 0.55rem 0.85rem;
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(125, 211, 252, 0.25);
+  color: #dbeafe;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.empty-reassurance a {
+  color: #7dd3fc;
 }
 
 .cart-layout {

@@ -1,6 +1,14 @@
 import { fetchClownfishCatalog } from '../utils/clownfishCatalog.js'
 
-const INDEXABLE_PATHS = ['/', '/shop', '/about', '/contact']
+const INDEXABLE_PATHS = [
+  '/',
+  '/shop',
+  '/about',
+  '/contact',
+  '/guides/clownfish-care',
+  '/guides/clownfish-morphs',
+  '/guides/shipping-live-clownfish',
+]
 
 function buildUrlEntry(siteUrl, path, options = {}) {
   const loc = `${siteUrl}${path === '/' ? '' : path}`

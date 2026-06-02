@@ -49,6 +49,7 @@ watch(
         <ul id="primary-nav" class="nav-links" :class="{ open: navOpen }">
           <li><NuxtLink to="/" @click="closeNav">Home</NuxtLink></li>
           <li><NuxtLink to="/shop" @click="closeNav">Clownfish</NuxtLink></li>
+          <li><NuxtLink to="/guides/clownfish-care" @click="closeNav">Care Guide</NuxtLink></li>
           <li><NuxtLink to="/about" @click="closeNav">About</NuxtLink></li>
           <li><NuxtLink to="/contact" @click="closeNav">Contact</NuxtLink></li>
           <li class="nav-cart-mobile">
@@ -76,6 +77,8 @@ watch(
             <h2 class="footer-heading">Shop</h2>
             <ul>
               <li><NuxtLink to="/shop">All clownfish</NuxtLink></li>
+              <li><NuxtLink to="/shop/standard-ocellaris">Standard Ocellaris</NuxtLink></li>
+              <li><NuxtLink to="/shop/blue-ghost-storm">Blue Ghost Storm</NuxtLink></li>
             </ul>
           </div>
 
@@ -84,6 +87,9 @@ watch(
             <ul>
               <li><NuxtLink to="/contact">Contact</NuxtLink></li>
               <li><NuxtLink to="/contact#faq">Shipping FAQ</NuxtLink></li>
+              <li><NuxtLink to="/guides/clownfish-care">Clownfish care guide</NuxtLink></li>
+              <li><NuxtLink to="/guides/clownfish-morphs">Morph guide</NuxtLink></li>
+              <li><NuxtLink to="/guides/shipping-live-clownfish">Live shipping guide</NuxtLink></li>
             </ul>
           </div>
 

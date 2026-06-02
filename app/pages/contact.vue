@@ -80,6 +80,12 @@ function handleSubmit() {
         </p>
       </header>
 
+      <div class="contact-ctas" aria-label="Contact shortcuts">
+        <NuxtLink to="/shop" class="contact-cta">Question about a fish</NuxtLink>
+        <a href="mailto:support@blueeyedclowns.com?subject=Wholesale%20inquiry" class="contact-cta">Wholesale inquiry</a>
+        <a href="mailto:support@blueeyedclowns.com?subject=Local%20pickup%20request" class="contact-cta">Local pickup request</a>
+      </div>
+
       <section id="faq" class="faq" aria-labelledby="faq-heading">
         <h2 id="faq-heading">Shipping &amp; acclimation FAQ</h2>
         <p class="faq-intro">
@@ -185,6 +191,28 @@ function handleSubmit() {
 .header p {
   color: #cbd5f5;
   max-width: 40rem;
+}
+
+.contact-ctas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1.5rem;
+}
+
+.contact-cta {
+  border: 1px solid rgba(125, 211, 252, 0.24);
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.68);
+  color: #e0f2fe;
+  padding: 1rem;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.contact-cta:hover {
+  border-color: #7dd3fc;
 }
 
 .faq {
@@ -356,7 +384,8 @@ textarea:focus-visible {
 }
 
 @media (max-width: 800px) {
-  .grid {
+  .grid,
+  .contact-ctas {
     grid-template-columns: 1fr;
   }
 }
