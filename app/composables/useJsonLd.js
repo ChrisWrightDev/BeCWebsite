@@ -23,7 +23,7 @@ export function buildOrganizationSchema(siteUrl) {
     logo: `${siteUrl}/images/og-default.svg`,
     email: 'support@blueeyedclowns.com',
     description:
-      'Captive-bred ocellaris, snowflake and designer clownfish with a 30-day health guarantee.',
+      'Captive-bred ocellaris, snowflake and designer clownfish with a 3-day live guarantee.',
   }
 }
 

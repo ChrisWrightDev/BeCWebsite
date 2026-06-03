@@ -2,7 +2,7 @@
 useSiteSeo({
   title: 'Shipping Live Clownfish | Overnight Live-Fish Shipping Guide',
   description:
-    'What to expect when Blue-Eyed Clowns ships live captive-bred clownfish: shipping days, weather holds, arrival photos, acclimation, and health guarantee support.',
+    'What to expect when Blue-Eyed Clowns ships live captive-bred clownfish: shipping days, weather holds, arrival photos, acclimation, and 3-day live guarantee support.',
 })
 </script>
 
@@ -20,7 +20,7 @@ useSiteSeo({
 
       <section class="steps">
         <div class="step"><strong>1. Order confirmation</strong><p>We confirm the fish is active, feeding, and safe to send with current weather and carrier timing.</p></div>
-        <div class="step"><strong>2. Overnight shipping</strong><p>Live clownfish ship Monday through Wednesday only to reduce weekend delays.</p></div>
+        <div class="step"><strong>2. Overnight shipping</strong><p>Live clownfish ship Monday through Friday by overnight delivery.</p></div>
         <div class="step"><strong>3. Arrival support</strong><p>Inspect the unopened bag right away and email photos quickly if anything looks wrong.</p></div>
         <div class="step"><strong>4. Acclimation</strong><p>Temperature match, drip-acclimate slowly, and keep lights dim while the clownfish settles in.</p></div>
       </section>

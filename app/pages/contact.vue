@@ -17,7 +17,7 @@ const faqItems = [
   {
     question: 'When do you ship live fish?',
     answer:
-      'We ship Monday through Wednesday only, via overnight delivery. This keeps transit time minimal and gives your clownfish the best chance of arriving healthy. Orders placed after our cutoff may ship the following eligible day.',
+      'We ship Monday through Friday, via overnight delivery. This keeps transit time minimal and gives your clownfish the best chance of arriving healthy. Orders placed after our cutoff may ship the following eligible day.',
   },
   {
     question: 'How should I acclimate new clownfish?',
@@ -25,9 +25,9 @@ const faqItems = [
       'Float the sealed bag in your tank for 15–20 minutes to equalize temperature. Then drip-acclimate over 30–45 minutes, slowly mixing tank water into the bag. Net the fish into your display — avoid adding bag water. Keep lights dim for the first few hours.',
   },
   {
-    question: 'What is your health guarantee?',
+    question: 'What is your live guarantee?',
     answer:
-      'Every clownfish is covered by our 30-day health guarantee. If your fish arrives unhealthy or declines within 30 days due to a pre-existing condition, contact us with photos and we will work with you on a replacement or refund.',
+      'Every clownfish is covered by our 3-day live guarantee. If your fish arrives unhealthy or declines within 3 days due to a pre-existing condition, contact us with photos and we will work with you on a replacement or refund.',
   },
   {
     question: 'What if my fish arrives DOA?',
@@ -162,7 +162,7 @@ function handleSubmit() {
           <ul>
             <li><strong>Support email</strong> support@blueeyedclowns.com</li>
             <li><strong>Facility</strong> Captive-breeding and quarantine systems in the U.S.</li>
-            <li><strong>Live shipping schedule</strong> Monday–Wednesday, overnight delivery only</li>
+            <li><strong>Live shipping schedule</strong> Monday through Friday, overnight delivery only</li>
             <li><strong>Response time</strong> Most messages answered within 1 business day</li>
           </ul>
         </aside>

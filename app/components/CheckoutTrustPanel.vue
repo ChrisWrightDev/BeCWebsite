@@ -3,10 +3,10 @@
     <h2 class="trust-title">Live animal shipping</h2>
     <ul class="trust-list">
       <li>
-        <strong>Shipping days:</strong> Monday–Wednesday only, overnight delivery to your door.
+        <strong>Shipping days:</strong> Monday through Friday, overnight delivery to your door.
       </li>
       <li>
-        <strong>30-day health guarantee:</strong> Every clownfish arrives healthy or we make it right.
+        <strong>3-day live guarantee:</strong> Every clownfish arrives healthy or we make it right.
       </li>
       <li>
         <strong>Insulated packaging:</strong> Temperature-controlled boxes for safe transit.
