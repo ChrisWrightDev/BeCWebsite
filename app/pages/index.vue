@@ -5,7 +5,7 @@ const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').repl
 useSiteSeo({
   title: 'Tank-Bred Clownfish for Sale',
   description:
-    'Captive-bred ocellaris, snowflake & designer clownfish. 30-day health guarantee, safe overnight shipping. Shop premium tank-raised clownfish.',
+    'Captive-bred ocellaris, snowflake & designer clownfish. 3-day live guarantee, safe overnight shipping Monday through Friday. Shop premium tank-raised clownfish.',
   ogImage: '/images/og-default.png',
 })
 
@@ -35,8 +35,8 @@ useJsonLd([buildOrganizationSchema(siteUrl), buildWebSiteSchema(siteUrl)])
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
         </div>
-        <h3>Health Guaranteed</h3>
-        <p>All our fish come with a 30-day health guarantee</p>
+        <h3>Live Guaranteed</h3>
+        <p>All our fish come with a 3-day live guarantee</p>
       </div>
       <div class="feature-item">
         <div class="feature-icon" aria-hidden="true">

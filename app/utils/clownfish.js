@@ -59,9 +59,9 @@ export function productSeoTitle(fish) {
 }
 
 export function productSeoDescription(fish) {
-  if (!fish?.name) return 'Shop captive-bred clownfish with overnight live-fish shipping and a 30-day health guarantee.'
+  if (!fish?.name) return 'Shop captive-bred clownfish with overnight live-fish shipping Monday through Friday and a 3-day live guarantee.'
   const fit = clownfishBestFor(fish).replace(/^Best for /, '').replace(/\.$/, '')
-  return `Shop captive-bred ${fish.name} clownfish — ${fit}. Overnight live-fish shipping and a 30-day health guarantee from Blue-Eyed Clowns.`
+  return `Shop captive-bred ${fish.name} clownfish — ${fit}. Overnight live-fish shipping Monday through Friday and a 3-day live guarantee from Blue-Eyed Clowns.`
 }
 
 export function quickFactsForClownfish(fish) {
@@ -76,8 +76,8 @@ export function quickFactsForClownfish(fish) {
     { label: 'Suggested tank size', value: '20+ gallons for a single or pair' },
     { label: 'Pairing notes', value: 'Ask us about compatible singles or future pair availability' },
     { label: 'Diet', value: 'Feeding on prepared marine foods before shipping' },
-    { label: 'Shipping schedule', value: 'Overnight live-fish shipping Monday–Wednesday' },
-    { label: 'Guarantee', value: '30-day health guarantee with live-arrival support' },
+    { label: 'Shipping schedule', value: 'Overnight live-fish shipping Monday through Friday' },
+    { label: 'Guarantee', value: '3-day live guarantee with live-arrival support' },
   ]
 }
 

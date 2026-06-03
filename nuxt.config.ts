@@ -24,7 +24,7 @@ export default defineNuxtConfig({
         {
           name: 'description',
           content:
-            'Captive-bred ocellaris, snowflake & designer clownfish. 30-day health guarantee, safe overnight shipping.',
+            'Captive-bred ocellaris, snowflake & designer clownfish. 3-day live guarantee, safe overnight shipping Monday through Friday.',
         },
         { property: 'og:site_name', content: 'Blue-Eyed Clowns' },
         { property: 'og:type', content: 'website' },

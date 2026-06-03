@@ -50,9 +50,9 @@
             </div>
 
             <div class="reassurance-strip" aria-label="Purchase reassurance">
-              <span>30-day health guarantee</span>
+              <span>3-day live guarantee</span>
               <span>Overnight shipping</span>
-              <span>Ships Mon–Wed</span>
+              <span>Ships Monday through Friday</span>
               <span>Captive-bred</span>
             </div>
 
@@ -88,7 +88,7 @@
             <details open>
               <summary>How live-fish shipping works</summary>
               <p>
-                We ship live clownfish Monday through Wednesday by overnight delivery. Before shipping,
+                We ship live clownfish Monday through Friday by overnight delivery. Before shipping,
                 we confirm that each fish is active, feeding, and safe to send based on weather and carrier timing.
               </p>
             </details>
@@ -100,10 +100,10 @@
               </p>
             </details>
             <details>
-              <summary>Live-arrival and 30-day support</summary>
+              <summary>Live-arrival and 3-day support</summary>
               <p>
                 If there is a DOA concern, photograph the unopened bag within two hours of delivery and email
-                support@blueeyedclowns.com. The 30-day health guarantee helps protect buyers from pre-existing issues.
+                support@blueeyedclowns.com. The 3-day live guarantee helps protect buyers from pre-existing issues.
               </p>
             </details>
           </div>

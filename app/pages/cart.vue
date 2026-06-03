@@ -17,8 +17,8 @@
           <NuxtLink to="/shop/blue-ghost-storm">Blue Ghost Storm</NuxtLink>
         </div>
         <div class="empty-reassurance">
-          <span>30-day health guarantee</span>
-          <span>Overnight shipping Mon–Wed</span>
+          <span>3-day live guarantee</span>
+          <span>Overnight shipping Monday through Friday</span>
           <span>Questions before checkout? <NuxtLink to="/contact">Contact us</NuxtLink></span>
         </div>
         <NuxtLink to="/shop" class="btn btn-primary">Shop clownfish</NuxtLink>

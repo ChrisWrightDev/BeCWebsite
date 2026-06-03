@@ -19,9 +19,9 @@
       </section>
 
       <div class="reassurance-strip" aria-label="Purchase reassurance">
-        <span>30-day health guarantee</span>
+        <span>3-day live guarantee</span>
         <span>Overnight live-fish shipping</span>
-        <span>Ships Monday–Wednesday</span>
+        <span>Ships Monday through Friday</span>
         <span>Captive-bred and feeding well</span>
       </div>
 
