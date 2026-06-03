@@ -50,6 +50,7 @@ watch(
           <li><NuxtLink to="/" @click="closeNav">Home</NuxtLink></li>
           <li><NuxtLink to="/shop" @click="closeNav">Clownfish</NuxtLink></li>
           <li><NuxtLink to="/guides/clownfish-care" @click="closeNav">Care Guide</NuxtLink></li>
+          <li><NuxtLink to="/blog" @click="closeNav">Blog</NuxtLink></li>
           <li><NuxtLink to="/about" @click="closeNav">About</NuxtLink></li>
           <li><NuxtLink to="/contact" @click="closeNav">Contact</NuxtLink></li>
           <li class="nav-cart-mobile">
@@ -79,6 +80,7 @@ watch(
               <li><NuxtLink to="/shop">All clownfish</NuxtLink></li>
               <li><NuxtLink to="/shop/standard-ocellaris">Standard Ocellaris</NuxtLink></li>
               <li><NuxtLink to="/shop/blue-ghost-storm">Blue Ghost Storm</NuxtLink></li>
+              <li><NuxtLink to="/blog">Blog & hatchery journal</NuxtLink></li>
             </ul>
           </div>
 
