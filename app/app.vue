@@ -99,7 +99,7 @@ watch(
             <h2 class="footer-heading">Policies</h2>
             <ul>
               <li><span class="footer-placeholder">Privacy Policy (coming soon)</span></li>
-              <li><span class="footer-placeholder">Terms of Service (coming soon)</span></li>
+              <li><NuxtLink to="/terms-of-service">Terms of Service</NuxtLink></li>
               <li><span class="footer-placeholder">Live Arrival Guarantee (coming soon)</span></li>
             </ul>
           </div>
