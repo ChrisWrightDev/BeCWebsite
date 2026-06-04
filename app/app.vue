@@ -98,7 +98,7 @@ watch(
           <div class="footer-col">
             <h2 class="footer-heading">Policies</h2>
             <ul>
-              <li><span class="footer-placeholder">Privacy Policy (coming soon)</span></li>
+              <li><NuxtLink to="/privacy-policy">Privacy Policy</NuxtLink></li>
               <li><NuxtLink to="/terms-of-service">Terms of Service</NuxtLink></li>
               <li><span class="footer-placeholder">Live Arrival Guarantee (coming soon)</span></li>
             </ul>
