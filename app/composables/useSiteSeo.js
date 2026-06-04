@@ -21,7 +21,7 @@ export function useSiteSeo(options = {}) {
   if (options.noindex) robotsParts.push('noindex')
   else robotsParts.push('index')
   if (options.nofollow) robotsParts.push('nofollow')
-  else if (!options.noindex) robotsParts.push('follow')
+  else robotsParts.push('follow')
 
   useSeoMeta({
     title,

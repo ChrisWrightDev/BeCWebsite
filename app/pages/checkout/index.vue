@@ -76,6 +76,10 @@
             >
               {{ loading ? 'Processing…' : 'Place order' }}
             </button>
+            <p class="terms-note">
+              By placing an order, you agree to the
+              <NuxtLink to="/terms-of-service">Terms of Service</NuxtLink>.
+            </p>
             <p v-if="submitError" class="error-msg">{{ submitError }}</p>
           </div>
         </div>
@@ -395,6 +399,23 @@ async function handleSubmit() {
   color: #fecaca;
   font-size: 0.9rem;
   margin-top: 0.5rem;
+}
+
+.terms-note {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0.75rem 0 0;
+  text-align: center;
+}
+
+.terms-note a {
+  color: #7dd3fc;
+  text-decoration: none;
+}
+
+.terms-note a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 720px) {
