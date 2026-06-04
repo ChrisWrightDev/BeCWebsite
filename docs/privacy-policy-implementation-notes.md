@@ -1,6 +1,6 @@
 # Privacy Policy implementation notes
 
-Branch: `feat/t_1aef2ece-privacy-policy-page-footer`
+Branch: `feat/t_7680d64a-privacy-policy`
 
 ## Changed files
 
