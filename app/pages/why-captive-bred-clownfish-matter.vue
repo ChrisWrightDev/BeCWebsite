@@ -138,31 +138,6 @@ useJsonLd([
         </aside>
       </section>
 
-      <section class="content-section reverse" aria-labelledby="designer-morph-heading">
-        <div class="copy-block">
-          <p class="section-kicker">Designer morphs</p>
-          <h2 id="designer-morph-heading">Selective patterns, not wild reef patterns</h2>
-          <p>
-            Many popular clownfish varieties in the aquarium trade are designer morphs: snowflake,
-            storm, frostbite, bullet hole, and other selectively bred patterns. Their appeal comes
-            from captive breeding work, not from collecting unusual wild reef fish.
-          </p>
-          <p>
-            That distinction matters. It keeps conservation messaging honest and helps customers
-            understand that a premium morph is a captive-bred aquarium strain selected for color,
-            pattern, and consistency over generations.
-          </p>
-        </div>
-        <div class="morph-note">
-          <h3>How to talk about morphs</h3>
-          <ul>
-            <li>Say designer morphs are selectively bred captive patterns.</li>
-            <li>Avoid implying storm or snowflake patterns are natural reef forms.</li>
-            <li>Keep pattern appeal separate from conservation benefits.</li>
-          </ul>
-        </div>
-      </section>
-
       <section class="faq-section" aria-labelledby="faq-heading">
         <p class="section-kicker">Customer questions</p>
         <h2 id="faq-heading">Captive-bred clownfish FAQ</h2>
@@ -245,7 +220,6 @@ p {
 .intro-panel p,
 .copy-block p,
 .callout p,
-.morph-note li,
 .faq-item p,
 .cta-panel p {
   color: #cbd5e1;
@@ -299,7 +273,6 @@ p {
 .intro-panel,
 .benefit-card,
 .callout,
-.morph-note,
 .faq-item,
 .cta-panel {
   border: 1px solid rgba(125, 211, 252, 0.22);
@@ -335,8 +308,7 @@ p {
 
 .benefit-card h2,
 .copy-block h2,
-.callout h3,
-.morph-note h3 {
+.callout h3 {
   font-size: 1.25rem;
   margin-bottom: 0.7rem;
 }
@@ -357,30 +329,12 @@ p {
   margin-top: 2.25rem;
 }
 
-.content-section.reverse {
-  grid-template-columns: minmax(260px, 0.65fr) minmax(0, 1.35fr);
-}
-
-.content-section.reverse .copy-block {
-  order: 2;
-}
-
 .copy-block {
   padding: 0.25rem 0;
 }
 
-.callout,
-.morph-note {
+.callout {
   padding: 1.25rem;
-}
-
-.morph-note ul {
-  padding-left: 1.25rem;
-  margin: 0;
-}
-
-.morph-note li + li {
-  margin-top: 0.55rem;
 }
 
 .faq-section {
@@ -417,13 +371,8 @@ p {
 
 @media (max-width: 860px) {
   .intro-panel,
-  .content-section,
-  .content-section.reverse {
+  .content-section {
     grid-template-columns: 1fr;
-  }
-
-  .content-section.reverse .copy-block {
-    order: 0;
   }
 
   .benefit-grid {
