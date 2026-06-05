@@ -22,7 +22,7 @@ useJsonLd([buildOrganizationSchema(siteUrl), buildWebSiteSchema(siteUrl)])
       </p>
       <div class="hero-actions">
         <NuxtLink to="/shop" class="btn btn-primary">Shop Clownfish</NuxtLink>
-        <NuxtLink to="/guides/clownfish-care" class="btn btn-ghost">Why captive-bred matters</NuxtLink>
+        <NuxtLink to="/why-captive-bred-clownfish-matter" class="btn btn-ghost">Why captive-bred matters</NuxtLink>
       </div>
     </div>
   </section>
