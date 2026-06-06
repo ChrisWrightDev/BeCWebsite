@@ -100,7 +100,7 @@ watch(
             <ul>
               <li><NuxtLink to="/privacy-policy">Privacy Policy</NuxtLink></li>
               <li><NuxtLink to="/terms-of-service">Terms of Service</NuxtLink></li>
-              <li><span class="footer-placeholder">Live Arrival Guarantee (coming soon)</span></li>
+              <li><NuxtLink to="/3-day-live-guarantee">3-Day Live Guarantee</NuxtLink></li>
             </ul>
           </div>
         </div>
