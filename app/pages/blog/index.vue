@@ -33,37 +33,46 @@
           </div>
 
           <article class="featured-card">
-            <div class="featured-image-wrap">
-              <img
-                v-if="featuredPost.featured_image_url"
-                :src="featuredPost.featured_image_url"
-                :alt="blogPostImageAlt(featuredPost)"
-                class="featured-image"
-                width="560"
-                height="360"
-                loading="eager"
-                decoding="async"
-              />
-              <div v-else class="featured-image placeholder-image">
-                <span>Blue-Eyed Clowns Journal</span>
+            <NuxtLink :to="`/blog/${featuredPost.slug}`" class="featured-main-link">
+              <div class="featured-image-wrap">
+                <img
+                  v-if="featuredPost.featured_image_url"
+                  :src="featuredPost.featured_image_url"
+                  :alt="blogPostImageAlt(featuredPost)"
+                  class="featured-image"
+                  width="560"
+                  height="360"
+                  loading="eager"
+                  decoding="async"
+                />
+                <div v-else class="featured-image placeholder-image">
+                  <span>Blue-Eyed Clowns Journal</span>
+                </div>
               </div>
-            </div>
 
-            <div class="featured-content">
-              <div class="post-meta">
-                <span>{{ featuredPost.category }}</span>
-                <span aria-hidden="true">•</span>
-                <time :datetime="featuredPost.published_at || undefined">
-                  {{ formatBlogDate(featuredPost.published_at) }}
-                </time>
-                <span aria-hidden="true">•</span>
-                <span>{{ readingTimeLabel(featuredPost) }}</span>
+              <div class="featured-content">
+                <div class="post-meta">
+                  <span>{{ featuredPost.category }}</span>
+                  <span aria-hidden="true">•</span>
+                  <time :datetime="featuredPost.published_at || undefined">
+                    {{ formatBlogDate(featuredPost.published_at) }}
+                  </time>
+                  <span aria-hidden="true">•</span>
+                  <span>{{ readingTimeLabel(featuredPost) }}</span>
+                </div>
+                <h3>{{ featuredPost.title }}</h3>
+                <p>{{ featuredPost.excerpt }}</p>
               </div>
-              <h3>{{ featuredPost.title }}</h3>
-              <p>{{ featuredPost.excerpt }}</p>
-              <div class="tag-row" v-if="featuredPost.tags.length">
-                <span v-for="tag in featuredPost.tags" :key="tag" class="tag">#{{ tag }}</span>
-              </div>
+            </NuxtLink>
+            <div class="tag-row featured-tags" v-if="featuredPost.tags.length">
+              <NuxtLink
+                v-for="tag in featuredPost.tags"
+                :key="tag"
+                :to="`/blog/tag/${slugifyTag(tag)}`"
+                class="tag"
+              >
+                #{{ tag }}
+              </NuxtLink>
             </div>
           </article>
         </section>
@@ -78,6 +87,20 @@
                 <span>{{ topic.copy }}</span>
               </li>
             </ul>
+
+            <div v-if="allTags.length" class="category-panel">
+              <h3>Browse by tag</h3>
+              <div class="category-chips">
+                <NuxtLink
+                  v-for="tag in allTags"
+                  :key="tag"
+                  :to="`/blog/tag/${slugifyTag(tag)}`"
+                  class="category-chip"
+                >
+                  #{{ tag }}
+                </NuxtLink>
+              </div>
+            </div>
 
             <div v-if="categories.length" class="category-panel">
               <h3>Current categories</h3>
@@ -100,37 +123,46 @@
 
             <div v-if="posts.length" class="post-list">
               <article v-for="post in posts" :key="post.id" class="post-card">
-                <div class="post-image-wrap">
-                  <img
-                    v-if="post.featured_image_url"
-                    :src="post.featured_image_url"
-                    :alt="blogPostImageAlt(post)"
-                    class="post-image"
-                    width="260"
-                    height="180"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div v-else class="post-image placeholder-image small">
-                    <span>{{ post.category }}</span>
+                <NuxtLink :to="`/blog/${post.slug}`" class="post-main-link">
+                  <div class="post-image-wrap">
+                    <img
+                      v-if="post.featured_image_url"
+                      :src="post.featured_image_url"
+                      :alt="blogPostImageAlt(post)"
+                      class="post-image"
+                      width="260"
+                      height="180"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <div v-else class="post-image placeholder-image small">
+                      <span>{{ post.category }}</span>
+                    </div>
                   </div>
-                </div>
 
-                <div class="post-card-content">
-                  <div class="post-meta compact">
-                    <span>{{ post.category }}</span>
-                    <span aria-hidden="true">•</span>
-                    <time :datetime="post.published_at || undefined">
-                      {{ formatBlogDate(post.published_at) }}
-                    </time>
-                    <span aria-hidden="true">•</span>
-                    <span>{{ readingTimeLabel(post) }}</span>
+                  <div class="post-card-content">
+                    <div class="post-meta compact">
+                      <span>{{ post.category }}</span>
+                      <span aria-hidden="true">•</span>
+                      <time :datetime="post.published_at || undefined">
+                        {{ formatBlogDate(post.published_at) }}
+                      </time>
+                      <span aria-hidden="true">•</span>
+                      <span>{{ readingTimeLabel(post) }}</span>
+                    </div>
+                    <h3>{{ post.title }}</h3>
+                    <p>{{ post.excerpt }}</p>
                   </div>
-                  <h3>{{ post.title }}</h3>
-                  <p>{{ post.excerpt }}</p>
-                  <div class="tag-row" v-if="post.tags.length">
-                    <span v-for="tag in post.tags.slice(0, 3)" :key="tag" class="tag">#{{ tag }}</span>
-                  </div>
+                </NuxtLink>
+                <div class="tag-row post-tags" v-if="post.tags.length">
+                  <NuxtLink
+                    v-for="tag in post.tags.slice(0, 3)"
+                    :key="tag"
+                    :to="`/blog/tag/${slugifyTag(tag)}`"
+                    class="tag"
+                  >
+                    #{{ tag }}
+                  </NuxtLink>
                 </div>
               </article>
             </div>
@@ -150,7 +182,12 @@
 </template>
 
 <script setup>
-import { blogPostImageAlt, formatBlogDate, readingTimeLabel } from '~/utils/blog'
+import {
+  blogPostImageAlt,
+  formatBlogDate,
+  readingTimeLabel,
+  slugifyTag,
+} from '~/utils/blog'
 
 useSiteSeo({
   title: 'Blog & Hatchery Journal',
@@ -170,6 +207,12 @@ const featuredPost = computed(() => {
 const categories = computed(() => {
   const list = posts.value || []
   return [...new Set(list.map((post) => post.category).filter(Boolean))]
+})
+
+const allTags = computed(() => {
+  const list = posts.value || []
+  const tags = list.flatMap((post) => post.tags || [])
+  return [...new Set(tags)].sort((a, b) => a.localeCompare(b))
 })
 
 const topicCards = [
@@ -300,9 +343,27 @@ p {
 }
 
 .featured-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
   overflow: hidden;
+}
+
+.featured-main-link,
+.post-main-link {
+  display: grid;
+  color: inherit;
+  text-decoration: none;
+}
+
+.featured-main-link {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
+}
+
+.post-main-link {
+  grid-template-columns: 220px 1fr;
+}
+
+.featured-main-link:hover h3,
+.post-main-link:hover h3 {
+  color: #67e8f9;
 }
 
 .featured-image,
@@ -344,6 +405,7 @@ p {
 .post-card h3 {
   color: #f8fafc;
   line-height: 1.1;
+  transition: color 0.15s ease;
 }
 
 .featured-content h3 {
@@ -379,6 +441,14 @@ p {
   gap: 0.5rem;
 }
 
+.featured-tags {
+  padding: 0 1.4rem 1.4rem;
+}
+
+.post-tags {
+  padding: 0 1.2rem 1.2rem;
+}
+
 .tag,
 .category-chip,
 .post-count {
@@ -389,6 +459,14 @@ p {
   background: rgba(8, 47, 73, 0.55);
   font-size: 0.8rem;
   font-weight: 800;
+  text-decoration: none;
+}
+
+a.tag:hover,
+a.category-chip:hover {
+  border-color: rgba(103, 232, 249, 0.55);
+  color: #ecfeff;
+  background: rgba(8, 47, 73, 0.85);
 }
 
 .content-grid {
@@ -421,6 +499,10 @@ p {
   color: #f8fafc;
 }
 
+.category-panel + .category-panel {
+  margin-top: 1.25rem;
+}
+
 .category-panel h3 {
   color: #f8fafc;
   font-size: 1rem;
@@ -432,8 +514,6 @@ p {
 }
 
 .post-card {
-  display: grid;
-  grid-template-columns: 220px 1fr;
   overflow: hidden;
 }
 
@@ -442,7 +522,7 @@ p {
 }
 
 .post-card-content {
-  padding: 1.2rem;
+  padding: 1.2rem 1.2rem 0.75rem;
 }
 
 .post-card h3 {
@@ -463,9 +543,9 @@ p {
 }
 
 @media (max-width: 860px) {
-  .featured-card,
+  .featured-main-link,
   .content-grid,
-  .post-card {
+  .post-main-link {
     grid-template-columns: 1fr;
   }
 
