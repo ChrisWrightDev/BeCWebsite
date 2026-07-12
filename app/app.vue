@@ -24,7 +24,15 @@ watch(
       <nav class="nav" aria-label="Main navigation">
         <div class="nav-top">
           <NuxtLink to="/" class="logo" aria-label="Blue-Eyed Clowns home">
-            Blue-Eyed Clowns
+            <img
+              src="/images/logo.png"
+              alt=""
+              class="logo-mark"
+              width="40"
+              height="40"
+              decoding="async"
+            />
+            <span class="logo-text">Blue-Eyed Clowns</span>
           </NuxtLink>
 
           <div class="nav-actions">
@@ -189,12 +197,31 @@ body {
 }
 
 .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
   font-weight: 700;
   font-size: 1.125rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #e0f2fe;
   text-decoration: none;
+  min-width: 0;
+}
+
+.logo-mark {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(125, 211, 252, 0.35);
+}
+
+.logo-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .logo:focus-visible,
