@@ -3,7 +3,8 @@ const morphs = [
   { name: 'Standard Ocellaris', slug: 'standard-ocellaris', note: 'Classic orange-and-white, hardy beginner choice.' },
   { name: 'Mocha Ocellaris', slug: 'mocha-ocellaris', note: 'Coffee-brown coloration with ocellaris temperament.' },
   { name: 'Snowflakes', slug: 'snowflakes', note: 'Distinctive white patterning; each fish is visually unique.' },
-  { name: 'Frostbite/Bullethole', slug: 'frostbite-bullethole', note: 'High-contrast designer pattern for collectors.' },
+  { name: 'Frostbite', slug: 'frostbite', note: 'High-contrast designer pattern for collectors.' },
+  { name: 'Bullethole', slug: 'bullethole', note: 'Distinctive round white markings in designer patterns.' },
   { name: 'Snowstorm', slug: 'snowstorm', note: 'Premium storm-line look with strong white coverage.' },
   { name: 'Blue Ghost Storm', slug: 'blue-ghost-storm', note: 'High-end designer morph with icy blue accents.' },
 ]
