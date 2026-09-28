@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
 const BLOG_COLUMNS =
-  'id, title, slug, excerpt, content, category, tags, featured_image_url, featured_image_alt, author_name, published_at, is_featured, status, created_at, updated_at'
+  'id, title, slug, excerpt, content, category, tags, featured_image, featured_image_url, featured_image_alt, author_name, published_at, is_featured, status, created_at, updated_at'
 
 export function slugifyBlogTitle(title) {
   if (!title || typeof title !== 'string') return ''
@@ -44,12 +44,34 @@ export function blogPostImageAlt(post) {
   return post?.featured_image_alt || `${post?.title || 'Blue-Eyed Clowns'} — Blue-Eyed Clowns blog post`
 }
 
+export function resolveBlogPostFeaturedImage(post) {
+  if (!post) return null
+  
+  if (post.featured_image) {
+    let supabaseUrl
+    try {
+      const config = useRuntimeConfig()
+      supabaseUrl = config.supabaseUrl || config.public?.supabaseUrl
+    } catch (e) {
+      supabaseUrl = process.env.NUXT_SUPABASE_URL
+    }
+    
+    if (!supabaseUrl) return post.featured_image_url || null
+    
+    const cleanUrl = supabaseUrl.replace(/\/$/, '')
+    const cleanPath = post.featured_image.replace(/^\//, '')
+    return `${cleanUrl}/storage/v1/object/public/blog-images/${cleanPath}`
+  }
+  
+  return post.featured_image_url || null
+}
+
 export function normalizeBlogPost(row) {
   const title = row?.title?.trim() || 'Untitled hatchery note'
   const content = row?.content || ''
   const slug = row?.slug || slugifyBlogTitle(title)
 
-  return {
+  const normalized = {
     id: row?.id || slug,
     title,
     slug,
@@ -57,6 +79,7 @@ export function normalizeBlogPost(row) {
     content,
     category: row?.category || 'Hatchery Notes',
     tags: Array.isArray(row?.tags) ? row.tags : [],
+    featured_image: row?.featured_image || null,
     featured_image_url: row?.featured_image_url || null,
     featured_image_alt: row?.featured_image_alt || null,
     author_name: row?.author_name || 'Blue-Eyed Clowns',
@@ -67,6 +90,10 @@ export function normalizeBlogPost(row) {
     created_at: row?.created_at || null,
     updated_at: row?.updated_at || null,
   }
+  
+  normalized.resolved_featured_image = resolveBlogPostFeaturedImage(normalized)
+  
+  return normalized
 }
 
 function useSupabaseBlogReader() {

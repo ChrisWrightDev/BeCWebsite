@@ -4,6 +4,7 @@ import {
   formatBlogDate,
   normalizeBlogPost,
   readingTimeLabel,
+  resolveBlogPostFeaturedImage,
   slugifyBlogTitle,
 } from '../server/utils/blogCatalog.js'
 
@@ -13,6 +14,7 @@ const post = normalizeBlogPost({
   excerpt: 'A practical look at how prepared foods help young clownfish settle into reef aquariums.',
   content: 'Clownfish do best when they learn prepared foods early. '.repeat(55),
   category: 'Care Guides',
+  featured_image: null,
   featured_image_url: 'https://example.com/juvenile-clowns.jpg',
   featured_image_alt: null,
   author_name: 'Blue-Eyed Clowns',
@@ -38,5 +40,27 @@ assert.equal(fallbackPost.slug, 'hatchery-update')
 assert.equal(fallbackPost.excerpt, 'Fresh notes from the Blue-Eyed Clowns hatchery.')
 assert.equal(fallbackPost.reading_time_minutes, 1)
 assert.equal(formatBlogDate(null), 'Coming soon')
+
+const postWithStoragePath = normalizeBlogPost({
+  title: 'Storage Path Test',
+  featured_image: 'test-folder/hero.jpg',
+  featured_image_url: null,
+})
+assert.ok(postWithStoragePath.resolved_featured_image)
+assert.ok(postWithStoragePath.resolved_featured_image.includes('/storage/v1/object/public/blog-images/test-folder/hero.jpg'))
+
+const postWithUrlFallback = normalizeBlogPost({
+  title: 'URL Fallback Test',
+  featured_image: null,
+  featured_image_url: 'https://example.com/image.jpg',
+})
+assert.equal(postWithUrlFallback.resolved_featured_image, 'https://example.com/image.jpg')
+
+const postWithNoImage = normalizeBlogPost({
+  title: 'No Image Test',
+  featured_image: null,
+  featured_image_url: null,
+})
+assert.equal(postWithNoImage.resolved_featured_image, null)
 
 console.log('blogCatalog helpers passed')

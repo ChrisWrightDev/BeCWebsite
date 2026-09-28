@@ -27,8 +27,8 @@
         </header>
 
         <img
-          v-if="post.featured_image_url"
-          :src="post.featured_image_url"
+          v-if="post.resolved_featured_image"
+          :src="post.resolved_featured_image"
           :alt="blogPostImageAlt(post)"
           class="hero-image"
           width="1120"
@@ -204,6 +204,7 @@ const filteredBatches = computed(() => {
 useSiteSeo({
   title: post.value?.title || 'Blog Post',
   description: post.value?.excerpt || 'Blue-Eyed Clowns hatchery journal post.',
+  ogImage: post.value?.resolved_featured_image || undefined,
 })
 
 const paragraphs = computed(() => {

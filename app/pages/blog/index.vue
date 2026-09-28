@@ -36,8 +36,8 @@
             <NuxtLink :to="`/blog/${featuredPost.slug}`" class="featured-main-link">
               <div class="featured-image-wrap">
                 <img
-                  v-if="featuredPost.featured_image_url"
-                  :src="featuredPost.featured_image_url"
+                  v-if="featuredPost.resolved_featured_image"
+                  :src="featuredPost.resolved_featured_image"
                   :alt="blogPostImageAlt(featuredPost)"
                   class="featured-image"
                   width="560"
@@ -126,8 +126,8 @@
                 <NuxtLink :to="`/blog/${post.slug}`" class="post-main-link">
                   <div class="post-image-wrap">
                     <img
-                      v-if="post.featured_image_url"
-                      :src="post.featured_image_url"
+                      v-if="post.resolved_featured_image"
+                      :src="post.resolved_featured_image"
                       :alt="blogPostImageAlt(post)"
                       class="post-image"
                       width="260"
