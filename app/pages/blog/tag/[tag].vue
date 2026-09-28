@@ -43,8 +43,8 @@
             <NuxtLink :to="`/blog/${post.slug}`" class="post-main-link">
               <div class="post-image-wrap">
                 <img
-                  v-if="post.featured_image_url"
-                  :src="post.featured_image_url"
+                  v-if="post.resolved_featured_image"
+                  :src="post.resolved_featured_image"
                   :alt="blogPostImageAlt(post)"
                   class="post-image"
                   width="260"
