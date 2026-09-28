@@ -44,16 +44,19 @@ export function blogPostImageAlt(post) {
   return post?.featured_image_alt || `${post?.title || 'Blue-Eyed Clowns'} — Blue-Eyed Clowns blog post`
 }
 
-export function resolveBlogPostFeaturedImage(post) {
+export function resolveBlogPostFeaturedImage(post, supabaseUrlOverride = null) {
   if (!post) return null
   
   if (post.featured_image) {
-    let supabaseUrl
-    try {
-      const config = useRuntimeConfig()
-      supabaseUrl = config.supabaseUrl || config.public?.supabaseUrl
-    } catch (e) {
-      supabaseUrl = process.env.NUXT_SUPABASE_URL
+    let supabaseUrl = supabaseUrlOverride
+    
+    if (!supabaseUrl) {
+      try {
+        const config = useRuntimeConfig()
+        supabaseUrl = config.public?.supabaseUrl || config.supabaseUrl
+      } catch (e) {
+        supabaseUrl = process.env.NUXT_SUPABASE_URL
+      }
     }
     
     if (!supabaseUrl) return post.featured_image_url || null
