@@ -6,6 +6,7 @@ const INDEXABLE_PATHS = [
   '/about',
   '/contact',
   '/why-captive-bred-clownfish-matter',
+  '/3-day-live-guarantee',
   '/guides/clownfish-care',
   '/guides/clownfish-morphs',
   '/guides/shipping-live-clownfish',
