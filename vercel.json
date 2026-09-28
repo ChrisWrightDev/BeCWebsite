@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "https://www.blueeyedclowns.com/:path*",
+      "destination": "https://blueeyedclowns.com/:path*",
+      "permanent": true
+    }
+  ]
+}

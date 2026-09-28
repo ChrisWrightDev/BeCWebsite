@@ -2,7 +2,7 @@
 useSiteSeo({
   title: 'Privacy Policy',
   description:
-    'Privacy Policy for the Blue-Eyed Clowns website, shop, captive-bred clownfish orders, customer support, cookies, data use, and limited third-party sharing.',
+    'Privacy policy for orders, customer support, cookies, data use, and limited third-party sharing.',
   noindex: true,
 })
 

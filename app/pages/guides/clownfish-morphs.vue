@@ -9,9 +9,9 @@ const morphs = [
 ]
 
 useSiteSeo({
-  title: 'Clownfish Morph Guide | Ocellaris, Snowflake, Storm & Designer Morphs',
+  title: 'Clownfish Morph Guide',
   description:
-    'Compare captive-bred clownfish morphs including Standard Ocellaris, Mocha, Snowflake, Frostbite, Snowstorm, and Blue Ghost Storm.',
+    'Compare ocellaris morphs: Standard, Mocha, Snowflake, Frostbite, Snowstorm, and Blue Ghost Storm captive-bred clownfish.',
 })
 </script>
 

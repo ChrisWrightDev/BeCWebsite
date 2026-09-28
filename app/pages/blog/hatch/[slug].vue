@@ -145,6 +145,10 @@ const { data: batch, pending, error: fetchError } = await useAsyncData(
   () => $fetch(`/api/hatchery/batches/${route.params.slug}`)
 )
 
+if (!pending.value && !batch.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Hatch batch not found' })
+}
+
 useSiteSeo({
   title: batch.value?.title || 'Hatch batch',
   description:

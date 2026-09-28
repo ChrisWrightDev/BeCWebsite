@@ -8,7 +8,7 @@ const DEFAULT_OG_IMAGE = '/images/og-default.png'
 export function useSiteSeo(options = {}) {
   const route = useRoute()
   const config = useRuntimeConfig()
-  const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
+  const siteUrl = (config.public.siteUrl || 'https://blueeyedclowns.com').replace(/\/$/, '')
 
   const title = options.title ? `${options.title} | ${SITE_NAME}` : `${SITE_NAME} — Premium tank-bred clownfish`
   const description =

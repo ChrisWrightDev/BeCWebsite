@@ -2,7 +2,7 @@
 useSiteSeo({
   title: '3-Day Live Guarantee',
   description:
-    'Learn how Blue-Eyed Clowns protects your live clownfish order with safe overnight shipping, live arrival support, and a clear 3-day guarantee claim process.',
+    'Safe overnight shipping, live arrival support, and a clear 3-day guarantee claim process for your clownfish order.',
 })
 
 const lastUpdated = 'June 5, 2026'

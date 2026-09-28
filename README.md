@@ -1,6 +1,6 @@
 # Blue-Eyed Clowns Website
 
-Nuxt storefront for Blue-Eyed Clowns, a captive-bred clownfish aquaculture business.
+Nuxt storefront for Blue-Eyed Clowns, a captive-bred clownfish aquaculture business. Production site: https://blueeyedclowns.com
 
 ## Setup
 

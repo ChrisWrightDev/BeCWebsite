@@ -1,5 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-const siteUrl = (process.env.NUXT_PUBLIC_SITE_URL || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
+const siteUrl = (process.env.NUXT_PUBLIC_SITE_URL || 'https://blueeyedclowns.com').replace(/\/$/, '')
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -42,7 +42,7 @@ export default defineNuxtConfig({
       stripePublishableKey: process.env.NUXT_STRIPE_PUBLISHABLE_KEY,
       supabaseUrl: process.env.NUXT_SUPABASE_URL,
       supabaseAnonKey: process.env.NUXT_SUPABASE_ANON_KEY,
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://www.blueeyedclowns.com',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://blueeyedclowns.com',
     },
   },
 })

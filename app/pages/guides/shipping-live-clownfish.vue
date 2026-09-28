@@ -1,8 +1,8 @@
 <script setup>
 useSiteSeo({
-  title: 'Shipping Live Clownfish | Overnight Live-Fish Shipping Guide',
+  title: 'Live Clownfish Shipping Guide',
   description:
-    'What to expect when Blue-Eyed Clowns ships live captive-bred clownfish: shipping days, weather holds, arrival photos, acclimation, and 3-day live guarantee support.',
+    'Overnight live-fish shipping guide: shipping days, weather holds, arrival photos, acclimation, and 3-day live guarantee.',
 })
 </script>
 

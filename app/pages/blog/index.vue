@@ -192,7 +192,7 @@ import {
 useSiteSeo({
   title: 'Blog & Hatchery Journal',
   description:
-    'Read Blue-Eyed Clowns hatchery notes, clownfish care guides, grow-out updates, and captive-bred reef aquarium advice.',
+    'Hatchery notes, clownfish care guides, grow-out updates, and captive-bred reef aquarium advice.',
 })
 
 const { data: posts, pending, error: fetchError, refresh } = await useAsyncData('blog-posts', () =>

@@ -1,10 +1,13 @@
 import { fetchClownfishCatalog } from '../utils/clownfishCatalog.js'
+import { fetchPublishedBlogPosts } from '../utils/blogCatalog.js'
+import { fetchPublicHatchBatches } from '../utils/hatchBatchesCatalog.js'
 
 const INDEXABLE_PATHS = [
   '/',
   '/shop',
   '/about',
   '/contact',
+  '/blog',
   '/why-captive-bred-clownfish-matter',
   '/3-day-live-guarantee',
   '/guides/clownfish-care',
@@ -28,7 +31,7 @@ function buildUrlEntry(siteUrl, path, options = {}) {
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
-  const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
+  const siteUrl = (config.public.siteUrl || 'https://blueeyedclowns.com').replace(/\/$/, '')
 
   const staticUrls = INDEXABLE_PATHS.map((path) => buildUrlEntry(siteUrl, path))
 
@@ -44,9 +47,29 @@ export default defineEventHandler(async (event) => {
     // Sitemap still serves static routes if catalog is unavailable
   }
 
+  let blogUrls = []
+  try {
+    const posts = await fetchPublishedBlogPosts()
+    blogUrls = posts.map((post) =>
+      buildUrlEntry(siteUrl, `/blog/${post.slug}`, { changefreq: 'monthly', priority: '0.7' })
+    )
+  } catch {
+    // Sitemap still serves without blog posts if unavailable
+  }
+
+  let hatchUrls = []
+  try {
+    const batches = await fetchPublicHatchBatches()
+    hatchUrls = batches.map((batch) =>
+      buildUrlEntry(siteUrl, `/blog/hatch/${batch.slug}`, { changefreq: 'weekly', priority: '0.6' })
+    )
+  } catch {
+    // Sitemap still serves without hatch batches if unavailable
+  }
+
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[...staticUrls, ...productUrls].join('\n')}
+${[...staticUrls, ...productUrls, ...blogUrls, ...hatchUrls].join('\n')}
 </urlset>`
 
   setHeader(event, 'Content-Type', 'application/xml; charset=utf-8')

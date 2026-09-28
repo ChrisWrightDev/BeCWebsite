@@ -2,7 +2,7 @@
 useSiteSeo({
   title: 'Terms of Service',
   description:
-    'Terms of Service for using the Blue-Eyed Clowns website, ordering captive-bred clownfish, live animal shipping, guarantees, and customer support.',
+    'Terms for ordering captive-bred clownfish, live animal shipping, guarantees, and customer support.',
   noindex: true,
 })
 

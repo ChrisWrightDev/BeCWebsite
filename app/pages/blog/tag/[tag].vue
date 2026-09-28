@@ -125,7 +125,7 @@ const displayTag = computed(() => {
 
 useSiteSeo({
   title: `Posts tagged #${displayTag.value}`,
-  description: `Browse Blue-Eyed Clowns hatchery journal posts tagged #${displayTag.value}.`,
+  description: `Hatchery journal posts tagged #${displayTag.value}.`,
 })
 </script>
 
