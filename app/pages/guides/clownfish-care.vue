@@ -1,8 +1,8 @@
 <script setup>
 useSiteSeo({
-  title: 'Captive-Bred Ocellaris Clownfish Care Guide',
+  title: 'Clownfish Care Guide',
   description:
-    'Learn how to care for captive-bred ocellaris clownfish: tank size, acclimation, diet, pairing, temperament, and reef-safe husbandry tips.',
+    'Care guide for captive-bred ocellaris clownfish: tank size, acclimation, diet, pairing, temperament, and reef-safe tips.',
 })
 </script>
 

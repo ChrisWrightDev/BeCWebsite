@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.blueeyedclowns.com"
+        }
+      ],
+      "destination": "https://blueeyedclowns.com/:path*",
+      "permanent": true
+    }
+  ]
+}

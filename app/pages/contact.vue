@@ -3,7 +3,7 @@ const config = useRuntimeConfig()
 const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
 
 useSiteSeo({
-  title: 'Contact — Shipping & Support',
+  title: 'Contact Us',
   description:
     'Questions about clownfish, shipping, or wholesale? We reply within one business day.',
 })

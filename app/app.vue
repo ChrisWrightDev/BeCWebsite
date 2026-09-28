@@ -26,7 +26,7 @@ watch(
           <NuxtLink to="/" class="logo" aria-label="Blue-Eyed Clowns home">
             <img
               src="/images/logo.png"
-              alt=""
+              alt="Blue-Eyed Clowns"
               class="logo-mark"
               width="40"
               height="40"

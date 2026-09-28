@@ -158,11 +158,15 @@ import {
 const route = useRoute()
 const slug = route.params.slug
 const config = useRuntimeConfig()
-const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
+const siteUrl = (config.public.siteUrl || 'https://blueeyedclowns.com').replace(/\/$/, '')
 
 const { data: fish, pending, error } = await useAsyncData(`shop-product-${slug}`, () =>
   $fetch(`/api/shop/clownfish/${slug}`)
 )
+
+if (!pending.value && !fish.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Product not found' })
+}
 
 const { data: catalog } = await useAsyncData('shop-clownfish-related', () =>
   $fetch('/api/shop/clownfish')

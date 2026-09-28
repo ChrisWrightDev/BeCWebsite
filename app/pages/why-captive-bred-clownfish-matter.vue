@@ -1,11 +1,11 @@
 <script setup>
 const config = useRuntimeConfig()
-const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
+const siteUrl = (config.public.siteUrl || 'https://blueeyedclowns.com').replace(/\/$/, '')
 const pageUrl = `${siteUrl}/why-captive-bred-clownfish-matter`
 
-const pageTitle = 'Captive-Bred Clownfish for Reef Aquariums | Blue Eyed Clowns'
+const pageTitle = 'Why Captive-Bred Clownfish Matter'
 const pageDescription =
-  'Learn why captive-bred clownfish matter for reef aquariums: less reliance on wild collection, aquarium-born fish, and designer morphs bred in captivity.'
+  'Less reliance on wild collection, aquarium-born fish feeding on prepared foods, and designer morphs bred in captivity.'
 
 const benefitCards = [
   {

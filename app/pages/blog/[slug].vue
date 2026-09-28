@@ -161,6 +161,10 @@ const { data: post, pending, error: fetchError } = await useAsyncData(
   () => $fetch(`/api/blog/${route.params.slug}`)
 )
 
+if (!pending.value && !post.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Blog post not found' })
+}
+
 const showHatchTracker = computed(
   () => post.value?.slug === WELCOME_SLUG || route.params.slug === WELCOME_SLUG
 )

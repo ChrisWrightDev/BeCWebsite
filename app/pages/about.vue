@@ -3,9 +3,9 @@ const config = useRuntimeConfig()
 const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
 
 useSiteSeo({
-  title: 'About Us — Captive Clownfish Breeders',
+  title: 'About Blue-Eyed Clowns',
   description:
-    'Meet our marine biologists. Learn how we breed healthy, sustainable clownfish for reef aquariums.',
+    'Marine biologists breeding healthy, sustainable captive-bred clownfish for reef aquariums.',
 })
 
 useJsonLd(buildAboutPageSchema(siteUrl))

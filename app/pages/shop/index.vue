@@ -123,9 +123,9 @@ const config = useRuntimeConfig()
 const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
 
 useSiteSeo({
-  title: 'Shop Tank-Bred Clownfish',
+  title: 'Shop Captive-Bred Clownfish',
   description:
-    'Browse captive-bred clownfish — ocellaris, snowflake, black ice & more. In-stock updates weekly.',
+    'Browse captive-bred clownfish: ocellaris, snowflake, black ice & more. In-stock updates weekly.',
 })
 
 const { data: clownfish, pending, error: fetchError, refresh } = await useAsyncData('shop-clownfish', () =>
