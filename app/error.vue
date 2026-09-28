@@ -25,7 +25,7 @@ const errorTitle = computed(() => {
 
 const errorMessage = computed(() => {
   if (props.error?.statusCode === 404) {
-    return 'The page you're looking for doesn't exist. Check the URL or explore our clownfish catalog.'
+    return "The page you're looking for doesn't exist. Check the URL or explore our clownfish catalog."
   }
   return props.error?.message || 'An unexpected error occurred. Please try again or contact us if the problem persists.'
 })
