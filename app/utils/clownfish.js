@@ -55,7 +55,7 @@ export function clownfishCategory(fish) {
 
 export function productSeoTitle(fish) {
   if (!fish?.name) return 'Captive-Bred Clownfish for Sale'
-  return `${fish.name} Clownfish | Blue-Eyed Clowns`
+  return `${fish.name} Clownfish`
 }
 
 export function productSeoDescription(fish) {
