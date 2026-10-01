@@ -88,8 +88,9 @@
             <details open>
               <summary>How live-fish shipping works</summary>
               <p>
-                We ship live clownfish Monday through Friday by overnight delivery. Before shipping,
-                we confirm that each fish is active, feeding, and safe to send based on weather and carrier timing.
+                {{ retailShippingPolicySentence() }} We ship live clownfish Monday through Friday by
+                overnight delivery. Before shipping, we confirm that each fish is active, feeding,
+                and safe to send based on weather and carrier timing.
               </p>
             </details>
             <details>
@@ -154,6 +155,7 @@ import {
   quickFactsForClownfish,
   relatedClownfish,
 } from '~/utils/clownfish'
+import { retailShippingPolicySentence } from '#shared/retailShipping.js'
 
 const route = useRoute()
 const slug = route.params.slug

@@ -70,10 +70,10 @@
 
         <aside class="cart-sidebar">
           <div class="cart-summary">
-            <div class="summary-row">
-              <span>Subtotal ({{ cartCount }} items)</span>
-              <span>{{ formatPrice(cartTotal) }}</span>
-            </div>
+            <OrderTotalsSummary
+              :merchandise-subtotal-cents="cartTotal"
+              :item-count="cartCount"
+            />
             <NuxtLink to="/checkout" class="btn btn-checkout">Proceed to checkout</NuxtLink>
             <NuxtLink to="/shop" class="btn btn-ghost">Continue shopping</NuxtLink>
           </div>
@@ -296,13 +296,6 @@ function formatPrice(cents) {
   border: 1px solid rgba(148, 163, 184, 0.3);
 }
 
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-}
-
 .btn {
   display: inline-flex;
   align-items: center;
@@ -321,7 +314,7 @@ function formatPrice(cents) {
 .btn-checkout {
   background: linear-gradient(to right, #22d3ee, #0ea5e9);
   color: #0f172a;
-  margin-top: 0.5rem;
+  margin-top: 0.85rem;
 }
 
 .btn-checkout:hover {

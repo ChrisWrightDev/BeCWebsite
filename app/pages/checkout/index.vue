@@ -59,15 +59,17 @@
 
             <h3 class="summary-title">Order summary</h3>
             <ul class="summary-list">
-              <li v-for="item in cartItems" :key="item.id" class="summary-row">
+              <li v-for="item in summaryItems" :key="item.id" class="summary-row">
                 <span>{{ item.name }} × {{ item.quantity }}</span>
                 <span>{{ formatPrice(item.price_cents * item.quantity) }}</span>
               </li>
             </ul>
-            <div class="summary-total">
-              <span>Total</span>
-              <span>{{ formatPrice(cartTotal) }}</span>
-            </div>
+            <OrderTotalsSummary
+              class="checkout-totals"
+              :merchandise-subtotal-cents="cartTotal"
+              :item-count="cartCount"
+              :totals-override="chargedTotals"
+            />
 
             <button
               type="submit"
@@ -89,6 +91,8 @@
 </template>
 
 <script setup>
+import { retailOrderTotals } from '#shared/retailShipping.js'
+
 useSiteSeo({
   title: 'Checkout',
   noindex: true,
@@ -111,6 +115,13 @@ const cartTotal = computed(() => {
   const v = cart.totalCents
   return v?.value ?? v ?? 0
 })
+const cartCount = computed(() => {
+  const v = cart.itemCount
+  return v?.value ?? v ?? 0
+})
+const chargedTotals = ref(null)
+const chargedLineItems = ref(null)
+const summaryItems = computed(() => chargedLineItems.value || cartItems.value)
 
 const stripeMount = ref(null)
 const clientSecret = ref(null)
@@ -138,23 +149,33 @@ function formatPrice(cents) {
   return `$${(cents / 100).toFixed(2)}`
 }
 
+function checkoutItemsPayload() {
+  return cartItems.value.map((i) => ({
+    id: i.id,
+    quantity: i.quantity
+  }))
+}
+
 onMounted(async () => {
   mounted.value = true
   if (cartEmpty.value) return
 
   try {
-    const { clientSecret: secret } = await $fetch('/api/stripe/create-payment-intent', {
+    const paymentSession = await $fetch('/api/stripe/create-payment-intent', {
       method: 'POST',
       body: {
-        items: cartItems.value.map((i) => ({
-          id: i.id,
-          name: i.name,
-          price_cents: i.price_cents,
-          quantity: i.quantity
-        }))
+        items: checkoutItemsPayload()
       }
     })
 
+    if (typeof paymentSession.merchandiseSubtotalCents === 'number') {
+      chargedTotals.value = retailOrderTotals(paymentSession.merchandiseSubtotalCents)
+    }
+    if (Array.isArray(paymentSession.lineItems)) {
+      chargedLineItems.value = paymentSession.lineItems
+    }
+
+    const secret = paymentSession.clientSecret
     clientSecret.value = secret
     if (!secret || !stripeMount.value) return
 
@@ -196,12 +217,7 @@ async function handleSubmit() {
       postal_code: form.postal_code,
       country: form.country || 'US'
     },
-    items: cartItems.value.map((i) => ({
-      id: i.id,
-      name: i.name,
-      price_cents: i.price_cents,
-      quantity: i.quantity
-    }))
+    items: checkoutItemsPayload()
   }
 
   try {
@@ -364,11 +380,8 @@ async function handleSubmit() {
   margin-bottom: 0.35rem;
 }
 
-.summary-total {
-  display: flex;
-  justify-content: space-between;
-  font-weight: 700;
-  margin-top: 0.75rem;
+.checkout-totals {
+  margin-top: 0.85rem;
   padding-top: 0.75rem;
   border-top: 1px solid rgba(148, 163, 184, 0.3);
 }

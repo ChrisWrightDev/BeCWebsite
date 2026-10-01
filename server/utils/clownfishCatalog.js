@@ -94,3 +94,35 @@ export async function fetchClownfishBySlug(slug) {
   const catalog = await fetchClownfishCatalog()
   return catalog.find((fish) => fish.slug === slug) || null
 }
+
+/**
+ * Lookup current catalog prices by product id. Used at checkout so the
+ * charged subtotal never trusts client-sent price_cents.
+ */
+export async function fetchClownfishByIds(ids) {
+  const uniqueIds = [...new Set((ids || []).map((id) => String(id)).filter(Boolean))]
+  if (uniqueIds.length === 0) return []
+
+  if (!hasSupabaseConfig()) {
+    const catalog = getLocalPreviewCatalog()
+    return uniqueIds
+      .map((id) => catalog.find((fish) => String(fish.id) === id))
+      .filter(Boolean)
+  }
+
+  const supabase = useSupabaseAdmin()
+  const { data, error } = await supabase
+    .from('clownfish')
+    .select('id, name, price_cents')
+    .in('id', uniqueIds)
+
+  if (error) {
+    throw createError({
+      statusCode: 502,
+      statusMessage: 'Could not load product prices',
+      data: { message: error.message },
+    })
+  }
+
+  return data || []
+}

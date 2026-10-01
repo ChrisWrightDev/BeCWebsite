@@ -1,5 +1,9 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
+import {
+  resolveRetailCheckoutOrder,
+  shippingWorkOrderNote,
+} from '../../utils/retailOrderPricing.js'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -61,19 +65,17 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const orderTotals = await resolveRetailCheckoutOrder(items)
+
+  if (paymentIntent.amount !== orderTotals.totalCents) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Payment amount does not match the current order total.'
+    })
+  }
+
   const address = shippingAddress || {}
-  let totalCents = 0
-  const lineItems = items.map((i) => {
-    const q = Math.max(1, parseInt(i.quantity, 10) || 1)
-    const cents = Math.max(0, parseInt(i.price_cents, 10) || 0)
-    totalCents += q * cents
-    return {
-      clownfish_id: i.id || null,
-      product_name: i.name || 'Clownfish',
-      quantity: q,
-      price_cents: cents
-    }
-  })
+  const lineItems = orderTotals.lineItems
 
   const supabase = createClient(
     config.supabaseUrl,
@@ -92,7 +94,7 @@ export default defineEventHandler(async (event) => {
       shipping_state: address.state || null,
       shipping_postal_code: address.postal_code || null,
       shipping_country: address.country || 'US',
-      total_cents: totalCents,
+      total_cents: orderTotals.totalCents,
       status: 'paid',
       updated_at: new Date().toISOString()
     })
@@ -156,9 +158,9 @@ export default defineEventHandler(async (event) => {
       quantity: row.quantity,
       price_cents: row.price_cents
     })),
-    total_cents: totalCents,
+    total_cents: orderTotals.totalCents,
     status: 'pending',
-    notes: `Fulfill and ship. ${lineItems.length} line(s).`,
+    notes: shippingWorkOrderNote(orderTotals),
     updated_at: now.toISOString()
   }
 
