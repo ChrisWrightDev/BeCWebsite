@@ -3,7 +3,7 @@ import {
   RETAIL_SHIPPING,
   formatUsdFromCents,
   retailShippingPolicySentence,
-} from '../../shared/retailShipping.js'
+} from '#shared/retailShipping.js'
 
 const config = useRuntimeConfig()
 const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')

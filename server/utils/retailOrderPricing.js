@@ -1,4 +1,4 @@
-import { priceRetailCartItems } from '../../shared/retailShipping.js'
+import { priceRetailCartItems } from '#shared/retailShipping.js'
 import { fetchClownfishByIds } from './clownfishCatalog.js'
 
 function asHttpError(error) {

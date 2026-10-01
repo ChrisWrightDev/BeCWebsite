@@ -155,7 +155,7 @@ import {
   quickFactsForClownfish,
   relatedClownfish,
 } from '~/utils/clownfish'
-import { retailShippingPolicySentence } from '../../../shared/retailShipping.js'
+import { retailShippingPolicySentence } from '#shared/retailShipping.js'
 
 const route = useRoute()
 const slug = route.params.slug

@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { retailOrderTotals } from '../../../shared/retailShipping.js'
+import { retailOrderTotals } from '#shared/retailShipping.js'
 
 useSiteSeo({
   title: 'Checkout',

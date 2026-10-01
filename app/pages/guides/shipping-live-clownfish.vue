@@ -1,5 +1,5 @@
 <script setup>
-import { retailShippingPolicySentence } from '../../../shared/retailShipping.js'
+import { retailShippingPolicySentence } from '#shared/retailShipping.js'
 
 useSiteSeo({
   title: 'Live Clownfish Shipping Guide',

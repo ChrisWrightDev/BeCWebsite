@@ -2,7 +2,7 @@
 import {
   RETAIL_SHIPPING,
   formatUsdFromCents,
-} from '../../shared/retailShipping.js'
+} from '#shared/retailShipping.js'
 
 const rateLabel = formatUsdFromCents(RETAIL_SHIPPING.rateCents)
 const thresholdLabel = formatUsdFromCents(RETAIL_SHIPPING.freeThresholdCents, {

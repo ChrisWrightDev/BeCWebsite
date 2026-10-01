@@ -3,7 +3,7 @@ import {
   RETAIL_SHIPPING,
   formatUsdFromCents,
   retailShippingPolicySentence,
-} from '../../shared/retailShipping.js'
+} from '#shared/retailShipping.js'
 
 useSiteSeo({
   title: 'Terms of Service',

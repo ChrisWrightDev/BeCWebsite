@@ -3,7 +3,7 @@ import {
   formatUsdFromCents,
   retailOrderTotals,
   retailShippingHint,
-} from '../../shared/retailShipping.js'
+} from '#shared/retailShipping.js'
 
 const props = defineProps({
   merchandiseSubtotalCents: {
