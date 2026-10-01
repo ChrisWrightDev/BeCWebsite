@@ -37,9 +37,7 @@
           decoding="async"
         />
 
-        <section class="post-body" aria-label="Blog post content">
-          <p v-for="(paragraph, index) in paragraphs" :key="index">{{ paragraph }}</p>
-        </section>
+        <section class="post-body" aria-label="Blog post content" v-html="renderedBody"></section>
 
         <footer class="post-footer" v-if="post.tags.length">
           <NuxtLink
@@ -151,6 +149,7 @@
 
 <script setup>
 import { blogPostImageAlt, formatBlogDate, readingTimeLabel, slugifyTag } from '~/utils/blog'
+import { renderBlogMarkdown } from '~/utils/renderMarkdown'
 
 const WELCOME_SLUG = 'welcome-to-the-blue-eyed-clowns-hatchery-journal'
 
@@ -211,13 +210,7 @@ useSiteSeo({
   ogImage: post.value?.resolved_featured_image || undefined,
 })
 
-const paragraphs = computed(() => {
-  const content = post.value?.content || ''
-  return content
-    .split(/\n{2,}/)
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean)
-})
+const renderedBody = computed(() => renderBlogMarkdown(post.value?.content || ''))
 </script>
 
 <style scoped>
@@ -302,14 +295,101 @@ h1 {
   background: rgba(15, 23, 42, 0.72);
 }
 
-.post-body p {
+.post-body :deep(p),
+.post-body :deep(li) {
   color: #dbeafe;
   font-size: 1.05rem;
   line-height: 1.9;
 }
 
-.post-body p:last-child {
+.post-body :deep(p) {
+  margin: 0 0 1.15rem;
+}
+
+.post-body :deep(p:last-child),
+.post-body :deep(ul:last-child),
+.post-body :deep(ol:last-child),
+.post-body :deep(blockquote:last-child) {
   margin-bottom: 0;
+}
+
+.post-body :deep(h2),
+.post-body :deep(h3),
+.post-body :deep(h4) {
+  color: #f8fafc;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+}
+
+.post-body :deep(h2) {
+  margin: 1.85rem 0 0.75rem;
+  font-size: clamp(1.35rem, 3.4vw, 1.8rem);
+}
+
+.post-body :deep(h3),
+.post-body :deep(h4) {
+  margin: 1.45rem 0 0.6rem;
+  font-size: clamp(1.12rem, 2.6vw, 1.35rem);
+}
+
+.post-body :deep(h2:first-child),
+.post-body :deep(h3:first-child),
+.post-body :deep(p:first-child) {
+  margin-top: 0;
+}
+
+.post-body :deep(strong),
+.post-body :deep(b) {
+  color: #f8fafc;
+  font-weight: 800;
+}
+
+.post-body :deep(a) {
+  color: #67e8f9;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+.post-body :deep(a:hover) {
+  color: #ecfeff;
+}
+
+.post-body :deep(ul),
+.post-body :deep(ol) {
+  margin: 0 0 1.15rem;
+  padding-left: 1.3rem;
+}
+
+.post-body :deep(li + li) {
+  margin-top: 0.4rem;
+}
+
+.post-body :deep(blockquote) {
+  margin: 0 0 1.15rem;
+  padding: 0.15rem 0 0.15rem 1rem;
+  border-left: 3px solid rgba(103, 232, 249, 0.55);
+  color: #cbd5e1;
+}
+
+.post-body :deep(code) {
+  border-radius: 0.35rem;
+  padding: 0.1rem 0.35rem;
+  background: rgba(8, 47, 73, 0.7);
+  font-size: 0.92em;
+}
+
+.post-body :deep(pre) {
+  overflow-x: auto;
+  margin: 0 0 1.15rem;
+  padding: 0.9rem 1rem;
+  border-radius: 0.85rem;
+  background: rgba(2, 6, 23, 0.72);
+}
+
+.post-body :deep(pre code) {
+  padding: 0;
+  background: transparent;
 }
 
 .post-footer {

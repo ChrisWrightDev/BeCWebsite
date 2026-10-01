@@ -21,7 +21,7 @@ export function buildOrganizationSchema(siteUrl) {
     name: 'Blue-Eyed Clowns',
     url: siteUrl,
     logo: `${siteUrl}/images/og-default.svg`,
-    email: 'support@blueeyedclowns.com',
+    email: 'blueeyedclowns@gmail.com',
     description:
       'Captive-bred ocellaris, snowflake and designer clownfish with a 3-day live guarantee.',
   }
@@ -94,7 +94,7 @@ export function buildContactPageSchema(siteUrl) {
     mainEntity: {
       '@type': 'Organization',
       name: 'Blue-Eyed Clowns',
-      email: 'support@blueeyedclowns.com',
+      email: 'blueeyedclowns@gmail.com',
       url: siteUrl,
     },
   }

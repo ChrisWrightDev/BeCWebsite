@@ -104,7 +104,7 @@
               <summary>Live-arrival and 3-day support</summary>
               <p>
                 If there is a DOA concern, photograph the unopened bag within two hours of delivery and email
-                support@blueeyedclowns.com. The 3-day live guarantee helps protect buyers from pre-existing issues.
+                blueeyedclowns@gmail.com. The 3-day live guarantee helps protect buyers from pre-existing issues.
               </p>
             </details>
           </div>

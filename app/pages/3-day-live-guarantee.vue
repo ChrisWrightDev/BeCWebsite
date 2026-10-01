@@ -173,7 +173,7 @@ const toc = [
             <h2>How to contact us</h2>
             <p>
               If you need guarantee support, email
-              <a href="mailto:support@blueeyedclowns.com">support@blueeyedclowns.com</a> or use our
+              <a href="mailto:blueeyedclowns@gmail.com">blueeyedclowns@gmail.com</a> or use our
               <NuxtLink to="/contact">contact page</NuxtLink>. Include your order details, delivery
               time, photos or video, and a short description of what happened.
             </p>

@@ -13,7 +13,7 @@ Branch: `feat/t_7680d64a-privacy-policy`
 - Route: `/privacy-policy`
 - Footer location: Policies column
 - Effective date used for publication: June 3, 2026
-- Contact placeholders were linked to `support@blueeyedclowns.com`, matching the public support email used elsewhere on the site.
+- Contact placeholders were linked to `blueeyedclowns@gmail.com`, matching the public support email used elsewhere on the site.
 - The mailing-address placeholder was formatted as “Contact us for current mailing information” because no public mailing address was provided in the task context.
 - The advisory review notes from the parent artifact were not published as customer-facing policy content; the relevant review caveat is represented as a legal review notice at the top of the page.
 

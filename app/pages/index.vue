@@ -2,6 +2,20 @@
 const config = useRuntimeConfig()
 const siteUrl = (config.public.siteUrl || 'https://blueeyedclowns.com').replace(/\/$/, '')
 
+const HERO_AVIF_SRCSET = [
+  '/images/hero-reef-640.avif 640w',
+  '/images/hero-reef-960.avif 960w',
+  '/images/hero-reef-1280.avif 1280w',
+  '/images/hero-reef-1920.avif 1920w',
+].join(', ')
+
+const HERO_WEBP_SRCSET = [
+  '/images/hero-reef-640.webp 640w',
+  '/images/hero-reef-960.webp 960w',
+  '/images/hero-reef-1280.webp 1280w',
+  '/images/hero-reef-1920.webp 1920w',
+].join(', ')
+
 useSiteSeo({
   title: 'Captive-Bred Clownfish for Sale',
   description:
@@ -9,11 +23,38 @@ useSiteSeo({
   ogImage: '/images/og-default.png',
 })
 
+useHead({
+  link: [
+    {
+      rel: 'preload',
+      as: 'image',
+      type: 'image/avif',
+      href: '/images/hero-reef-960.avif',
+      imagesrcset: HERO_AVIF_SRCSET,
+      imagesizes: '100vw',
+      fetchpriority: 'high',
+    },
+  ],
+})
+
 useJsonLd([buildOrganizationSchema(siteUrl), buildWebSiteSchema(siteUrl)])
 </script>
 
 <template>
   <section class="hero">
+    <picture class="hero-media">
+      <source type="image/avif" :srcset="HERO_AVIF_SRCSET" sizes="100vw" />
+      <source type="image/webp" :srcset="HERO_WEBP_SRCSET" sizes="100vw" />
+      <img
+        class="hero-image"
+        src="/images/hero-reef-960.webp"
+        alt=""
+        width="1920"
+        height="1080"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1>Blue Eyed Clowns</h1>
@@ -111,7 +152,7 @@ useJsonLd([buildOrganizationSchema(siteUrl), buildWebSiteSchema(siteUrl)])
           <h2 id="signup-heading">Want first notice on new morph drops?</h2>
           <p>Join the Blue-Eyed Clowns release list for new batches, premium designer morphs, and wholesale availability.</p>
         </div>
-        <a href="mailto:support@blueeyedclowns.com?subject=New%20morph%20release%20list" class="btn btn-primary">Notify me</a>
+        <a href="mailto:blueeyedclowns@gmail.com?subject=New%20morph%20release%20list" class="btn btn-primary">Notify me</a>
       </section>
 
       <div class="section-cta">
@@ -124,15 +165,28 @@ useJsonLd([buildOrganizationSchema(siteUrl), buildWebSiteSchema(siteUrl)])
 <style scoped>
 .hero {
   position: relative;
+  isolation: isolate;
+  overflow: hidden;
   min-height: 70vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4.5rem 1.5rem 4rem;
-  background-image: url('/images/hero-reef.png');
-  background-size: cover;
-  background-position: center center;
+  background-color: #020617;
   color: #f9fafb;
+}
+
+.hero-media,
+.hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-image {
+  object-fit: cover;
+  object-position: center center;
 }
 
 .hero-overlay {

@@ -32,7 +32,7 @@ const thresholdLabel = formatUsdFromCents(RETAIL_SHIPPING.freeThresholdCents, {
     </ul>
     <p class="trust-note">
       Live animals require prompt pickup. Contact
-      <a href="mailto:support@blueeyedclowns.com">support@blueeyedclowns.com</a>
+      <a href="mailto:blueeyedclowns@gmail.com">blueeyedclowns@gmail.com</a>
       with questions before ordering.
     </p>
   </aside>
