@@ -1,4 +1,6 @@
 <script setup>
+import { SOCIAL_PROFILES } from '~/utils/socialProfiles'
+
 const navOpen = ref(false)
 const route = useRoute()
 
@@ -79,6 +81,71 @@ watch(
         <div class="footer-brand">
           <p class="footer-name">Blue-Eyed Clowns</p>
           <p class="footer-tagline">Premium tank-bred clownfish</p>
+          <nav class="footer-social" aria-label="Blue-Eyed Clowns on social media">
+            <a
+              v-for="profile in SOCIAL_PROFILES"
+              :key="profile.name"
+              :href="profile.href"
+              :aria-label="profile.label"
+              target="_blank"
+              rel="noopener"
+            >
+              <svg
+                v-if="profile.name === 'TikTok'"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M14.5 3c.4 2.4 1.8 4.2 4.1 4.5v3c-1.4 0-2.7-.5-3.8-1.3v6.6c0 3.4-2.7 6.1-6.1 6.1S2.6 19.2 2.6 15.8c0-3.3 2.6-6 5.9-6.1.3 0 .6 0 .9.1v3.1c-.3-.1-.6-.2-.9-.2-1.7 0-3.1 1.4-3.1 3.1s1.4 3.1 3.1 3.1 3.1-1.4 3.1-3.1V3h2.9Z"
+                />
+              </svg>
+              <svg
+                v-else-if="profile.name === 'Instagram'"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                aria-hidden="true"
+              >
+                <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none" />
+              </svg>
+              <svg
+                v-else-if="profile.name === 'X'"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M15.6 3h3.1l-6.8 7.8L20 21h-5.5l-4.3-5.6L5.3 21H2.2l7.3-8.3L4 3h5.6l3.9 5.2L15.6 3Zm-1.1 16.2h1.7L9.6 4.7H7.8l6.7 14.5Z"
+                />
+              </svg>
+              <svg
+                v-else
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M13.5 21v-7.1h2.4l.4-2.8h-2.8V9.3c0-.8.2-1.4 1.4-1.4h1.5V5.4c-.3 0-1.1-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2h-2.5v2.8h2.5V21H6.1C4.4 21 3 19.6 3 17.9V6.1C3 4.4 4.4 3 6.1 3h11.8C19.6 3 21 4.4 21 6.1v11.8c0 1.7-1.4 3.1-3.1 3.1h-4.4Z"
+                />
+              </svg>
+            </a>
+          </nav>
         </div>
 
         <div class="footer-columns">
@@ -227,6 +294,7 @@ body {
 .logo:focus-visible,
 .nav-links a:focus-visible,
 .footer-col a:focus-visible,
+.footer-social a:focus-visible,
 .nav-toggle:focus-visible {
   outline: 2px solid #22d3ee;
   outline-offset: 3px;
@@ -328,6 +396,32 @@ body {
 .footer-tagline {
   margin: 0;
   color: #cbd5e1;
+}
+
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 999px;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.footer-social a:hover {
+  color: #ecfeff;
+  border-color: rgba(125, 211, 252, 0.7);
+  background-color: rgba(8, 47, 73, 0.7);
 }
 
 .footer-columns {
