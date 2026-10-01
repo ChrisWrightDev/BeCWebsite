@@ -149,10 +149,17 @@ useJsonLd([buildOrganizationSchema(siteUrl), buildWebSiteSchema(siteUrl)])
 }
 
 h1 {
-  font-size: clamp(2.4rem, 4vw + 1.6rem, 3.5rem);
-  line-height: 1.1;
+  font-size: clamp(2.8rem, 1.9rem + 5vw, 3.5rem);
+  line-height: 1.12;
   margin: 0 0 0.75rem;
   font-weight: 700;
+  text-wrap: balance;
+}
+
+@media (min-width: 1024px) {
+  h1 {
+    line-height: 1.1;
+  }
 }
 
 .subtitle {
