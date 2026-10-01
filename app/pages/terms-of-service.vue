@@ -1,4 +1,10 @@
 <script setup>
+import {
+  RETAIL_SHIPPING,
+  formatUsdFromCents,
+  retailShippingPolicySentence,
+} from '../../shared/retailShipping.js'
+
 useSiteSeo({
   title: 'Terms of Service',
   description:
@@ -7,6 +13,8 @@ useSiteSeo({
 })
 
 const lastUpdated = 'June 3, 2026'
+const shippingRate = formatUsdFromCents(RETAIL_SHIPPING.rateCents)
+const freeShippingThreshold = formatUsdFromCents(RETAIL_SHIPPING.freeThresholdCents)
 
 const toc = [
   ['acceptance', 'Acceptance of these Terms'],
@@ -123,6 +131,13 @@ const toc = [
               holidays, and other conditions that affect safe transit.
             </p>
             <p>
+              {{ retailShippingPolicySentence() }} Exactly {{ freeShippingThreshold }} qualifies.
+              Shipping is calculated on the server from current catalog prices at checkout and is not
+              based on a customer-entered amount. Wholesale orders are arranged separately, typically
+              at a $300 minimum with shipping included, and are not charged this retail shipping rate
+              of {{ shippingRate }}.
+            </p>
+            <p>
               The customer is responsible for providing a complete and accurate shipping address,
               monitoring tracking information, and receiving the shipment on the first delivery
               attempt. Delays caused by incorrect addresses, missed delivery attempts, package
@@ -193,7 +208,9 @@ const toc = [
             <p>
               Wholesale inquiries, local pickup requests, special orders, breeding requests, and
               similar arrangements may require separate confirmation, pricing, timing, and terms.
-              Unless we agree otherwise in writing, these Terms still apply to those arrangements.
+              Wholesale orders are typically a $300 minimum with shipping included and are not
+              placed or charged through the retail website checkout. Unless we agree otherwise in
+              writing, these Terms still apply to those arrangements.
             </p>
           </section>
 

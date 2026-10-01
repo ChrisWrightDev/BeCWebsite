@@ -1,7 +1,22 @@
+<script setup>
+import {
+  RETAIL_SHIPPING,
+  formatUsdFromCents,
+} from '../../shared/retailShipping.js'
+
+const rateLabel = formatUsdFromCents(RETAIL_SHIPPING.rateCents)
+const thresholdLabel = formatUsdFromCents(RETAIL_SHIPPING.freeThresholdCents, {
+  trimZeroCents: true,
+})
+</script>
+
 <template>
   <aside class="trust-panel" aria-label="Shipping and guarantee information">
     <h2 class="trust-title">Live animal shipping</h2>
     <ul class="trust-list">
+      <li>
+        <strong>Shipping:</strong> {{ rateLabel }} per order, or FREE at {{ thresholdLabel }}+.
+      </li>
       <li>
         <strong>Shipping days:</strong> Monday through Friday, overnight delivery to your door.
       </li>

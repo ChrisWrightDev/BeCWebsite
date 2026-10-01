@@ -1,4 +1,8 @@
 import Stripe from 'stripe'
+import { resolveRetailCheckoutOrder } from '../../utils/retailOrderPricing.js'
+
+// Amount is merchandise subtotal from public.clownfish.price_cents + server-side shipping.
+// Client-sent price_cents is ignored.
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -12,22 +16,9 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event)
   const items = body?.items
+  const order = await resolveRetailCheckoutOrder(items)
 
-  if (!Array.isArray(items) || items.length === 0) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Request must include an array of items with price_cents and quantity.'
-    })
-  }
-
-  let totalCents = 0
-  for (const row of items) {
-    const q = Math.max(1, parseInt(row.quantity, 10) || 1)
-    const cents = Math.max(0, parseInt(row.price_cents, 10) || 0)
-    totalCents += q * cents
-  }
-
-  if (totalCents < 50) {
+  if (order.totalCents < 50) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Order total must be at least $0.50.'
@@ -40,14 +31,27 @@ export default defineEventHandler(async (event) => {
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: totalCents,
+      amount: order.totalCents,
       currency: 'usd',
-      automatic_payment_methods: { enabled: true }
+      automatic_payment_methods: { enabled: true },
+      metadata: {
+        merchandise_subtotal_cents: String(order.merchandiseSubtotalCents),
+        shipping_cents: String(order.shippingCents),
+      },
     })
 
     return {
       clientSecret: paymentIntent.client_secret,
-      paymentIntentId: paymentIntent.id
+      paymentIntentId: paymentIntent.id,
+      merchandiseSubtotalCents: order.merchandiseSubtotalCents,
+      shippingCents: order.shippingCents,
+      totalCents: order.totalCents,
+      lineItems: order.lineItems.map((row) => ({
+        id: row.clownfish_id,
+        name: row.product_name,
+        quantity: row.quantity,
+        price_cents: row.price_cents,
+      })),
     }
   } catch (err) {
     console.error('[stripe] create-payment-intent error', err)

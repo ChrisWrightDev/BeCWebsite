@@ -1,6 +1,15 @@
 <script setup>
+import {
+  RETAIL_SHIPPING,
+  formatUsdFromCents,
+  retailShippingPolicySentence,
+} from '../../shared/retailShipping.js'
+
 const config = useRuntimeConfig()
 const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
+const thresholdLabel = formatUsdFromCents(RETAIL_SHIPPING.freeThresholdCents, {
+  trimZeroCents: true,
+})
 
 useSiteSeo({
   title: 'Contact Us',
@@ -20,6 +29,11 @@ const faqItems = [
       'We ship Monday through Friday, via overnight delivery. This keeps transit time minimal and gives your clownfish the best chance of arriving healthy. Orders placed after our cutoff may ship the following eligible day.',
   },
   {
+    question: 'How much does shipping cost?',
+    answer:
+      `${retailShippingPolicySentence()} Exactly ${thresholdLabel} qualifies for free shipping. Wholesale orders are arranged separately and are not charged this retail rate.`,
+  },
+  {
     question: 'How should I acclimate new clownfish?',
     answer:
       'Float the sealed bag in your tank for 15–20 minutes to equalize temperature. Then drip-acclimate over 30–45 minutes, slowly mixing tank water into the bag. Net the fish into your display — avoid adding bag water. Keep lights dim for the first few hours.',
@@ -37,7 +51,7 @@ const faqItems = [
   {
     question: 'Do you offer wholesale or local pickup?',
     answer:
-      'Yes — we work with select local fish stores and serious hobbyists on wholesale orders. Use the contact form below and select a wholesale inquiry in your subject line, or email support@blueeyedclowns.com directly.',
+      'Yes — we work with select local fish stores and serious hobbyists on wholesale orders. Wholesale is typically a $300 minimum with shipping included, arranged by inquiry rather than website checkout. Use the contact form below and select a wholesale inquiry in your subject line, or email support@blueeyedclowns.com directly.',
   },
 ]
 
