@@ -27,27 +27,6 @@ const founders = [
   },
 ]
 
-const testimonials = [
-  {
-    quote:
-      'Our snowflake pair acclimated within hours and started hosting an anemone by day three. You can tell these fish were raised with care.',
-    author: 'Sarah M.',
-    context: '120-gallon reef, Colorado',
-  },
-  {
-    quote:
-      'Third order from Blue-Eyed Clowns. Consistent color, healthy appetites, and the shipping packaging is always top-notch.',
-    author: 'James T.',
-    context: 'Mixed reef, Texas',
-  },
-  {
-    quote:
-      'As a local fish store buyer, I appreciate the transparent grading and reliable overnight shipping. Our customers love the tank-bred clowns.',
-    author: 'Reef Haven Aquatics',
-    context: 'Wholesale partner',
-  },
-]
-
 const galleryImages = [
   { src: '/images/gallery/reef-tank-1.svg', alt: 'Ocellaris clownfish in a home reef aquarium display tank' },
   { src: '/images/gallery/reef-tank-2.svg', alt: 'Snowflake clownfish pair in a reef display' },
@@ -92,19 +71,6 @@ const galleryImages = [
           <figure v-for="(image, index) in galleryImages" :key="index" class="gallery-item">
             <img :src="image.src" :alt="image.alt" width="320" height="200" loading="lazy" decoding="async" />
           </figure>
-        </div>
-      </section>
-
-      <section class="testimonials" aria-label="Customer testimonials">
-        <h2>What reef keepers say</h2>
-        <div class="testimonials-grid">
-          <blockquote v-for="(item, index) in testimonials" :key="index" class="testimonial-card">
-            <p class="testimonial-quote story-text">"{{ item.quote }}"</p>
-            <footer>
-              <cite>{{ item.author }}</cite>
-              <span class="testimonial-context">{{ item.context }}</span>
-            </footer>
-          </blockquote>
         </div>
       </section>
 
@@ -187,7 +153,6 @@ const galleryImages = [
 
 .owners h2,
 .gallery h2,
-.testimonials h2,
 .mission h2 {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
@@ -267,46 +232,6 @@ const galleryImages = [
   height: auto;
 }
 
-.testimonials {
-  margin-top: 3rem;
-}
-
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-}
-
-.testimonial-card {
-  margin: 0;
-  padding: 1.25rem;
-  border-radius: 1rem;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.25);
-}
-
-.testimonial-quote {
-  font-size: 0.95rem;
-  color: #e2e8f0;
-  line-height: 1.55;
-  margin: 0 0 1rem;
-}
-
-.testimonial-card cite {
-  display: block;
-  font-style: normal;
-  font-weight: 600;
-  color: #7dd3fc;
-  font-size: 0.9rem;
-}
-
-.testimonial-context {
-  display: block;
-  font-size: 0.8rem;
-  color: #94a3b8;
-  margin-top: 0.2rem;
-}
-
 .mission {
   margin-top: 2.5rem;
 }
@@ -357,8 +282,7 @@ const galleryImages = [
 @media (max-width: 800px) {
   .owners-grid,
   .grid,
-  .gallery-strip,
-  .testimonials-grid {
+  .gallery-strip {
     grid-template-columns: 1fr;
   }
 }

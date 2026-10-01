@@ -1,3 +1,5 @@
+import { ORGANIZATION_SAME_AS } from '~/utils/socialProfiles'
+
 /**
  * Inject JSON-LD structured data via useHead script tag.
  * @param {Record<string, unknown> | Record<string, unknown>[]} schema
@@ -21,7 +23,8 @@ export function buildOrganizationSchema(siteUrl) {
     name: 'Blue-Eyed Clowns',
     url: siteUrl,
     logo: `${siteUrl}/images/og-default.svg`,
-    email: 'support@blueeyedclowns.com',
+    email: 'blueeyedclowns@gmail.com',
+    sameAs: ORGANIZATION_SAME_AS,
     description:
       'Captive-bred ocellaris, snowflake and designer clownfish with a 3-day live guarantee.',
   }
@@ -94,8 +97,9 @@ export function buildContactPageSchema(siteUrl) {
     mainEntity: {
       '@type': 'Organization',
       name: 'Blue-Eyed Clowns',
-      email: 'support@blueeyedclowns.com',
+      email: 'blueeyedclowns@gmail.com',
       url: siteUrl,
+      sameAs: ORGANIZATION_SAME_AS,
     },
   }
 }
@@ -110,6 +114,7 @@ export function buildAboutPageSchema(siteUrl) {
       '@type': 'Organization',
       name: 'Blue-Eyed Clowns',
       url: siteUrl,
+      sameAs: ORGANIZATION_SAME_AS,
       founder: [
         buildPersonSchema('Chris Wright', 'Co-Founder', siteUrl),
         buildPersonSchema('Mike Kay', 'Co-Founder', siteUrl),

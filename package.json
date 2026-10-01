@@ -7,12 +7,15 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "test": "node tests/blogCatalog.test.mjs && node tests/renderMarkdown.test.mjs"
   },
   "dependencies": {
     "@stripe/stripe-js": "^8.8.0",
     "@supabase/supabase-js": "^2.98.0",
+    "markdown-it": "^14.3.2",
     "nuxt": "^4.3.1",
+    "sanitize-html": "^2.18.0",
     "stripe": "^20.4.0",
     "vue": "^3.5.28",
     "vue-router": "^4.6.4"

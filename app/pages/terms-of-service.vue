@@ -161,7 +161,7 @@ const toc = [
             </p>
             <p>
               To request guarantee support, contact us promptly at
-              <a href="mailto:support@blueeyedclowns.com">support@blueeyedclowns.com</a>. For a
+              <a href="mailto:blueeyedclowns@gmail.com">blueeyedclowns@gmail.com</a>. For a
               dead-on-arrival concern, take clear photos of the unopened shipping bag within two
               hours of delivery and do not discard the fish until we confirm next steps. We may ask
               for photos, video, water parameters, acclimation details, delivery timing, or other
@@ -324,7 +324,7 @@ const toc = [
             <p>
               Questions about these Terms, live animal shipping, guarantee support, wholesale orders,
               or local pickup can be sent to
-              <a href="mailto:support@blueeyedclowns.com">support@blueeyedclowns.com</a> or through
+              <a href="mailto:blueeyedclowns@gmail.com">blueeyedclowns@gmail.com</a> or through
               our <NuxtLink to="/contact">contact page</NuxtLink>.
             </p>
           </section>

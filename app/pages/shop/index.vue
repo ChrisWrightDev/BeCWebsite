@@ -154,7 +154,7 @@ function handleRestockSubmit() {
   if (!email) return
   const subject = encodeURIComponent('Restock alert signup')
   const body = encodeURIComponent(`Please notify me when new clownfish are listed.\n\nEmail: ${email}`)
-  window.location.href = `mailto:support@blueeyedclowns.com?subject=${subject}&body=${body}`
+  window.location.href = `mailto:blueeyedclowns@gmail.com?subject=${subject}&body=${body}`
   restockSubmitted.value = true
 }
 </script>

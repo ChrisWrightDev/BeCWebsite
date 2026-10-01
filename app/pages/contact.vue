@@ -46,12 +46,12 @@ const faqItems = [
   {
     question: 'What if my fish arrives DOA?',
     answer:
-      'Take clear photos of the unopened bag within two hours of delivery and email support@blueeyedclowns.com. We will replace or refund per our Live Arrival Guarantee policy. Do not discard the fish until we confirm next steps.',
+      'Take clear photos of the unopened bag within two hours of delivery and email blueeyedclowns@gmail.com. We will replace or refund per our Live Arrival Guarantee policy. Do not discard the fish until we confirm next steps.',
   },
   {
     question: 'Do you offer wholesale or local pickup?',
     answer:
-      'Yes — we work with select local fish stores and serious hobbyists on wholesale orders. Wholesale is typically a $300 minimum with shipping included, arranged by inquiry rather than website checkout. Use the contact form below and select a wholesale inquiry in your subject line, or email support@blueeyedclowns.com directly.',
+      'Yes — we work with select local fish stores and serious hobbyists on wholesale orders. Wholesale is typically a $300 minimum with shipping included, arranged by inquiry rather than website checkout. Use the contact form below and select a wholesale inquiry in your subject line, or email blueeyedclowns@gmail.com directly.',
   },
 ]
 
@@ -72,13 +72,13 @@ function handleSubmit() {
     form.message,
   ].join('\n')
 
-  const mailto = `mailto:support@blueeyedclowns.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  const mailto = `mailto:blueeyedclowns@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 
   try {
     window.location.href = mailto
     submitted.value = true
   } catch {
-    formError.value = 'Could not open your email client. Email us directly at support@blueeyedclowns.com.'
+    formError.value = 'Could not open your email client. Email us directly at blueeyedclowns@gmail.com.'
   }
 }
 </script>
@@ -96,8 +96,8 @@ function handleSubmit() {
 
       <div class="contact-ctas" aria-label="Contact shortcuts">
         <NuxtLink to="/shop" class="contact-cta">Question about a fish</NuxtLink>
-        <a href="mailto:support@blueeyedclowns.com?subject=Wholesale%20inquiry" class="contact-cta">Wholesale inquiry</a>
-        <a href="mailto:support@blueeyedclowns.com?subject=Local%20pickup%20request" class="contact-cta">Local pickup request</a>
+        <a href="mailto:blueeyedclowns@gmail.com?subject=Wholesale%20inquiry" class="contact-cta">Wholesale inquiry</a>
+        <a href="mailto:blueeyedclowns@gmail.com?subject=Local%20pickup%20request" class="contact-cta">Local pickup request</a>
       </div>
 
       <section id="faq" class="faq" aria-labelledby="faq-heading">
@@ -117,7 +117,7 @@ function handleSubmit() {
       <div class="grid">
         <form class="form" @submit.prevent="handleSubmit">
           <p v-if="submitted" class="form-success" role="status">
-            Your email client should open with a draft to support@blueeyedclowns.com. Send it when
+            Your email client should open with a draft to blueeyedclowns@gmail.com. Send it when
             ready — we'll reply within one business day.
           </p>
           <p v-if="formError" class="form-error" role="alert">{{ formError }}</p>
@@ -167,14 +167,14 @@ function handleSubmit() {
           <button type="submit" class="btn">Send message</button>
           <p class="form-note">
             Prefer email directly?
-            <a href="mailto:support@blueeyedclowns.com">support@blueeyedclowns.com</a>
+            <a href="mailto:blueeyedclowns@gmail.com">blueeyedclowns@gmail.com</a>
           </p>
         </form>
 
         <aside class="details">
           <h2>Quick details</h2>
           <ul>
-            <li><strong>Support email</strong> support@blueeyedclowns.com</li>
+            <li><strong>Support email</strong> blueeyedclowns@gmail.com</li>
             <li><strong>Facility</strong> Captive-breeding and quarantine systems in the U.S.</li>
             <li><strong>Live shipping schedule</strong> Monday through Friday, overnight delivery only</li>
             <li><strong>Response time</strong> Most messages answered within 1 business day</li>

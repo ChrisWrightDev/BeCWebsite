@@ -282,7 +282,7 @@ const toc = [
             </p>
             <p>
               To make a privacy request, contact us at
-              <a href="mailto:support@blueeyedclowns.com">support@blueeyedclowns.com</a>. We may
+              <a href="mailto:blueeyedclowns@gmail.com">blueeyedclowns@gmail.com</a>. We may
               need to verify your identity before completing certain requests.
             </p>
           </section>
@@ -298,7 +298,7 @@ const toc = [
             <p>
               If a parent or guardian believes a child has provided personal information to us, they
               should contact us at
-              <a href="mailto:support@blueeyedclowns.com">support@blueeyedclowns.com</a>, and we
+              <a href="mailto:blueeyedclowns@gmail.com">blueeyedclowns@gmail.com</a>, and we
               will review and delete the information where appropriate.
             </p>
           </section>
@@ -325,7 +325,7 @@ const toc = [
             </p>
             <p>
               If a legally applicable privacy right applies to your information, you may contact us at
-              <a href="mailto:support@blueeyedclowns.com">support@blueeyedclowns.com</a> to submit a
+              <a href="mailto:blueeyedclowns@gmail.com">blueeyedclowns@gmail.com</a> to submit a
               request.
             </p>
           </section>
@@ -351,7 +351,7 @@ const toc = [
             </p>
             <p>
               Blue Eyed Clowns<br />
-              Email: <a href="mailto:support@blueeyedclowns.com">support@blueeyedclowns.com</a><br />
+              Email: <a href="mailto:blueeyedclowns@gmail.com">blueeyedclowns@gmail.com</a><br />
               Mailing Address: Contact us for current mailing information.<br />
               Website: <a href="https://blueeyedclowns.com/">https://blueeyedclowns.com/</a>
             </p>
