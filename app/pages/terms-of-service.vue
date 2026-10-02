@@ -12,7 +12,7 @@ useSiteSeo({
   noindex: true,
 })
 
-const lastUpdated = 'June 3, 2026'
+const lastUpdated = 'October 1, 2026'
 const shippingRate = formatUsdFromCents(RETAIL_SHIPPING.rateCents)
 const freeShippingThreshold = formatUsdFromCents(RETAIL_SHIPPING.freeThresholdCents)
 
