@@ -59,7 +59,7 @@
 
             <h3 class="summary-title">Order summary</h3>
             <ul class="summary-list">
-              <li v-for="item in summaryItems" :key="item.id" class="summary-row">
+              <li v-for="item in summaryItems" :key="`${item.type || 'single'}:${item.id}`" class="summary-row">
                 <span>{{ item.name }} × {{ item.quantity }}</span>
                 <span>{{ formatPrice(item.price_cents * item.quantity) }}</span>
               </li>
@@ -152,7 +152,8 @@ function formatPrice(cents) {
 function checkoutItemsPayload() {
   return cartItems.value.map((i) => ({
     id: i.id,
-    quantity: i.quantity
+    quantity: i.type === 'bonded_pair' ? 1 : i.quantity,
+    type: i.type === 'bonded_pair' ? 'bonded_pair' : 'single',
   }))
 }
 

@@ -1,4 +1,10 @@
-import { priceRetailCartItems } from '#shared/retailShipping.js'
+import {
+  CART_ITEM_BONDED_PAIR,
+  CART_ITEM_SINGLE,
+  normalizeCartItemType,
+  priceRetailCartItems,
+} from '#shared/retailShipping.js'
+import { fetchBondedPairsByIds } from './bondedPairsCatalog.js'
 import { fetchClownfishByIds } from './clownfishCatalog.js'
 
 function asHttpError(error) {
@@ -15,9 +21,25 @@ export { priceRetailCartItems }
 
 export async function resolveRetailCheckoutOrder(items) {
   try {
-    const ids = Array.isArray(items) ? items.map((row) => row?.id) : []
-    const catalog = await fetchClownfishByIds(ids)
-    return priceRetailCartItems(items, catalog)
+    const list = Array.isArray(items) ? items : []
+    const singleIds = list
+      .filter((row) => normalizeCartItemType(row?.type || row?.itemType) === CART_ITEM_SINGLE)
+      .map((row) => row?.id)
+    const pairIds = list
+      .filter((row) => normalizeCartItemType(row?.type || row?.itemType) === CART_ITEM_BONDED_PAIR)
+      .map((row) => row?.id)
+
+    const [singles, pairs] = await Promise.all([
+      fetchClownfishByIds(singleIds),
+      fetchBondedPairsByIds(pairIds),
+    ])
+
+    const catalog = [
+      ...singles.map((row) => ({ ...row, type: CART_ITEM_SINGLE })),
+      ...pairs.map((row) => ({ ...row, type: CART_ITEM_BONDED_PAIR })),
+    ]
+
+    return priceRetailCartItems(list, catalog)
   } catch (error) {
     asHttpError(error)
   }

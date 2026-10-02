@@ -1,3 +1,4 @@
+import { isLegacyBondedPairClownfish } from '#shared/bondedPairGuards.js'
 import { useSupabaseAdmin } from './supabaseAdmin.js'
 
 const CLOWNFISH_COLUMNS =
@@ -87,7 +88,9 @@ export async function fetchClownfishCatalog() {
     })
   }
 
-  return (data || []).map(enrichClownfish)
+  return (data || [])
+    .filter((row) => !isLegacyBondedPairClownfish(row))
+    .map(enrichClownfish)
 }
 
 export async function fetchClownfishBySlug(slug) {
@@ -113,7 +116,7 @@ export async function fetchClownfishByIds(ids) {
   const supabase = useSupabaseAdmin()
   const { data, error } = await supabase
     .from('clownfish')
-    .select('id, name, price_cents')
+    .select('id, name, pattern, price_cents')
     .in('id', uniqueIds)
 
   if (error) {
@@ -124,5 +127,5 @@ export async function fetchClownfishByIds(ids) {
     })
   }
 
-  return data || []
+  return (data || []).filter((row) => !isLegacyBondedPairClownfish(row))
 }

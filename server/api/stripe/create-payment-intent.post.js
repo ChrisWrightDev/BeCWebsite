@@ -1,7 +1,7 @@
 import Stripe from 'stripe'
 import { resolveRetailCheckoutOrder } from '../../utils/retailOrderPricing.js'
 
-// Amount is merchandise subtotal from public.clownfish.price_cents + server-side shipping.
+// Amount is merchandise subtotal from public.clownfish / public.bonded_pairs + server-side shipping.
 // Client-sent price_cents is ignored.
 
 export default defineEventHandler(async (event) => {
@@ -47,7 +47,8 @@ export default defineEventHandler(async (event) => {
       shippingCents: order.shippingCents,
       totalCents: order.totalCents,
       lineItems: order.lineItems.map((row) => ({
-        id: row.clownfish_id,
+        id: row.item_id,
+        type: row.type,
         name: row.product_name,
         quantity: row.quantity,
         price_cents: row.price_cents,

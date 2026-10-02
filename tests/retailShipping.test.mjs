@@ -79,4 +79,47 @@ try {
 }
 assert.equal(missingFailed, true)
 
+const mixedCatalog = [
+  { id: 'a', name: 'Standard Ocellaris', price_cents: 3999, type: 'single' },
+  {
+    id: 'pair-1',
+    name: 'Mocha Bonded Pair',
+    price_cents: 4800,
+    type: 'bonded_pair',
+    status: 'available',
+  },
+]
+
+const mixed = priceRetailCartItems(
+  [
+    { id: 'a', quantity: 2, type: 'single', price_cents: 1 },
+    { id: 'pair-1', quantity: 4, type: 'bonded_pair', price_cents: 1 },
+  ],
+  mixedCatalog
+)
+assert.equal(mixed.merchandiseSubtotalCents, 3999 * 2 + 4800)
+assert.equal(mixed.lineItems.find((row) => row.type === 'bonded_pair').quantity, 1)
+assert.equal(mixed.lineItems.find((row) => row.type === 'bonded_pair').clownfish_id, null)
+assert.equal(mixed.lineItems.find((row) => row.type === 'single').clownfish_id, 'a')
+assert.equal(mixed.shippingCents, 2999)
+
+const reservedCatalog = [
+  {
+    id: 'pair-2',
+    name: 'Reserved Pair',
+    price_cents: 12500,
+    type: 'bonded_pair',
+    status: 'reserved',
+  },
+]
+
+let reservedFailed = false
+try {
+  priceRetailCartItems([{ id: 'pair-2', quantity: 1, type: 'bonded_pair' }], reservedCatalog)
+} catch (error) {
+  reservedFailed = true
+  assert.equal(error.statusCode, 400)
+}
+assert.equal(reservedFailed, true)
+
 console.log('retailShipping helpers passed')

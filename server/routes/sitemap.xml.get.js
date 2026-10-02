@@ -1,3 +1,4 @@
+import { fetchBondedPairsCatalog } from '../utils/bondedPairsCatalog.js'
 import { fetchClownfishCatalog } from '../utils/clownfishCatalog.js'
 import { fetchPublishedBlogPosts } from '../utils/blogCatalog.js'
 import { fetchPublicHatchBatches } from '../utils/hatchBatchesCatalog.js'
@@ -5,6 +6,7 @@ import { fetchPublicHatchBatches } from '../utils/hatchBatchesCatalog.js'
 const INDEXABLE_PATHS = [
   '/',
   '/shop',
+  '/bonded-pairs',
   '/about',
   '/contact',
   '/blog',
@@ -18,8 +20,8 @@ const INDEXABLE_PATHS = [
 function buildUrlEntry(siteUrl, path, options = {}) {
   const loc = `${siteUrl}${path === '/' ? '' : path}`
   const lastmod = new Date().toISOString().slice(0, 10)
-  const changefreq = options.changefreq || (path === '/shop' ? 'weekly' : 'monthly')
-  const priority = options.priority || (path === '/' ? '1.0' : path === '/shop' ? '0.9' : '0.7')
+  const changefreq = options.changefreq || (path === '/shop' || path === '/bonded-pairs' ? 'weekly' : 'monthly')
+  const priority = options.priority || (path === '/' ? '1.0' : path === '/shop' || path === '/bonded-pairs' ? '0.9' : '0.7')
 
   return `  <url>
     <loc>${loc}</loc>
@@ -47,6 +49,16 @@ export default defineEventHandler(async (event) => {
     // Sitemap still serves static routes if catalog is unavailable
   }
 
+  let pairUrls = []
+  try {
+    const pairs = await fetchBondedPairsCatalog()
+    pairUrls = pairs.map((pair) =>
+      buildUrlEntry(siteUrl, `/bonded-pairs/${pair.slug}`, { changefreq: 'weekly', priority: '0.8' })
+    )
+  } catch {
+    // Sitemap still serves static routes if bonded pairs are unavailable
+  }
+
   let blogUrls = []
   try {
     const posts = await fetchPublishedBlogPosts()
@@ -69,7 +81,7 @@ export default defineEventHandler(async (event) => {
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[...staticUrls, ...productUrls, ...blogUrls, ...hatchUrls].join('\n')}
+${[...staticUrls, ...productUrls, ...pairUrls, ...blogUrls, ...hatchUrls].join('\n')}
 </urlset>`
 
   setHeader(event, 'Content-Type', 'application/xml; charset=utf-8')

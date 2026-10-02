@@ -129,6 +129,27 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const pairIds = [...new Set(
+    lineItems
+      .filter((row) => row.type === 'bonded_pair' && row.item_id)
+      .map((row) => row.item_id)
+  )]
+
+  if (pairIds.length > 0) {
+    const { error: soldError } = await supabase
+      .from('bonded_pairs')
+      .update({ status: 'sold' })
+      .in('id', pairIds)
+
+    if (soldError) {
+      console.error('[orders/complete] bonded_pairs sold update error', soldError)
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Order saved but pair availability could not be updated. Contact support with order ID: ' + orderId
+      })
+    }
+  }
+
   const now = new Date()
   const workOrderNumber =
     'WO-' +

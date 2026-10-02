@@ -4,55 +4,54 @@
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <NuxtLink to="/">Home</NuxtLink>
         <span aria-hidden="true">/</span>
-        <NuxtLink to="/shop">Shop</NuxtLink>
+        <NuxtLink to="/bonded-pairs">Bonded Pairs</NuxtLink>
         <span aria-hidden="true">/</span>
-        <span aria-current="page">{{ fish?.name || 'Clownfish' }}</span>
+        <span aria-current="page">{{ pair?.name || 'Bonded pair' }}</span>
       </nav>
 
-      <div v-if="pending" class="state">Loading product…</div>
+      <div v-if="pending" class="state">Loading pair…</div>
       <div v-else-if="error" class="state error">
-        <p>This clownfish could not be found.</p>
-        <NuxtLink to="/shop" class="btn-link">Back to shop</NuxtLink>
+        <p>This bonded pair could not be found.</p>
+        <NuxtLink to="/bonded-pairs" class="btn-link">Back to bonded pairs</NuxtLink>
       </div>
 
       <article v-else class="product-page">
         <section class="product-hero">
           <div class="media">
-            <img
-              v-if="fish.image_url"
-              :src="fish.image_url"
-              :alt="clownfishImageAlt(fish)"
+            <BondedPairMedia
               class="product-image"
-              width="720"
-              height="540"
-              fetchpriority="high"
-              decoding="async"
+              :video-url="pair.video_url"
+              :poster-url="pair.video_poster_url"
+              :image-url="pair.image_url"
+              :alt="bondedPairImageAlt(pair)"
+              :width="720"
+              :height="540"
+              priority
             />
-            <div v-else class="product-image placeholder">
-              <span>Clownfish preview</span>
-            </div>
-            <p class="photo-note">Representative photo — ask us about exact-fish availability for premium listings.</p>
+            <p class="photo-note">{{ wysiwygNote(pair) }}</p>
           </div>
 
           <div class="details">
-            <p class="pattern-tag">{{ clownfishCategory(fish) }}</p>
-            <h1>{{ fish.name }} Clownfish for Sale</h1>
-            <p class="positioning">{{ clownfishBestFor(fish) }}</p>
+            <p class="pattern-tag" :class="{ reserved: pair.status === 'reserved' }">
+              {{ pair.status === 'reserved' ? 'Reserved' : 'Unique bonded pair' }}
+            </p>
+            <h1>{{ pair.name }} for Sale</h1>
+            <p class="positioning">{{ bondedPairMorphLabel(pair) }}</p>
             <p class="description">
-              {{ fish.description || 'Tank-raised clownfish ready for your reef aquarium.' }}
+              {{ pair.description || 'A unique captive-bred bonded pair, sold together only.' }}
             </p>
 
             <div class="meta">
-              <span class="price">{{ formatPriceCents(fish.price_cents) }}</span>
-              <span class="stock" :class="{ 'stock-out': !fish.in_stock }">
-                {{ fish.in_stock ? 'In stock and feeding well' : 'Temporarily unavailable' }}
+              <span class="price">{{ formatPriceCents(pair.price_cents) }}</span>
+              <span class="stock" :class="{ 'stock-out': pair.status !== 'available' }">
+                {{ pair.status === 'available' ? 'Available as a pair' : 'Reserved — not available to buy' }}
               </span>
             </div>
 
             <div class="reassurance-strip" aria-label="Purchase reassurance">
+              <span>Exact pair shown</span>
               <span>3-day live guarantee</span>
               <span>Overnight shipping</span>
-              <span>Ships Monday through Friday</span>
               <span>Captive-bred</span>
             </div>
 
@@ -60,19 +59,19 @@
               <button
                 class="btn"
                 type="button"
-                :disabled="!fish.in_stock"
+                :disabled="pair.status !== 'available'"
                 @click="addToCart"
               >
-                Add to cart
+                {{ pair.status === 'available' ? 'Add pair to cart' : 'Reserved' }}
               </button>
-              <NuxtLink :to="`/contact?subject=${encodeURIComponent(`Question about ${fish.name}`)}`" class="btn btn-secondary">
-                Ask about this fish
+              <NuxtLink :to="`/contact?subject=${encodeURIComponent(`Question about ${pair.name}`)}`" class="btn btn-secondary">
+                Ask about this pair
               </NuxtLink>
             </div>
           </div>
         </section>
 
-        <section class="content-grid" aria-label="Product details">
+        <section class="content-grid" aria-label="Pair details">
           <div class="panel">
             <h2>Quick facts</h2>
             <dl class="facts">
@@ -89,15 +88,15 @@
               <summary>How live-fish shipping works</summary>
               <p>
                 {{ retailShippingPolicySentence() }} We ship live clownfish Monday through Friday by
-                overnight delivery. Before shipping, we confirm that each fish is active, feeding,
+                overnight delivery. Before shipping, we confirm that the pair is active, feeding,
                 and safe to send based on weather and carrier timing.
               </p>
             </details>
             <details>
-              <summary>What to do when your clownfish arrives</summary>
+              <summary>What to do when your pair arrives</summary>
               <p>
-                Float the sealed bag to temperature match, drip-acclimate slowly, and keep lights dim while
-                the fish settles in. Contact us right away if anything looks wrong on arrival.
+                Float the sealed bags to temperature match, drip-acclimate slowly, and keep lights dim while
+                the pair settles in. Contact us right away if anything looks wrong on arrival.
               </p>
             </details>
             <details>
@@ -111,24 +110,24 @@
         </section>
 
         <section class="panel story-panel">
-          <h2>Why choose captive-bred {{ fish.name }}?</h2>
+          <h2>Why buy a bonded pair?</h2>
           <p>
-            Captive-bred clownfish adapt quickly to aquarium life, accept prepared foods, and reduce pressure
-            on wild reef populations. {{ fish.name }} is a strong choice for reef keepers who want a hardy,
-            aquaculture-raised clownfish with the color and personality that make ocellaris morphs so popular.
+            These two fish are already established together. You receive this exact pair — not a random
+            pairing from the singles tank. Shop singles if you want to build a pair over time;
+            choose a bonded pair when you want a proven pair that is ready to move in together.
           </p>
           <div class="inline-links">
+            <NuxtLink to="/shop">Shop single clownfish</NuxtLink>
             <NuxtLink to="/guides/clownfish-care">Read the care guide</NuxtLink>
-            <NuxtLink to="/guides/clownfish-morphs">Compare morphs</NuxtLink>
             <NuxtLink to="/contact#faq">Shipping FAQ</NuxtLink>
           </div>
         </section>
 
         <section v-if="related.length" class="related" aria-labelledby="related-heading">
-          <h2 id="related-heading">Related clownfish</h2>
+          <h2 id="related-heading">Other bonded pairs</h2>
           <div class="related-grid">
-            <NuxtLink v-for="item in related" :key="item.id" :to="`/shop/${item.slug}`" class="related-card">
-              <img v-if="item.image_url" :src="item.image_url" :alt="clownfishImageAlt(item)" loading="lazy" />
+            <NuxtLink v-for="item in related" :key="item.id" :to="`/bonded-pairs/${item.slug}`" class="related-card">
+              <img v-if="item.image_url" :src="item.image_url" :alt="bondedPairImageAlt(item)" loading="lazy" />
               <span>{{ item.name }}</span>
               <strong>{{ formatPriceCents(item.price_cents) }}</strong>
             </NuxtLink>
@@ -137,24 +136,23 @@
       </article>
     </div>
 
-    <div v-if="fish && fish.in_stock" class="mobile-sticky">
-      <span>{{ formatPriceCents(fish.price_cents) }}</span>
-      <button type="button" @click="addToCart">Add to cart</button>
+    <div v-if="pair && pair.status === 'available'" class="mobile-sticky">
+      <span>{{ formatPriceCents(pair.price_cents) }}</span>
+      <button type="button" @click="addToCart">Add pair to cart</button>
     </div>
   </section>
 </template>
 
 <script setup>
 import {
-  clownfishBestFor,
-  clownfishCategory,
-  clownfishImageAlt,
-  formatPriceCents,
-  productSeoDescription,
-  productSeoTitle,
-  quickFactsForClownfish,
-  relatedClownfish,
-} from '~/utils/clownfish'
+  bondedPairImageAlt,
+  bondedPairMorphLabel,
+  bondedPairSeoDescription,
+  bondedPairSeoTitle,
+  quickFactsForBondedPair,
+  wysiwygNote,
+} from '~/utils/bondedPairs'
+import { formatPriceCents } from '~/utils/clownfish'
 import { retailShippingPolicySentence } from '#shared/retailShipping.js'
 
 const route = useRoute()
@@ -162,47 +160,49 @@ const slug = route.params.slug
 const config = useRuntimeConfig()
 const siteUrl = (config.public.siteUrl || 'https://blueeyedclowns.com').replace(/\/$/, '')
 
-const { data: fish, pending, error } = await useAsyncData(`shop-product-${slug}`, () =>
-  $fetch(`/api/shop/clownfish/${slug}`)
+const { data: pair, pending, error } = await useAsyncData(`bonded-pair-${slug}`, () =>
+  $fetch(`/api/shop/bonded-pairs/${slug}`)
 )
 
-if (!pending.value && !fish.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Product not found' })
+if (!pending.value && !pair.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Bonded pair not found' })
 }
 
-const { data: catalog } = await useAsyncData('shop-clownfish-related', () =>
-  $fetch('/api/shop/clownfish')
+const { data: catalog } = await useAsyncData('shop-bonded-pairs', () =>
+  $fetch('/api/shop/bonded-pairs')
 )
 
-const quickFacts = computed(() => quickFactsForClownfish(fish.value))
-const related = computed(() => relatedClownfish(fish.value, catalog.value || []))
+const quickFacts = computed(() => quickFactsForBondedPair(pair.value))
+const related = computed(() =>
+  (catalog.value || []).filter((item) => item.slug !== pair.value?.slug).slice(0, 3)
+)
 
-if (fish.value) {
+if (pair.value) {
   useSiteSeo({
-    title: productSeoTitle(fish.value),
-    description: productSeoDescription(fish.value),
-    ogImage: fish.value.image_url || undefined,
+    title: bondedPairSeoTitle(pair.value),
+    description: bondedPairSeoDescription(pair.value),
+    ogImage: pair.value.image_url || pair.value.video_poster_url || undefined,
   })
 
   useJsonLd([
-    buildProductSchema(fish.value, siteUrl),
+    buildBondedPairProductSchema(pair.value, siteUrl),
     buildBreadcrumbSchema([
       { name: 'Home', url: siteUrl },
-      { name: 'Shop', url: `${siteUrl}/shop` },
-      { name: fish.value.name, url: `${siteUrl}/shop/${fish.value.slug}` },
+      { name: 'Bonded Pairs', url: `${siteUrl}/bonded-pairs` },
+      { name: pair.value.name, url: `${siteUrl}/bonded-pairs/${pair.value.slug}` },
     ]),
   ])
 } else if (!pending.value) {
-  useSiteSeo({ title: 'Product Not Found', noindex: true })
+  useSiteSeo({ title: 'Bonded Pair Not Found', noindex: true })
 }
 
 const cart = useCart()
 const cartToast = useCartToast()
 
 function addToCart() {
-  if (!fish.value?.in_stock) return
-  cart.addItem({ ...fish.value, type: 'single' }, 1)
-  cartToast.show(fish.value.name)
+  if (!pair.value || pair.value.status !== 'available') return
+  cart.addItem({ ...pair.value, type: 'bonded_pair' }, 1)
+  cartToast.show(pair.value.name)
 }
 </script>
 
@@ -259,18 +259,11 @@ function addToCart() {
 .product-image {
   width: 100%;
   aspect-ratio: 4 / 3;
-  object-fit: cover;
   border-radius: 1.25rem;
+  overflow: hidden;
   background: #020617;
   border: 1px solid rgba(148, 163, 184, 0.35);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-}
-
-.placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #64748b;
 }
 
 .photo-note {
@@ -289,6 +282,11 @@ function addToCart() {
   background: rgba(8, 47, 73, 0.9);
   color: #e0f2fe;
   margin: 0 0 0.75rem;
+}
+
+.pattern-tag.reserved {
+  background: rgba(120, 53, 15, 0.92);
+  color: #ffedd5;
 }
 
 h1 {

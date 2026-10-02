@@ -61,45 +61,76 @@ export function retailShippingPolicySentence() {
   return `Overnight shipping is ${rate} per retail order, and free when the merchandise subtotal is ${threshold} or more.`
 }
 
+export const CART_ITEM_SINGLE = 'single'
+export const CART_ITEM_BONDED_PAIR = 'bonded_pair'
+
 function pricingError(statusMessage) {
   const error = new Error(statusMessage)
   error.statusCode = 400
   return error
 }
 
+export function normalizeCartItemType(value) {
+  return value === CART_ITEM_BONDED_PAIR ? CART_ITEM_BONDED_PAIR : CART_ITEM_SINGLE
+}
+
+function catalogItemKey(type, id) {
+  return `${normalizeCartItemType(type)}:${String(id)}`
+}
+
 /**
  * Price a retail cart from catalog rows. Client-sent price_cents is ignored.
+ * Bonded pairs must be available, are sold as quantity 1, and write clownfish_id as null.
  */
 export function priceRetailCartItems(items, catalog) {
   if (!Array.isArray(items) || items.length === 0) {
     throw pricingError('Request must include an array of items with id and quantity.')
   }
 
-  const byId = new Map((catalog || []).map((fish) => [String(fish.id), fish]))
-  const quantityById = new Map()
+  const byKey = new Map(
+    (catalog || []).map((product) => [
+      catalogItemKey(product.type || product.itemType, product.id),
+      {
+        ...product,
+        type: normalizeCartItemType(product.type || product.itemType),
+      },
+    ])
+  )
+  const quantityByKey = new Map()
 
   for (const row of items) {
     const id = row?.id == null ? '' : String(row.id)
     if (!id) {
       throw pricingError('Each item must include a product id.')
     }
-    const quantity = Math.max(1, parseInt(row.quantity, 10) || 1)
-    quantityById.set(id, (quantityById.get(id) || 0) + quantity)
+    const type = normalizeCartItemType(row.type || row.itemType)
+    const key = catalogItemKey(type, id)
+    if (type === CART_ITEM_BONDED_PAIR) {
+      quantityByKey.set(key, 1)
+    } else {
+      const quantity = Math.max(1, parseInt(row.quantity, 10) || 1)
+      quantityByKey.set(key, (quantityByKey.get(key) || 0) + quantity)
+    }
   }
 
   const lineItems = []
   let merchandiseSubtotalCents = 0
 
-  for (const [id, quantity] of quantityById) {
-    const fish = byId.get(id)
-    if (!fish) {
+  for (const [key, quantity] of quantityByKey) {
+    const product = byKey.get(key)
+    if (!product) {
       throw pricingError('One or more cart items are no longer available.')
     }
-    const priceCents = Math.max(0, parseInt(fish.price_cents, 10) || 0)
+    if (product.type === CART_ITEM_BONDED_PAIR && product.status && product.status !== 'available') {
+      throw pricingError('One or more bonded pairs are no longer available.')
+    }
+    const priceCents = Math.max(0, parseInt(product.price_cents, 10) || 0)
     merchandiseSubtotalCents += quantity * priceCents
     lineItems.push({
-      clownfish_id: fish.id,
-      product_name: fish.name || 'Clownfish',
+      item_id: product.id,
+      type: product.type,
+      clownfish_id: product.type === CART_ITEM_BONDED_PAIR ? null : product.id,
+      product_name: product.name || (product.type === CART_ITEM_BONDED_PAIR ? 'Bonded pair' : 'Clownfish'),
       quantity,
       price_cents: priceCents,
     })
