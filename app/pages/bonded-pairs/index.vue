@@ -2,114 +2,86 @@
   <section class="page">
     <div class="inner">
       <header class="header">
-        <p class="eyebrow">Captive-bred clownfish for sale</p>
-        <h1>Tank-raised clownfish</h1>
+        <p class="eyebrow">Unique WYSIWYG pairs</p>
+        <h1>Bonded Clownfish Pairs for Sale</h1>
         <p>
-          Browse current availability, compare beginner-friendly and premium designer morphs, and
-          choose a feeding-ready clownfish for your reef. Bonded pairs are listed separately.
+          Each bonded pair is one of a kind. The video or photo on a listing is the exact pair you
+          receive — what you see is what you get.
         </p>
       </header>
 
-      <section class="chooser chooser-pairs" aria-label="Shop bonded pairs">
+      <section class="chooser" aria-label="Shop single clownfish">
         <div>
-          <strong>Want an established pair?</strong>
-          <span>Each bonded pair is unique. The video shows the exact pair you receive.</span>
+          <strong>Looking for a single clownfish?</strong>
+          <span>Browse feeding-ready singles in the regular shop. Pairs are listed only here.</span>
         </div>
-        <NuxtLink to="/bonded-pairs">Shop bonded pairs</NuxtLink>
-      </section>
-
-      <section class="chooser" aria-label="Shopping help and guarantees">
-        <div>
-          <strong>Need help choosing?</strong>
-          <span>Start with hardy Ocellaris or compare designer morphs before you add to cart.</span>
-        </div>
-        <NuxtLink to="/guides/clownfish-morphs">Read the morph guide</NuxtLink>
+        <NuxtLink to="/shop">Shop single clownfish</NuxtLink>
       </section>
 
       <div class="reassurance-strip" aria-label="Purchase reassurance">
+        <span>Exact pair shown</span>
         <span>3-day live guarantee</span>
         <span>Overnight live-fish shipping</span>
-        <span>Ships Monday through Friday</span>
         <span>Captive-bred and feeding well</span>
       </div>
 
       <div v-if="pending" class="state state-panel">
         <img src="/images/shop-empty.svg" alt="" class="state-illustration" width="240" height="180" />
-        <p>Loading clownfish from the hatchery…</p>
+        <p>Loading bonded pairs from the hatchery…</p>
       </div>
       <div v-else-if="fetchError" class="state state-panel error">
         <img src="/images/shop-empty.svg" alt="" class="state-illustration" width="240" height="180" />
-        <p>There was a problem loading clownfish. Please try again shortly.</p>
+        <p>There was a problem loading bonded pairs. Please try again shortly.</p>
         <button type="button" class="btn-retry" @click="refresh()">Try again</button>
       </div>
-      <div v-else-if="!clownfish?.length" class="state state-panel">
+      <div v-else-if="!pairs?.length" class="state state-panel">
         <img src="/images/shop-empty.svg" alt="" class="state-illustration" width="240" height="180" />
-        <p>No clownfish are available right now.</p>
-        <p class="state-sub">Get notified when new batches are listed.</p>
-        <form class="restock-form" @submit.prevent="handleRestockSubmit">
-          <label class="sr-only" for="restock-email">Email for restock alerts</label>
-          <input
-            id="restock-email"
-            v-model="restockEmail"
-            type="email"
-            name="restock-email"
-            autocomplete="email"
-            placeholder="you@example.com"
-            required
-          />
-          <button type="submit" class="btn-restock">Notify me</button>
-        </form>
-        <p v-if="restockSubmitted" class="restock-success" role="status">
-          Thanks! We'll email you when new clownfish are listed.
-        </p>
+        <p>No bonded pairs are listed right now.</p>
+        <NuxtLink to="/shop" class="btn btn-restock">Shop single clownfish</NuxtLink>
       </div>
 
       <div v-else class="grid">
-        <article v-for="fish in clownfish" :key="fish.id" class="card">
-          <div class="badge">
-            {{ clownfishCategory(fish) }}
+        <article v-for="pair in pairs" :key="pair.id" class="card">
+          <div class="badge" :class="{ reserved: pair.status === 'reserved' }">
+            {{ pair.status === 'reserved' ? 'Reserved' : 'Available' }}
           </div>
 
-          <NuxtLink :to="`/shop/${fish.slug}`" class="image-link">
-            <img
-              v-if="fish.image_url"
-              :src="fish.image_url"
-              :alt="clownfishImageAlt(fish)"
+          <NuxtLink :to="`/bonded-pairs/${pair.slug}`" class="image-link">
+            <BondedPairMedia
               class="image"
-              width="320"
-              height="150"
-              loading="lazy"
-              decoding="async"
+              :video-url="pair.video_url"
+              :poster-url="pair.video_poster_url"
+              :image-url="pair.image_url"
+              :alt="bondedPairImageAlt(pair)"
+              :width="320"
+              :height="180"
             />
-            <div v-else class="image image-placeholder">
-              <span class="placeholder">Clownfish preview</span>
-            </div>
           </NuxtLink>
 
           <h2>
-            <NuxtLink :to="`/shop/${fish.slug}`" class="product-link">{{ fish.name }}</NuxtLink>
+            <NuxtLink :to="`/bonded-pairs/${pair.slug}`" class="product-link">{{ pair.name }}</NuxtLink>
           </h2>
-          <p class="best-for">{{ clownfishBestFor(fish) }}</p>
+          <p class="best-for">{{ bondedPairMorphLabel(pair) }}</p>
           <p class="description">
-            {{ compactDescription(fish) }}
+            {{ compactDescription(pair) }}
           </p>
 
           <div class="meta">
-            <span class="price">{{ formatPriceCents(fish.price_cents) }}</span>
-            <span class="stock" :class="{ 'stock-out': !fish.in_stock }">
-              {{ fish.in_stock ? 'In stock' : 'Temporarily unavailable' }}
+            <span class="price">{{ formatPriceCents(pair.price_cents) }}</span>
+            <span class="stock" :class="{ 'stock-out': pair.status !== 'available' }">
+              {{ pair.status === 'available' ? 'Ready to ship as a pair' : 'Reserved' }}
             </span>
           </div>
 
           <div class="card-actions">
-            <NuxtLink :to="`/shop/${fish.slug}`" class="btn btn-secondary">View details</NuxtLink>
+            <NuxtLink :to="`/bonded-pairs/${pair.slug}`" class="btn btn-secondary">View pair</NuxtLink>
             <button
               class="btn"
               type="button"
-              :disabled="!fish.in_stock"
-              @click="addToCart(fish)"
+              :disabled="pair.status !== 'available'"
+              @click="addToCart(pair)"
             >
-              Add to cart
+              {{ pair.status === 'available' ? 'Add to cart' : 'Reserved' }}
             </button>
           </div>
         </article>
@@ -119,51 +91,36 @@
 </template>
 
 <script setup>
-import {
-  clownfishBestFor,
-  clownfishCategory,
-  clownfishImageAlt,
-  compactDescription,
-  formatPriceCents,
-} from '~/utils/clownfish'
+import { bondedPairImageAlt, bondedPairMorphLabel } from '~/utils/bondedPairs'
+import { compactDescription, formatPriceCents } from '~/utils/clownfish'
 
 const config = useRuntimeConfig()
 const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').replace(/\/$/, '')
 
 useSiteSeo({
-  title: 'Shop Captive-Bred Clownfish',
+  title: 'Bonded Clownfish Pairs for Sale',
   description:
-    'Browse captive-bred clownfish: ocellaris, snowflake, black ice & more. In-stock updates weekly.',
+    'Unique WYSIWYG bonded clownfish pairs. Each listing shows the exact pair you receive, with overnight shipping and a 3-day live guarantee.',
 })
 
-const { data: clownfish, pending, error: fetchError, refresh } = await useAsyncData('shop-clownfish', () =>
-  $fetch('/api/shop/clownfish')
+const { data: pairs, pending, error: fetchError, refresh } = await useAsyncData('shop-bonded-pairs', () =>
+  $fetch('/api/shop/bonded-pairs')
 )
 
-if (clownfish.value?.length) {
+if (pairs.value?.length) {
   useJsonLd([
-    buildItemListSchema(clownfish.value, siteUrl),
-    ...clownfish.value.map((fish) => buildProductSchema(fish, siteUrl)),
+    buildBondedPairItemListSchema(pairs.value, siteUrl),
+    ...pairs.value.map((pair) => buildBondedPairProductSchema(pair, siteUrl)),
   ])
 }
 
-const restockEmail = ref('')
-const restockSubmitted = ref(false)
 const cart = useCart()
 const cartToast = useCartToast()
 
-function addToCart(fish) {
-  cart.addItem({ ...fish, type: 'single' }, 1)
-  cartToast.show(fish.name)
-}
-
-function handleRestockSubmit() {
-  const email = restockEmail.value.trim()
-  if (!email) return
-  const subject = encodeURIComponent('Restock alert signup')
-  const body = encodeURIComponent(`Please notify me when new clownfish are listed.\n\nEmail: ${email}`)
-  window.location.href = `mailto:blueeyedclowns@gmail.com?subject=${subject}&body=${body}`
-  restockSubmitted.value = true
+function addToCart(pair) {
+  if (pair.status !== 'available') return
+  cart.addItem({ ...pair, type: 'bonded_pair' }, 1)
+  cartToast.show(pair.name)
 }
 </script>
 
@@ -195,7 +152,7 @@ function handleRestockSubmit() {
 
 .header p {
   color: #cbd5f5;
-  max-width: 40rem;
+  max-width: 42rem;
 }
 
 .chooser,
@@ -275,39 +232,8 @@ function handleRestockSubmit() {
   opacity: 0.85;
 }
 
-.state-sub {
-  font-size: 0.9rem;
-  color: #94a3b8;
-  margin: 0.35rem 0 1rem;
-}
-
 .state.error {
   color: #fecaca;
-}
-
-.restock-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  justify-content: center;
-  width: 100%;
-  max-width: 20rem;
-}
-
-.restock-form input {
-  flex: 1;
-  min-width: 10rem;
-  border-radius: 0.5rem;
-  border: 1px solid rgba(148, 163, 184, 0.5);
-  background: rgba(15, 23, 42, 0.9);
-  color: #e5e7eb;
-  padding: 0.55rem 0.75rem;
-  font-size: 0.9rem;
-}
-
-.restock-form input:focus-visible {
-  outline: 2px solid #22d3ee;
-  outline-offset: 2px;
 }
 
 .btn-restock,
@@ -322,28 +248,11 @@ function handleRestockSubmit() {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .btn-retry {
   margin-top: 0.75rem;
-}
-
-.restock-success {
-  margin: 0.75rem 0 0;
-  font-size: 0.85rem;
-  color: #7dd3fc;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 .grid {
@@ -379,30 +288,22 @@ function handleRestockSubmit() {
   z-index: 1;
 }
 
+.badge.reserved {
+  background: rgba(120, 53, 15, 0.92);
+  color: #ffedd5;
+}
+
 .image-link {
   display: block;
   text-decoration: none;
 }
 
 .image {
-  width: 100%;
-  height: 150px;
+  height: 180px;
   border-radius: 1rem;
-  object-fit: cover;
+  overflow: hidden;
   margin-bottom: 0.5rem;
   background-color: #020617;
-}
-
-.image-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #64748b;
-  font-size: 0.85rem;
-}
-
-.placeholder {
-  opacity: 0.9;
 }
 
 h2 {
@@ -437,6 +338,7 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
   font-size: 0.9rem;
 }
 

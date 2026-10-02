@@ -26,7 +26,7 @@
 
       <div v-else class="cart-layout">
         <ul class="cart-list">
-          <li v-for="item in cartItems" :key="item.id" class="cart-item">
+          <li v-for="item in cartItems" :key="`${item.type || 'single'}:${item.id}`" class="cart-item">
             <div
               class="item-image"
               :style="item.image_url ? { backgroundImage: `url(${item.image_url})` } : null"
@@ -35,33 +35,41 @@
             </div>
             <div class="item-details">
               <h2>{{ item.name }}</h2>
-              <p class="item-price">{{ formatPrice(item.price_cents) }} each</p>
+              <p class="item-price">
+                {{ formatPrice(item.price_cents) }}
+                {{ item.type === 'bonded_pair' ? ' — unique pair' : ' each' }}
+              </p>
             </div>
             <div class="item-qty">
-              <button
-                type="button"
-                class="qty-btn"
-                aria-label="Decrease quantity"
-                @click="cart.updateQuantity(item.id, item.quantity - 1)"
-              >
-                −
-              </button>
-              <span class="qty-value">{{ item.quantity }}</span>
-              <button
-                type="button"
-                class="qty-btn"
-                aria-label="Increase quantity"
-                @click="cart.updateQuantity(item.id, item.quantity + 1)"
-              >
-                +
-              </button>
+              <template v-if="item.type === 'bonded_pair'">
+                <span class="qty-value">1</span>
+              </template>
+              <template v-else>
+                <button
+                  type="button"
+                  class="qty-btn"
+                  aria-label="Decrease quantity"
+                  @click="cart.updateQuantity(item.id, item.quantity - 1, item.type)"
+                >
+                  −
+                </button>
+                <span class="qty-value">{{ item.quantity }}</span>
+                <button
+                  type="button"
+                  class="qty-btn"
+                  aria-label="Increase quantity"
+                  @click="cart.updateQuantity(item.id, item.quantity + 1, item.type)"
+                >
+                  +
+                </button>
+              </template>
             </div>
             <p class="item-line-total">{{ formatPrice(item.price_cents * item.quantity) }}</p>
             <button
               type="button"
               class="remove-btn"
               aria-label="Remove from cart"
-              @click="cart.removeItem(item.id)"
+              @click="cart.removeItem(item.id, item.type)"
             >
               Remove
             </button>

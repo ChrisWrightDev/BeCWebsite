@@ -62,6 +62,47 @@ export function buildProductSchema(fish, siteUrl) {
   }
 }
 
+export function buildBondedPairProductSchema(pair, siteUrl) {
+  const url = `${siteUrl}/bonded-pairs/${pair.slug}`
+  const availability =
+    pair.status === 'available'
+      ? 'https://schema.org/InStock'
+      : pair.status === 'reserved'
+        ? 'https://schema.org/LimitedAvailability'
+        : 'https://schema.org/OutOfStock'
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: pair.name,
+    description: pair.description || `${pair.name} — unique bonded clownfish pair from Blue-Eyed Clowns.`,
+    url,
+    image: pair.image_url || pair.video_poster_url || `${siteUrl}/images/og-default.svg`,
+    sku: pair.id,
+    brand: { '@type': 'Brand', name: 'Blue-Eyed Clowns' },
+    offers: {
+      '@type': 'Offer',
+      url,
+      priceCurrency: 'USD',
+      price: (pair.price_cents / 100).toFixed(2),
+      availability,
+    },
+  }
+}
+
+export function buildBondedPairItemListSchema(pairs, siteUrl) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: pairs.map((pair, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: `${siteUrl}/bonded-pairs/${pair.slug}`,
+      name: pair.name,
+    })),
+  }
+}
+
 export function buildItemListSchema(fishList, siteUrl) {
   return {
     '@context': 'https://schema.org',

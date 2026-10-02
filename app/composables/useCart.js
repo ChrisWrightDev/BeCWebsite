@@ -1,12 +1,31 @@
 const CART_KEY = 'bec-cart'
 
+function normalizeCartType(value) {
+  return value === 'bonded_pair' ? 'bonded_pair' : 'single'
+}
+
+function cartItemKey(item) {
+  return `${normalizeCartType(item?.type)}:${String(item?.id)}`
+}
+
+function normalizeStoredItems(items) {
+  return items.map((item) => {
+    const type = normalizeCartType(item?.type)
+    return {
+      ...item,
+      type,
+      quantity: type === 'bonded_pair' ? 1 : item.quantity,
+    }
+  })
+}
+
 function loadFromStorage() {
   if (typeof window === 'undefined' || !window.localStorage) return []
   try {
     const raw = localStorage.getItem(CART_KEY)
     if (raw) {
       const parsed = JSON.parse(raw)
-      return Array.isArray(parsed) ? parsed : []
+      return Array.isArray(parsed) ? normalizeStoredItems(parsed) : []
     }
   } catch (e) {
     console.warn('[cart] load failed', e)
@@ -51,40 +70,51 @@ function createCart() {
     isEmpty,
     addItem(product, quantity = 1) {
       const id = product.id
-      const q = Math.max(1, Number(quantity) || 1)
+      const type = normalizeCartType(product.type || product.itemType)
+      const q = type === 'bonded_pair' ? 1 : Math.max(1, Number(quantity) || 1)
       const current = items.value.slice()
-      const idx = current.findIndex((i) => String(i.id) === String(id))
+      const idx = current.findIndex((i) => cartItemKey(i) === cartItemKey({ id, type }))
       if (idx >= 0) {
         current[idx] = {
           ...current[idx],
-          quantity: (current[idx].quantity || 0) + q
+          type,
+          quantity: type === 'bonded_pair' ? 1 : (current[idx].quantity || 0) + q,
+          name: product.name || current[idx].name,
+          price_cents: product.price_cents,
+          image_url: product.image_url || product.video_poster_url || current[idx].image_url || null,
         }
       } else {
         current.push({
           id,
+          type,
           name: product.name,
           price_cents: product.price_cents,
           quantity: q,
-          image_url: product.image_url || null
+          image_url: product.image_url || product.video_poster_url || null
         })
       }
       setItems(current)
     },
-    updateQuantity(productId, quantity) {
+    updateQuantity(productId, quantity, type) {
+      const itemType = normalizeCartType(type)
       const num = Math.max(0, Number(quantity) || 0)
       if (num === 0) {
-        setItems(items.value.filter((i) => String(i.id) !== String(productId)))
+        setItems(items.value.filter((i) => cartItemKey(i) !== cartItemKey({ id: productId, type: itemType })))
         return
       }
       const current = items.value.slice()
-      const idx = current.findIndex((i) => String(i.id) === String(productId))
+      const idx = current.findIndex((i) => cartItemKey(i) === cartItemKey({ id: productId, type: itemType }))
       if (idx >= 0) {
-        current[idx] = { ...current[idx], quantity: num }
+        current[idx] = {
+          ...current[idx],
+          quantity: current[idx].type === 'bonded_pair' ? 1 : num,
+        }
         setItems(current)
       }
     },
-    removeItem(productId) {
-      setItems(items.value.filter((i) => String(i.id) !== String(productId)))
+    removeItem(productId, type) {
+      const itemType = normalizeCartType(type)
+      setItems(items.value.filter((i) => cartItemKey(i) !== cartItemKey({ id: productId, type: itemType })))
     },
     clearCart() {
       setItems([])
