@@ -2,11 +2,11 @@
 useSiteSeo({
   title: 'Privacy Policy',
   description:
-    'Privacy policy for orders, customer support, cookies, data use, and limited third-party sharing.',
+    'Privacy policy for orders, the release list, contact inquiries, and email sent through Resend.',
   noindex: true,
 })
 
-const effectiveDate = 'June 3, 2026'
+const lastUpdated = 'October 4, 2026'
 
 const toc = [
   ['information', 'Information we may collect'],
@@ -43,18 +43,8 @@ const toc = [
           request customer support; how we use and protect that information; when limited sharing may
           be necessary; and the choices available to you.
         </p>
-        <p class="updated">Effective date: {{ effectiveDate }}</p>
+        <p class="updated">Last updated: {{ lastUpdated }}</p>
       </header>
-
-      <section class="notice" aria-label="Legal review notice">
-        <strong>Legal review notice:</strong>
-        <span>
-          This page is prepared for website publication and is not legal advice. Blue Eyed Clowns
-          should have the final policy reviewed against the website’s actual ecommerce platform,
-          hosting provider, payment processor, shipping tools, analytics tools, customer support
-          workflows, and applicable privacy requirements before relying on it as final legal policy.
-        </span>
-      </section>
 
       <div class="layout">
         <aside class="toc" aria-label="Privacy policy sections">
@@ -70,37 +60,36 @@ const toc = [
           <section id="information" class="panel">
             <h2>1. Information We May Collect</h2>
             <p>
-              We may collect information you choose to provide directly to us, information needed to
-              process orders or respond to requests, and limited technical information about website
-              use.
+              We collect information you choose to give us, information needed to process orders or
+              answer requests, and limited technical information about website use.
             </p>
-            <p>Information you provide may include:</p>
+            <p>Orders. When you check out, we store:</p>
             <ul>
-              <li>Name;</li>
-              <li>Email address;</li>
-              <li>Phone number, if provided;</li>
-              <li>Billing and shipping address;</li>
-              <li>Order details, including products purchased, order history, and shipping preferences;</li>
-              <li>Messages sent through contact forms, email, or customer support channels;</li>
-              <li>
-                Photos or documentation submitted for live-arrival, health guarantee, refund,
-                replacement, or support requests; and
-              </li>
-              <li>Wholesale, local pickup, or business inquiry details, if applicable.</li>
+              <li>Name and email address;</li>
+              <li>Shipping address;</li>
+              <li>The clownfish or bonded pairs in the order, quantities, and totals;</li>
+              <li>Order status and a Stripe payment intent id.</li>
             </ul>
-            <p>Payment information:</p>
+            <p>
+              Card numbers are entered in Stripe’s payment form and processed by Stripe. We do not
+              store full payment card numbers on Blue Eyed Clowns servers. Stripe may return payment
+              status and the payment intent id so we can record a paid order.
+            </p>
+            <p>Release list. If you join the release list on the homepage, footer, or an empty shop page, we store:</p>
             <ul>
-              <li>
-                If the website accepts online payments, full payment card or account details should
-                be collected and processed by the payment processor, not stored directly by Blue Eyed
-                Clowns unless specifically disclosed and protected through appropriate compliant
-                systems.
-              </li>
-              <li>
-                We may receive limited payment-related information from the payment processor, such
-                as payment status, transaction ID, last four digits, billing confirmation, or
-                fraud/risk indicators.
-              </li>
+              <li>Email address;</li>
+              <li>Name, if you provide one;</li>
+              <li>Where you signed up, whether you are subscribed, and an unsubscribe token.</li>
+            </ul>
+            <p>
+              Contact inquiries. The contact form stores wholesale requests, local pickup requests,
+              product questions, and other messages, including name, email, phone if you provide one,
+              subject, message, and the fish or bonded-pair page you asked about.
+            </p>
+            <p>Other information you may send us:</p>
+            <ul>
+              <li>Photos or notes for live-arrival, health guarantee, refund, or replacement requests; and</li>
+              <li>Messages you send directly to blueeyedclowns@gmail.com.</li>
             </ul>
             <p>Technical and website-use information may include:</p>
             <ul>
@@ -117,29 +106,18 @@ const toc = [
           <section id="cookies" class="panel">
             <h2>2. Cookies and Analytics</h2>
             <p>
-              The Blue Eyed Clowns website may use cookies, pixels, log files, or similar
-              technologies to keep the website working, remember cart or session activity, understand
-              how visitors use the site, detect errors, improve performance, and support basic
-              analytics.
-            </p>
-            <p>Cookies may be used for:</p>
-            <ul>
-              <li>Shopping cart and checkout functionality;</li>
-              <li>Website security and fraud prevention;</li>
-              <li>Remembering user preferences;</li>
-              <li>Measuring page traffic and website performance; and</li>
-              <li>Understanding which products or pages are most useful to visitors.</li>
-            </ul>
-            <p>
-              If analytics, advertising, ecommerce, or other third-party tools are used, those tools
-              may collect information under their own privacy practices. Before publication, Blue
-              Eyed Clowns should identify relevant providers here, such as ecommerce platform,
-              hosting provider, analytics provider, advertising pixel, cookie banner, tag manager,
-              chat widget, or fraud-prevention tools, if any.
+              The shopping cart is stored in local storage in your browser on this device. It is not
+              sent to us until you start checkout. We do not run a third-party advertising pixel or
+              a separate analytics product on this site.
             </p>
             <p>
-              Most browsers let you block or delete cookies. Some website features, including cart
-              or checkout functions, may not work properly if cookies are disabled.
+              Stripe’s payment form at checkout is provided by Stripe and may use cookies or similar
+              technology under Stripe’s own privacy policy. The site is hosted on Vercel, which may
+              process standard server logs such as IP address, browser, and the page requested.
+            </p>
+            <p>
+              Most browsers let you block or delete cookies and site data. Checkout may not work if
+              the browser blocks the payment form.
             </p>
           </section>
 
@@ -147,8 +125,9 @@ const toc = [
             <h2>3. How We Use Information</h2>
             <p>We may use collected information to:</p>
             <ul>
-              <li>Process, confirm, and fulfill orders;</li>
+              <li>Process, confirm, and fulfill orders, including the order confirmation email;</li>
               <li>Arrange shipping and delivery of live fish and related products;</li>
+              <li>Send release-list emails when you have subscribed, and stop them when you unsubscribe;</li>
               <li>Provide customer service and respond to inquiries;</li>
               <li>Evaluate live-arrival, health guarantee, refund, replacement, or support claims;</li>
               <li>
@@ -185,19 +164,13 @@ const toc = [
               business, or comply with legal obligations. For example, we may share information with:
             </p>
             <ul>
-              <li>Payment processors to complete transactions;</li>
+              <li>Stripe, to take payment and confirm that an order was paid;</li>
+              <li>Supabase, which stores orders, customers, release-list signups, and inquiries;</li>
+              <li>Vercel, which hosts the website;</li>
+              <li>UPS or FedEx, to deliver orders Monday through Thursday;</li>
               <li>
-                Ecommerce, website hosting, shopping cart, or website maintenance providers to
-                operate the site;
-              </li>
-              <li>Shipping carriers and fulfillment partners to deliver orders;</li>
-              <li>
-                Email, messaging, or customer support tools to respond to inquiries and send
-                order-related communications;
-              </li>
-              <li>
-                Analytics, security, fraud-prevention, or performance tools to operate, measure, and
-                protect the website;
+                Resend, to send order confirmation emails to you, and to notify
+                blueeyedclowns@gmail.com about new orders and new inquiries;
               </li>
               <li>
                 Professional advisors, such as accountants, attorneys, insurers, or compliance
@@ -273,7 +246,11 @@ const toc = [
                 Delete information that is no longer needed, subject to legal, tax, fraud-prevention,
                 shipping, warranty, guarantee, accounting, or recordkeeping requirements; or
               </li>
-              <li>Stop sending non-essential marketing communications, if any are offered.</li>
+              <li>
+                Unsubscribe from the release list. Use the unsubscribe link in a release email, or
+                the unsubscribe page linked from that email. That does not stop order or shipping
+                emails for a purchase you already made.
+              </li>
             </ul>
             <p>
               Order-related, shipping, safety, warranty, guarantee, legal, and customer-service
@@ -317,11 +294,9 @@ const toc = [
             <h2>10. State, Regional, or International Privacy Rights</h2>
             <p>
               Depending on where you live, you may have additional privacy rights under state,
-              national, or regional privacy laws. Because Blue Eyed Clowns appears to be a small
-              U.S.-based ecommerce and aquaculture business, not all privacy laws will necessarily
-              apply. The business should confirm its operating locations, sales footprint, customer
-              geography, annual revenue thresholds, data volume, and service providers before making
-              any jurisdiction-specific claims.
+              national, or regional privacy laws. Blue Eyed Clowns is a U.S. aquaculture business
+              shipping captive-bred clownfish. If a privacy law applies to your information, contact
+              us and we will respond.
             </p>
             <p>
               If a legally applicable privacy right applies to your information, you may contact us at
@@ -335,7 +310,7 @@ const toc = [
             <p>
               We may update this Privacy Policy from time to time to reflect changes in our website,
               business practices, legal requirements, service providers, or customer support workflows.
-              When we update the Policy, we will revise the Effective Date above.
+              When we update the Policy, we will revise the last-updated date above.
             </p>
             <p>
               Continued use of the website after an updated Privacy Policy is posted means the updated
@@ -352,7 +327,6 @@ const toc = [
             <p>
               Blue Eyed Clowns<br />
               Email: <a href="mailto:blueeyedclowns@gmail.com">blueeyedclowns@gmail.com</a><br />
-              Mailing Address: Contact us for current mailing information.<br />
               Website: <a href="https://blueeyedclowns.com/">https://blueeyedclowns.com/</a>
             </p>
           </section>

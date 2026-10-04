@@ -65,7 +65,7 @@
               >
                 Add to cart
               </button>
-              <NuxtLink :to="`/contact?subject=${encodeURIComponent(`Question about ${fish.name}`)}`" class="btn btn-secondary">
+              <NuxtLink :to="`/contact?type=product_question&product=${encodeURIComponent(fish.slug)}&subject=${encodeURIComponent(`Question about ${fish.name}`)}`" class="btn btn-secondary">
                 Ask about this fish
               </NuxtLink>
             </div>

@@ -152,7 +152,12 @@ useJsonLd([buildOrganizationSchema(siteUrl), buildWebSiteSchema(siteUrl)])
           <h2 id="signup-heading">Want first notice on new morph drops?</h2>
           <p>Join the Blue-Eyed Clowns release list for new batches, premium designer morphs, and wholesale availability.</p>
         </div>
-        <a href="mailto:blueeyedclowns@gmail.com?subject=New%20morph%20release%20list" class="btn btn-primary">Notify me</a>
+        <ReleaseListSignup
+          class="signup-form"
+          source="homepage"
+          id-prefix="home-release"
+          button-label="Notify me"
+        />
       </section>
 
       <div class="section-cta">
@@ -425,7 +430,12 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.25rem;
+  gap: 1.5rem;
+}
+
+.signup-form {
+  flex: 1 1 18rem;
+  max-width: 24rem;
 }
 
 .signup p {

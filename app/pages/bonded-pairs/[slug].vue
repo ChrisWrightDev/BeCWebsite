@@ -64,7 +64,7 @@
               >
                 {{ pair.status === 'available' ? 'Add pair to cart' : 'Reserved' }}
               </button>
-              <NuxtLink :to="`/contact?subject=${encodeURIComponent(`Question about ${pair.name}`)}`" class="btn btn-secondary">
+              <NuxtLink :to="`/contact?type=product_question&pair=${encodeURIComponent(pair.slug)}&subject=${encodeURIComponent(`Question about ${pair.name}`)}`" class="btn btn-secondary">
                 Ask about this pair
               </NuxtLink>
             </div>

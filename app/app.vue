@@ -82,6 +82,15 @@ watch(
         <div class="footer-brand">
           <p class="footer-name">Blue-Eyed Clowns</p>
           <p class="footer-tagline">Premium tank-bred clownfish</p>
+          <ReleaseListSignup
+            class="footer-signup"
+            source="footer"
+            compact
+            :show-name="false"
+            heading="Release list"
+            id-prefix="footer-release"
+            button-label="Notify me"
+          />
           <nav class="footer-social" aria-label="Blue-Eyed Clowns on social media">
             <a
               v-for="profile in SOCIAL_PROFILES"
@@ -398,6 +407,10 @@ body {
 .footer-tagline {
   margin: 0;
   color: #cbd5e1;
+}
+
+.footer-signup {
+  margin-top: 1rem;
 }
 
 .footer-social {
