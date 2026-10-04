@@ -1,52 +1,19 @@
-import Stripe from 'stripe'
-import { createClient } from '@supabase/supabase-js'
-import {
-  resolveRetailCheckoutOrder,
-  shippingWorkOrderNote,
-} from '../../utils/retailOrderPricing.js'
+import { useSupabaseAdmin } from '../../utils/supabaseAdmin.js'
+import { useStripe } from '../../utils/stripeClient.js'
+import { fulfillPaidOrder } from '../../utils/fulfillPaidOrder.js'
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
-
-  if (!config.stripeSecretKey) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Server is not configured: add NUXT_STRIPE_SECRET_KEY to your .env'
-    })
-  }
-  if (!config.supabaseServiceRoleKey) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Server is not configured: add NUXT_SUPABASE_SERVICE_ROLE_KEY to your .env (Project Settings → API → service_role in Supabase)'
-    })
-  }
-  if (!config.supabaseUrl) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Server is not configured: add NUXT_SUPABASE_URL to your .env'
-    })
-  }
-
   const body = await readBody(event)
-  const {
-    paymentIntentId,
-    customerEmail,
-    customerName,
-    shippingAddress,
-    items
-  } = body || {}
-
-  if (!paymentIntentId || !customerEmail || !Array.isArray(items) || items.length === 0) {
+  const paymentIntentId = body?.paymentIntentId
+  if (!paymentIntentId) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Missing paymentIntentId, customerEmail, or items.'
+      statusMessage: 'Missing paymentIntentId.',
+      message: 'Missing paymentIntentId.',
     })
   }
 
-  const stripe = new Stripe(config.stripeSecretKey, {
-    apiVersion: '2024-12-18.acacia'
-  })
-
+  const stripe = useStripe()
   let paymentIntent
   try {
     paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
@@ -54,150 +21,22 @@ export default defineEventHandler(async (event) => {
     console.error('[orders/complete] Stripe retrieve error', err)
     throw createError({
       statusCode: 400,
-      statusMessage: 'Invalid payment.'
+      statusMessage: 'Invalid payment.',
+      message: 'Invalid payment.',
     })
   }
 
-  if (paymentIntent.status !== 'succeeded') {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Payment has not succeeded. Current status: ' + paymentIntent.status
-    })
-  }
-
-  const orderTotals = await resolveRetailCheckoutOrder(items)
-
-  if (paymentIntent.amount !== orderTotals.totalCents) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Payment amount does not match the current order total.'
-    })
-  }
-
-  const address = shippingAddress || {}
-  const lineItems = orderTotals.lineItems
-
-  const supabase = createClient(
-    config.supabaseUrl,
-    config.supabaseServiceRoleKey
-  )
-
-  const { data: order, error: orderError } = await supabase
-    .from('orders')
-    .insert({
-      stripe_payment_intent_id: paymentIntentId,
-      customer_email: customerEmail,
-      customer_name: customerName || null,
-      shipping_address_line1: address.line1 || null,
-      shipping_address_line2: address.line2 || null,
-      shipping_city: address.city || null,
-      shipping_state: address.state || null,
-      shipping_postal_code: address.postal_code || null,
-      shipping_country: address.country || 'US',
-      total_cents: orderTotals.totalCents,
-      status: 'paid',
-      updated_at: new Date().toISOString()
-    })
-    .select('id')
-    .single()
-
-  if (orderError) {
-    console.error('[orders/complete] Supabase orders insert error', orderError)
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Could not save order.'
-    })
-  }
-
-  const orderId = order.id
-
-  const orderRows = lineItems.map((row) => ({
-    order_id: orderId,
-    clownfish_id: row.clownfish_id,
-    product_name: row.product_name,
-    quantity: row.quantity,
-    price_cents: row.price_cents
-  }))
-
-  const { error: itemsError } = await supabase.from('order_items').insert(orderRows)
-
-  if (itemsError) {
-    console.error('[orders/complete] Supabase order_items insert error', itemsError)
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Could not save order items.'
-    })
-  }
-
-  const pairIds = [...new Set(
-    lineItems
-      .filter((row) => row.type === 'bonded_pair' && row.item_id)
-      .map((row) => row.item_id)
-  )]
-
-  if (pairIds.length > 0) {
-    const { error: soldError } = await supabase
-      .from('bonded_pairs')
-      .update({ status: 'sold' })
-      .in('id', pairIds)
-
-    if (soldError) {
-      console.error('[orders/complete] bonded_pairs sold update error', soldError)
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Order saved but pair availability could not be updated. Contact support with order ID: ' + orderId
-      })
-    }
-  }
-
-  const now = new Date()
-  const workOrderNumber =
-    'WO-' +
-    now.getFullYear() +
-    String(now.getMonth() + 1).padStart(2, '0') +
-    String(now.getDate()).padStart(2, '0') +
-    '-' +
-    String(now.getHours()).padStart(2, '0') +
-    String(now.getMinutes()).padStart(2, '0') +
-    String(now.getSeconds()).padStart(2, '0') +
-    '-' +
-    orderId.slice(0, 8)
-
-  const workOrderPayload = {
-    work_order_number: workOrderNumber,
-    order_id: orderId,
-    customer_name: customerName || null,
-    customer_email: customerEmail,
-    shipping_address_line1: address.line1 || null,
-    shipping_address_line2: address.line2 || null,
-    shipping_city: address.city || null,
-    shipping_state: address.state || null,
-    shipping_postal_code: address.postal_code || null,
-    shipping_country: address.country || 'US',
-    line_items: lineItems.map((row) => ({
-      product_name: row.product_name,
-      quantity: row.quantity,
-      price_cents: row.price_cents
-    })),
-    total_cents: orderTotals.totalCents,
-    status: 'pending',
-    notes: shippingWorkOrderNote(orderTotals),
-    updated_at: now.toISOString()
-  }
-
-  const { error: workOrderError } = await supabase.from('work_orders').insert(workOrderPayload)
-
-  if (workOrderError) {
-    console.error('[orders/complete] Supabase work_orders insert error', workOrderError)
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Order saved but work order failed. Contact support with order ID: ' + orderId
-    })
-  }
+  const supabase = useSupabaseAdmin()
+  const summary = await fulfillPaidOrder({
+    supabase,
+    paymentIntent,
+    fallback: body,
+  })
 
   return {
-    orderId,
-    workOrderNumber,
-    message: 'Order and work order created.'
+    ...summary,
+    message: summary.alreadyRecorded
+      ? 'Order already recorded.'
+      : 'Order and work order created.',
   }
 })

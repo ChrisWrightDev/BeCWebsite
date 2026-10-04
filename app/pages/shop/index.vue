@@ -56,12 +56,22 @@
             autocomplete="email"
             placeholder="you@example.com"
             required
+            maxlength="254"
           />
-          <button type="submit" class="btn-restock">Notify me</button>
+          <div class="hp" aria-hidden="true">
+            <label>
+              Leave this blank
+              <input v-model="restockHoneypot" type="text" name="bec_hp" tabindex="-1" autocomplete="off" />
+            </label>
+          </div>
+          <button type="submit" class="btn-restock" :disabled="restockSending">
+            {{ restockSending ? 'Sending…' : 'Notify me' }}
+          </button>
         </form>
         <p v-if="restockSubmitted" class="restock-success" role="status">
           Thanks! We'll email you when new clownfish are listed.
         </p>
+        <p v-if="restockError" class="restock-error" role="alert">{{ restockError }}</p>
       </div>
 
       <div v-else class="grid">
@@ -148,7 +158,10 @@ if (clownfish.value?.length) {
 }
 
 const restockEmail = ref('')
+const restockHoneypot = ref('')
 const restockSubmitted = ref(false)
+const restockError = ref('')
+const restockSending = ref(false)
 const cart = useCart()
 const cartToast = useCartToast()
 
@@ -157,13 +170,28 @@ function addToCart(fish) {
   cartToast.show(fish.name)
 }
 
-function handleRestockSubmit() {
+async function handleRestockSubmit() {
   const email = restockEmail.value.trim()
-  if (!email) return
-  const subject = encodeURIComponent('Restock alert signup')
-  const body = encodeURIComponent(`Please notify me when new clownfish are listed.\n\nEmail: ${email}`)
-  window.location.href = `mailto:blueeyedclowns@gmail.com?subject=${subject}&body=${body}`
-  restockSubmitted.value = true
+  if (!email || restockSending.value) return
+  restockError.value = ''
+  restockSending.value = true
+  try {
+    await $fetch('/api/subscribers', {
+      method: 'POST',
+      body: {
+        email,
+        source: 'restock',
+        bec_hp: restockHoneypot.value,
+      },
+    })
+    restockSubmitted.value = true
+    restockEmail.value = ''
+  } catch (err) {
+    restockSubmitted.value = false
+    restockError.value = err?.data?.statusMessage || err?.data?.message || 'Could not save your email. Please try again.'
+  } finally {
+    restockSending.value = false
+  }
 }
 </script>
 
@@ -332,6 +360,20 @@ function handleRestockSubmit() {
   margin: 0.75rem 0 0;
   font-size: 0.85rem;
   color: #7dd3fc;
+}
+
+.restock-error {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: #fecaca;
+}
+
+.hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 .sr-only {

@@ -19,8 +19,25 @@ useSiteSeo({
 
 useJsonLd(buildContactPageSchema(siteUrl))
 
+const route = useRoute()
 const submitted = ref(false)
+const submitting = ref(false)
 const formError = ref('')
+const mailtoFallback = ref('')
+
+const inquiryTypes = [
+  { value: 'contact', label: 'General question' },
+  { value: 'wholesale', label: 'Wholesale inquiry' },
+  { value: 'local_pickup', label: 'Local pickup' },
+  { value: 'product_question', label: 'Question about a fish or pair' },
+]
+
+const defaultSubjects = {
+  contact: '',
+  wholesale: 'Wholesale inquiry',
+  local_pickup: 'Local pickup request',
+  product_question: '',
+}
 
 const faqItems = [
   {
@@ -51,36 +68,93 @@ const faqItems = [
   {
     question: 'Do you offer wholesale or local pickup?',
     answer:
-      'Yes — we work with select local fish stores and serious hobbyists on wholesale orders. Wholesale is typically a $300 minimum with shipping included, arranged by inquiry rather than website checkout. Local pickup is available at our Florida Panhandle storefront, Monday–Friday, 10 AM–5 PM Central. Use the contact form below and select a wholesale inquiry in your subject line, or email blueeyedclowns@gmail.com directly.',
+      'Yes — we work with select local fish stores and serious hobbyists on wholesale orders. Wholesale is typically a $300 minimum with shipping included, arranged by inquiry rather than website checkout. Local pickup is available at our Florida Panhandle storefront, Monday–Friday, 10 AM–5 PM Central. Use the contact form below and choose Wholesale inquiry or Local pickup.',
   },
 ]
 
 const form = reactive({
+  type: 'contact',
   name: '',
   email: '',
+  phone: '',
   subject: '',
   message: '',
+  productSlug: '',
+  pairSlug: '',
+  bec_hp: '',
 })
 
-function handleSubmit() {
-  formError.value = ''
-  const subject = form.subject.trim() || 'Blue-Eyed Clowns inquiry'
+function queryValue(value) {
+  return Array.isArray(value) ? String(value[0] || '') : String(value || '')
+}
+
+function applyQuery() {
+  const type = queryValue(route.query.type)
+  if (inquiryTypes.some((option) => option.value === type)) form.type = type
+  const subject = queryValue(route.query.subject)
+  if (subject) form.subject = subject
+  else if (!form.subject && defaultSubjects[form.type]) form.subject = defaultSubjects[form.type]
+  form.productSlug = queryValue(route.query.product || route.query.productSlug)
+  form.pairSlug = queryValue(route.query.pair || route.query.pairSlug)
+  if ((form.productSlug || form.pairSlug) && !queryValue(route.query.type)) {
+    form.type = 'product_question'
+  }
+}
+
+function applyDefaultSubject(type) {
+  const usesDefault = !form.subject.trim() || Object.values(defaultSubjects).includes(form.subject)
+  if (usesDefault) form.subject = defaultSubjects[type] || ''
+}
+
+function selectType(type) {
+  form.type = type
+  applyDefaultSubject(type)
+  document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+function onTypeInput(event) {
+  applyDefaultSubject(event.target.value)
+}
+
+function mailtoHref() {
+  const subject = form.subject.trim() || defaultSubjects[form.type] || 'Blue-Eyed Clowns inquiry'
   const body = [
     `Name: ${form.name}`,
     `Email: ${form.email}`,
+    form.phone ? `Phone: ${form.phone}` : '',
+    form.productSlug ? `Fish: ${form.productSlug}` : '',
+    form.pairSlug ? `Bonded pair: ${form.pairSlug}` : '',
     '',
     form.message,
-  ].join('\n')
+  ].filter(Boolean).join('\n')
+  return `mailto:blueeyedclowns@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+}
 
-  const mailto = `mailto:blueeyedclowns@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-
+async function handleSubmit() {
+  formError.value = ''
+  mailtoFallback.value = ''
+  submitted.value = false
+  submitting.value = true
   try {
-    window.location.href = mailto
+    const result = await $fetch('/api/inquiries', {
+      method: 'POST',
+      body: { ...form },
+    })
     submitted.value = true
-  } catch {
-    formError.value = 'Could not open your email client. Email us directly at blueeyedclowns@gmail.com.'
+    form.message = ''
+    if (result?.message) formError.value = ''
+  } catch (err) {
+    mailtoFallback.value = mailtoHref()
+    formError.value = err?.data?.statusMessage
+      || err?.data?.message
+      || 'Could not save your message. Email us directly at blueeyedclowns@gmail.com.'
+  } finally {
+    submitting.value = false
   }
 }
+
+applyQuery()
+watch(() => route.query, applyQuery)
 </script>
 
 <template>
@@ -97,8 +171,14 @@ function handleSubmit() {
 
       <div class="contact-ctas" aria-label="Contact shortcuts">
         <NuxtLink to="/shop" class="contact-cta">Question about a fish</NuxtLink>
-        <a href="mailto:blueeyedclowns@gmail.com?subject=Wholesale%20inquiry" class="contact-cta">Wholesale inquiry</a>
-        <a href="mailto:blueeyedclowns@gmail.com?subject=Local%20pickup%20request" class="contact-cta">Local pickup request</a>
+        <div class="contact-cta-card">
+          <button type="button" class="contact-cta" @click="selectType('wholesale')">Wholesale inquiry</button>
+          <a class="cta-mail" href="mailto:blueeyedclowns@gmail.com?subject=Wholesale%20inquiry">or email us</a>
+        </div>
+        <div class="contact-cta-card">
+          <button type="button" class="contact-cta" @click="selectType('local_pickup')">Local pickup request</button>
+          <a class="cta-mail" href="mailto:blueeyedclowns@gmail.com?subject=Local%20pickup%20request">or email us</a>
+        </div>
       </div>
 
       <section id="faq" class="faq" aria-labelledby="faq-heading">
@@ -116,12 +196,26 @@ function handleSubmit() {
       </section>
 
       <div class="grid">
-        <form class="form" @submit.prevent="handleSubmit">
+        <form id="contact-form" class="form" @submit.prevent="handleSubmit">
           <p v-if="submitted" class="form-success" role="status">
-            Your email client should open with a draft to blueeyedclowns@gmail.com. Send it when
-            ready — we'll reply within one business day.
+            Thanks, we received your message and will reply within one business day.
           </p>
-          <p v-if="formError" class="form-error" role="alert">{{ formError }}</p>
+          <p v-if="formError" class="form-error" role="alert">
+            {{ formError }}
+            <a v-if="mailtoFallback" :href="mailtoFallback">Open an email draft instead.</a>
+          </p>
+          <p v-if="form.productSlug || form.pairSlug" class="form-context">
+            About {{ form.pairSlug || form.productSlug }}
+          </p>
+
+          <label>
+            What is this about?
+            <select v-model="form.type" name="type" @change="onTypeInput">
+              <option v-for="option in inquiryTypes" :key="option.value" :value="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </label>
 
           <label>
             Name
@@ -130,6 +224,7 @@ function handleSubmit() {
               type="text"
               name="name"
               autocomplete="name"
+              maxlength="120"
               required
             />
           </label>
@@ -141,7 +236,19 @@ function handleSubmit() {
               type="email"
               name="email"
               autocomplete="email"
+              maxlength="254"
               required
+            />
+          </label>
+
+          <label>
+            Phone <span class="optional">(optional)</span>
+            <input
+              v-model="form.phone"
+              type="tel"
+              name="phone"
+              autocomplete="tel"
+              maxlength="40"
             />
           </label>
 
@@ -152,6 +259,7 @@ function handleSubmit() {
               type="text"
               name="subject"
               autocomplete="off"
+              maxlength="200"
             />
           </label>
 
@@ -161,11 +269,21 @@ function handleSubmit() {
               v-model="form.message"
               name="message"
               rows="5"
+              maxlength="5000"
               required
             ></textarea>
           </label>
 
-          <button type="submit" class="btn">Send message</button>
+          <div class="hp" aria-hidden="true">
+            <label>
+              Leave this blank
+              <input v-model="form.bec_hp" type="text" name="bec_hp" tabindex="-1" autocomplete="off" />
+            </label>
+          </div>
+
+          <button type="submit" class="btn" :disabled="submitting">
+            {{ submitting ? 'Sending…' : 'Send message' }}
+          </button>
           <p class="form-note">
             Prefer email directly?
             <a href="mailto:blueeyedclowns@gmail.com">blueeyedclowns@gmail.com</a>
@@ -228,6 +346,60 @@ function handleSubmit() {
 
 .contact-cta:hover {
   border-color: #7dd3fc;
+}
+
+.contact-cta-card {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.contact-cta-card .contact-cta {
+  width: 100%;
+  font: inherit;
+  cursor: pointer;
+}
+
+.cta-mail {
+  color: #7dd3fc;
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.optional {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+select {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background-color: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+}
+
+.form-context {
+  margin: 0;
+  color: #bae6fd;
+  font-size: 0.9rem;
+}
+
+.form-error a {
+  color: #7dd3fc;
+}
+
+.hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .faq {
@@ -319,7 +491,8 @@ label {
 }
 
 input,
-textarea {
+textarea,
+select {
   border-radius: 0.75rem;
   border: 1px solid rgba(148, 163, 184, 0.6);
   background-color: rgba(15, 23, 42, 0.9);
@@ -330,7 +503,8 @@ textarea {
 }
 
 input:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible,
+select:focus-visible {
   border-color: #7dd3fc;
   box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.4);
 }

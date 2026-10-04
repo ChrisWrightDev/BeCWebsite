@@ -125,6 +125,7 @@ const summaryItems = computed(() => chargedLineItems.value || cartItems.value)
 
 const stripeMount = ref(null)
 const clientSecret = ref(null)
+const paymentIntentId = ref('')
 const loading = ref(false)
 const mounted = ref(false)
 const stripeError = ref('')
@@ -178,6 +179,7 @@ onMounted(async () => {
 
     const secret = paymentSession.clientSecret
     clientSecret.value = secret
+    paymentIntentId.value = paymentSession.paymentIntentId || ''
     if (!secret || !stripeMount.value) return
 
     const { loadStripe } = await import('@stripe/stripe-js')
@@ -201,6 +203,46 @@ onMounted(async () => {
   }
 })
 
+function shippingPayload() {
+  return {
+    line1: form.line1,
+    line2: form.line2 || null,
+    city: form.city,
+    state: form.state || null,
+    postal_code: form.postal_code,
+    country: form.country || 'US'
+  }
+}
+
+async function syncPaymentIntent() {
+  const paymentSession = await $fetch('/api/stripe/create-payment-intent', {
+    method: 'POST',
+    body: {
+      items: checkoutItemsPayload(),
+      paymentIntentId: paymentIntentId.value || undefined,
+      requireContact: true,
+      customerEmail: form.email,
+      customerName: form.name,
+      shippingAddress: shippingPayload()
+    }
+  })
+
+  paymentIntentId.value = paymentSession.paymentIntentId || paymentIntentId.value
+  if (paymentSession.clientSecret) clientSecret.value = paymentSession.clientSecret
+  if (typeof paymentSession.merchandiseSubtotalCents === 'number') {
+    const next = retailOrderTotals(paymentSession.merchandiseSubtotalCents)
+    const previousTotal = chargedTotals.value?.totalCents
+    chargedTotals.value = next
+    if (previousTotal && previousTotal !== next.totalCents && elements?.fetchUpdates) {
+      const fetched = await elements.fetchUpdates()
+      if (fetched?.error) throw fetched.error
+    }
+  }
+  if (Array.isArray(paymentSession.lineItems)) {
+    chargedLineItems.value = paymentSession.lineItems
+  }
+}
+
 async function handleSubmit() {
   if (!stripe || !elements || !clientSecret.value || loading.value) return
 
@@ -210,22 +252,20 @@ async function handleSubmit() {
   const orderPayload = {
     customerEmail: form.email,
     customerName: form.name || null,
-    shippingAddress: {
-      line1: form.line1,
-      line2: form.line2 || null,
-      city: form.city,
-      state: form.state || null,
-      postal_code: form.postal_code,
-      country: form.country || 'US'
-    },
+    shippingAddress: shippingPayload(),
     items: checkoutItemsPayload()
   }
 
   try {
-    sessionStorage.setItem('bec-checkout-pending', JSON.stringify(orderPayload))
+    await syncPaymentIntent()
+    sessionStorage.setItem('bec-checkout-pending', JSON.stringify({
+      ...orderPayload,
+      paymentIntentId: paymentIntentId.value
+    }))
 
-    const { error } = await stripe.confirmPayment({
+    const result = await stripe.confirmPayment({
       elements,
+      redirect: 'if_required',
       confirmParams: {
         return_url: `${window.location.origin}/checkout/success`,
         receipt_email: form.email || undefined,
@@ -245,14 +285,13 @@ async function handleSubmit() {
       }
     })
 
-    if (error) {
-      submitError.value = error.message || 'Payment failed.'
+    if (result.error) {
+      submitError.value = result.error.message || 'Payment failed.'
       loading.value = false
       return
     }
 
-    const paymentIntent = await stripe.retrievePaymentIntent(clientSecret.value)
-    const pi = paymentIntent.paymentIntent
+    const pi = result.paymentIntent
     if (pi?.status === 'succeeded') {
       await $fetch('/api/orders/complete', {
         method: 'POST',
@@ -260,11 +299,16 @@ async function handleSubmit() {
       })
       sessionStorage.removeItem('bec-checkout-pending')
       cart.clearCart()
-      await navigateTo('/checkout/success')
+      await navigateTo(`/checkout/success?payment_intent=${encodeURIComponent(pi.id)}`)
+      return
+    }
+
+    if (pi?.id) {
+      await navigateTo(`/checkout/success?payment_intent=${encodeURIComponent(pi.id)}&redirect_status=${encodeURIComponent(pi.status || 'processing')}`)
     }
   } catch (e) {
     console.error('[checkout] submit error', e)
-    submitError.value = e?.data?.message || 'Could not complete order. Try again.'
+    submitError.value = e?.data?.statusMessage || e?.data?.message || e?.message || 'Could not complete order. Try again.'
   } finally {
     loading.value = false
   }
