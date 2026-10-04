@@ -21,7 +21,7 @@
       <div class="reassurance-strip" aria-label="Purchase reassurance">
         <span>Exact pair shown</span>
         <span>3-day live guarantee</span>
-        <span>Overnight live-fish shipping</span>
+        <span>UPS or FedEx overnight, Monday through Thursday</span>
         <span>Captive-bred and feeding well</span>
       </div>
 

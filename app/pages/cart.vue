@@ -18,7 +18,7 @@
         </div>
         <div class="empty-reassurance">
           <span>3-day live guarantee</span>
-          <span>Overnight shipping Monday through Friday</span>
+          <span>UPS or FedEx overnight, Monday through Thursday</span>
           <span>Questions before checkout? <NuxtLink to="/contact">Contact us</NuxtLink></span>
         </div>
         <NuxtLink to="/shop" class="btn btn-primary">Shop clownfish</NuxtLink>

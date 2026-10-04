@@ -12,7 +12,7 @@ useSiteSeo({
   noindex: true,
 })
 
-const lastUpdated = 'October 1, 2026'
+const lastUpdated = 'October 4, 2026'
 const shippingRate = formatUsdFromCents(RETAIL_SHIPPING.rateCents)
 const freeShippingThreshold = formatUsdFromCents(RETAIL_SHIPPING.freeThresholdCents)
 
@@ -125,8 +125,8 @@ const toc = [
           <section id="shipping" class="panel">
             <h2>4. Live animal shipping and delivery</h2>
             <p>
-              Live clownfish orders are shipped by overnight delivery on eligible shipping days. Our
-              current site copy states that live-fish shipping is available Monday through Friday,
+              Live clownfish orders are shipped UPS or FedEx overnight on eligible shipping days. Our
+              current site copy states that live-fish shipping is available Monday through Thursday,
               subject to order cutoff, animal readiness, destination, weather, carrier availability,
               holidays, and other conditions that affect safe transit.
             </p>
@@ -208,7 +208,8 @@ const toc = [
             <p>
               Wholesale inquiries, local pickup requests, special orders, breeding requests, and
               similar arrangements may require separate confirmation, pricing, timing, and terms.
-              Wholesale orders are typically a $300 minimum with shipping included and are not
+              Local pickup is available at our Florida Panhandle storefront, Monday–Friday, 10 AM–5 PM
+              Central. Wholesale orders are typically a $300 minimum with shipping included and are not
               placed or charged through the retail website checkout. Unless we agree otherwise in
               writing, these Terms still apply to those arrangements.
             </p>
@@ -325,7 +326,8 @@ const toc = [
               Questions about these Terms, live animal shipping, guarantee support, wholesale orders,
               or local pickup can be sent to
               <a href="mailto:blueeyedclowns@gmail.com">blueeyedclowns@gmail.com</a> or through
-              our <NuxtLink to="/contact">contact page</NuxtLink>.
+              our <NuxtLink to="/contact">contact page</NuxtLink>. Local pickup is at our Florida
+              Panhandle storefront, Monday–Friday, 10 AM–5 PM Central.
             </p>
           </section>
 

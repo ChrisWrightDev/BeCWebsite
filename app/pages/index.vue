@@ -19,7 +19,7 @@ const HERO_WEBP_SRCSET = [
 useSiteSeo({
   title: 'Captive-Bred Clownfish for Sale',
   description:
-    'Premium captive-bred ocellaris, snowflake & designer clownfish. 3-day live guarantee and safe overnight shipping.',
+    'Premium captive-bred ocellaris, snowflake & designer clownfish from the Florida Panhandle. 3-day live guarantee and safe UPS or FedEx overnight shipping Monday through Thursday.',
   ogImage: '/images/og-default.png',
 })
 

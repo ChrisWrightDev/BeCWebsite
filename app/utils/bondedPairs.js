@@ -9,9 +9,9 @@ export function bondedPairSeoTitle(pair) {
 
 export function bondedPairSeoDescription(pair) {
   if (!pair?.name) {
-    return 'Unique WYSIWYG bonded clownfish pairs. What you see is what you get, with overnight shipping and a 3-day live guarantee.'
+    return 'Unique WYSIWYG bonded clownfish pairs. What you see is what you get, with UPS or FedEx overnight shipping Monday through Thursday and a 3-day live guarantee.'
   }
-  return `Unique WYSIWYG ${pair.name}. What you see is what you get — the exact bonded pair shown. 3-day live guarantee, overnight shipping.`
+  return `Unique WYSIWYG ${pair.name}. What you see is what you get — the exact bonded pair shown. 3-day live guarantee, UPS or FedEx overnight shipping Monday through Thursday.`
 }
 
 export function bondedPairMorphLabel(pair) {
@@ -53,7 +53,7 @@ export function quickFactsForBondedPair(pair) {
     { label: 'Captive-bred status', value: 'Tank-raised in aquaculture systems' },
     { label: 'Suggested tank size', value: '20+ gallons for a bonded pair' },
     { label: 'Diet', value: 'Feeding on prepared marine foods before shipping' },
-    { label: 'Shipping schedule', value: 'Overnight live-fish shipping Monday through Friday' },
+    { label: 'Shipping schedule', value: 'Overnight live-fish shipping Monday through Thursday via UPS or FedEx' },
     { label: 'Guarantee', value: '3-day live guarantee with live-arrival support' },
   )
 

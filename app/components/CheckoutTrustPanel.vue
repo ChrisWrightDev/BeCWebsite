@@ -18,7 +18,7 @@ const thresholdLabel = formatUsdFromCents(RETAIL_SHIPPING.freeThresholdCents, {
         <strong>Shipping:</strong> {{ rateLabel }} per order, or FREE at {{ thresholdLabel }}+.
       </li>
       <li>
-        <strong>Shipping days:</strong> Monday through Friday, overnight delivery to your door.
+        <strong>Shipping days:</strong> Monday through Thursday, UPS or FedEx overnight to your door.
       </li>
       <li>
         <strong>3-day live guarantee:</strong> Every clownfish arrives healthy or we make it right.

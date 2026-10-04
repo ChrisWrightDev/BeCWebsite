@@ -13,7 +13,7 @@ export function useSiteSeo(options = {}) {
   const title = options.title ? `${options.title} | ${SITE_NAME}` : `${SITE_NAME} — Premium tank-bred clownfish`
   const description =
     options.description ||
-    'Captive-bred ocellaris, snowflake & designer clownfish. 3-day live guarantee, safe overnight shipping Monday through Friday.'
+    'Captive-bred ocellaris, snowflake & designer clownfish. 3-day live guarantee, safe UPS or FedEx overnight shipping Monday through Thursday.'
   const ogImage = options.ogImage || DEFAULT_OG_IMAGE
   const canonical = `${siteUrl}${route.path === '/' ? '' : route.path}`
 

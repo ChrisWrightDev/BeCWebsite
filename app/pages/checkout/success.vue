@@ -19,7 +19,7 @@
           <template v-else>
             You will receive a shipping confirmation email within one business day.
           </template>
-          Live animals ship Monday through Friday via overnight delivery.
+          Live animals ship Monday through Thursday via UPS or FedEx overnight.
         </p>
         <NuxtLink to="/shop" class="btn btn-primary">Continue shopping</NuxtLink>
       </div>

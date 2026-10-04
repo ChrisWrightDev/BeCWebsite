@@ -26,7 +26,7 @@ const faqItems = [
   {
     question: 'When do you ship live fish?',
     answer:
-      'We ship Monday through Friday, via overnight delivery. This keeps transit time minimal and gives your clownfish the best chance of arriving healthy. Orders placed after our cutoff may ship the following eligible day.',
+      'We ship Monday through Thursday via UPS or FedEx overnight. This keeps transit time minimal and gives your clownfish the best chance of arriving healthy. Orders placed after our cutoff may ship the following eligible day.',
   },
   {
     question: 'How much does shipping cost?',
@@ -51,7 +51,7 @@ const faqItems = [
   {
     question: 'Do you offer wholesale or local pickup?',
     answer:
-      'Yes — we work with select local fish stores and serious hobbyists on wholesale orders. Wholesale is typically a $300 minimum with shipping included, arranged by inquiry rather than website checkout. Use the contact form below and select a wholesale inquiry in your subject line, or email blueeyedclowns@gmail.com directly.',
+      'Yes — we work with select local fish stores and serious hobbyists on wholesale orders. Wholesale is typically a $300 minimum with shipping included, arranged by inquiry rather than website checkout. Local pickup is available at our Florida Panhandle storefront, Monday–Friday, 10 AM–5 PM Central. Use the contact form below and select a wholesale inquiry in your subject line, or email blueeyedclowns@gmail.com directly.',
   },
 ]
 
@@ -89,8 +89,9 @@ function handleSubmit() {
       <header class="header">
         <h1>Contact us</h1>
         <p>
-          Have a question about a specific clownfish, shipping, or wholesale? Send us a note and
-          we'll get back within one business day.
+          Have a question about a specific clownfish, shipping, wholesale, or local pickup? Our
+          Florida Panhandle storefront is open Monday–Friday, 10 AM–5 PM Central. Send us a note
+          and we'll get back within one business day.
         </p>
       </header>
 
@@ -175,8 +176,8 @@ function handleSubmit() {
           <h2>Quick details</h2>
           <ul>
             <li><strong>Support email</strong> blueeyedclowns@gmail.com</li>
-            <li><strong>Facility</strong> Captive-breeding and quarantine systems in the U.S.</li>
-            <li><strong>Live shipping schedule</strong> Monday through Friday, overnight delivery only</li>
+            <li><strong>Local storefront</strong> Florida Panhandle, with captive-breeding systems on site. Monday–Friday, 10 AM–5 PM Central.</li>
+            <li><strong>Live shipping schedule</strong> Monday through Thursday, UPS or FedEx overnight only</li>
             <li><strong>Response time</strong> Most messages answered within 1 business day</li>
           </ul>
         </aside>
