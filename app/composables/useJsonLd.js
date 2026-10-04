@@ -26,7 +26,8 @@ export function buildOrganizationSchema(siteUrl) {
     email: 'blueeyedclowns@gmail.com',
     sameAs: ORGANIZATION_SAME_AS,
     description:
-      'Captive-bred ocellaris, snowflake and designer clownfish with a 3-day live guarantee.',
+      'Captive-bred ocellaris, snowflake and designer clownfish from the Florida Panhandle, with a 3-day live guarantee and UPS or FedEx overnight shipping Monday through Thursday. The local storefront in the Florida Panhandle is open Monday–Friday, 10 AM–5 PM Central.',
+    openingHours: 'Mo-Fr 10:00-17:00',
   }
 }
 
@@ -141,6 +142,9 @@ export function buildContactPageSchema(siteUrl) {
       email: 'blueeyedclowns@gmail.com',
       url: siteUrl,
       sameAs: ORGANIZATION_SAME_AS,
+      description:
+        'Local storefront in the Florida Panhandle, open Monday–Friday, 10 AM–5 PM Central.',
+      openingHours: 'Mo-Fr 10:00-17:00',
     },
   }
 }

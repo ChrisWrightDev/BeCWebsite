@@ -2,7 +2,7 @@
 useSiteSeo({
   title: '3-Day Live Guarantee',
   description:
-    'Safe overnight shipping, live arrival support, and a clear 3-day guarantee claim process for your clownfish order.',
+    'Safe UPS or FedEx overnight shipping, live arrival support, and a clear 3-day live guarantee claim process for your clownfish order.',
 })
 
 const lastUpdated = 'June 5, 2026'

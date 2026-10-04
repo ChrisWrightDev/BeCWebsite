@@ -28,8 +28,8 @@
 
       <div class="reassurance-strip" aria-label="Purchase reassurance">
         <span>3-day live guarantee</span>
-        <span>Overnight live-fish shipping</span>
-        <span>Ships Monday through Friday</span>
+        <span>UPS or FedEx overnight</span>
+        <span>Ships Monday through Thursday</span>
         <span>Captive-bred and feeding well</span>
       </div>
 
