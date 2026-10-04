@@ -100,7 +100,7 @@ const siteUrl = (config.public.siteUrl || 'https://www.blueeyedclowns.com').repl
 useSiteSeo({
   title: 'Bonded Clownfish Pairs for Sale',
   description:
-    'Unique WYSIWYG bonded clownfish pairs. Each listing shows the exact pair you receive, with overnight shipping and a 3-day live guarantee.',
+    'Unique WYSIWYG bonded clownfish pairs. Each listing shows the exact pair you receive, with UPS or FedEx overnight shipping Monday through Thursday and a 3-day live guarantee.',
 })
 
 const { data: pairs, pending, error: fetchError, refresh } = await useAsyncData('shop-bonded-pairs', () =>

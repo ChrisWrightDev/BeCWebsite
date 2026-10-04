@@ -59,7 +59,7 @@ export function productSeoTitle(fish) {
 }
 
 export function productSeoDescription(fish) {
-  if (!fish?.name) return 'Captive-bred clownfish with overnight shipping and 3-day live guarantee.'
+  if (!fish?.name) return 'Captive-bred clownfish with UPS or FedEx overnight shipping Monday through Thursday and a 3-day live guarantee.'
   const name = fish.name
   const category = clownfishCategory(fish).toLowerCase()
   return `Captive-bred ${name} clownfish for sale. ${category === 'beginner friendly' ? 'Hardy starter fish' : category === 'premium designer' ? 'Premium designer morph' : 'Designer pattern'}. 3-day live guarantee, UPS or FedEx overnight shipping Monday through Thursday.`

@@ -95,7 +95,7 @@
 <script setup>
 useSiteSeo({
   title: 'Your Cart',
-  description: 'Review your captive-bred clownfish order before checkout. 3-day live guarantee and overnight shipping.',
+  description: 'Review your captive-bred clownfish order before checkout. 3-day live guarantee and UPS or FedEx overnight shipping Monday through Thursday.',
   noindex: true,
 })
 
