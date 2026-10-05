@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
-import { EMAIL_BRAND, plainTextEmail, wrapEmail } from '../shared/emailLayout.js'
+import { EMAIL_BRAND, plainTextEmail, plainTextMarketingEmail, wrapEmail, wrapMarketingEmail } from '../shared/emailLayout.js'
 import {
   buildInquiryNotice,
   buildOrderConfirmation,
@@ -30,7 +30,7 @@ assert.match(marketing, /blueeyedclowns@gmail\.com/)
 assert.match(marketing, /https:\/\/blueeyedclowns\.com/)
 assert.match(marketing, /images\/logo\.png/)
 assert.match(marketing, /\{\{unsubscribe_url\}\}/)
-assert.match(marketing, />Unsubscribe</)
+assert.match(marketing, />Unsubscribe<\/a> from release-list emails/)
 assert.doesNotMatch(marketing, /display\s*:\s*flex/i)
 assert.doesNotMatch(marketing, /display\s*:\s*grid/i)
 
@@ -52,7 +52,26 @@ const marketingText = plainTextEmail({
 })
 assert.match(marketingText, /A new batch is listed\./)
 assert.match(marketingText, /10 AM–5 PM CT/)
-assert.match(marketingText, /Unsubscribe: \{\{unsubscribe_url\}\}/)
+assert.match(marketingText, /Unsubscribe from release-list emails: \{\{unsubscribe_url\}\}/)
+
+const marketingShell = wrapMarketingEmail({
+  title: 'New captive-bred batch',
+  preheader: 'Snowflake and designer clownfish just landed on the site.',
+  bodyHtml: '<p>A new batch is listed.</p>',
+  unsubscribeUrl: 'https://blueeyedclowns.com/unsubscribe/abc',
+})
+assert.match(marketingShell, /https:\/\/blueeyedclowns\.com\/unsubscribe\/abc/)
+assert.match(marketingShell, />Unsubscribe<\/a> from release-list emails/)
+assert.throws(
+  () => wrapMarketingEmail({ title: 'Batch', bodyHtml: '<p>Hi</p>' }),
+  /unsubscribe URL/
+)
+assert.throws(() => plainTextMarketingEmail({ bodyText: 'Hi' }), /unsubscribe URL/)
+const marketingShellText = plainTextMarketingEmail({
+  bodyText: 'A new batch is listed.',
+  unsubscribeUrl: 'https://blueeyedclowns.com/unsubscribe/abc',
+})
+assert.match(marketingShellText, /Unsubscribe from release-list emails: https:\/\/blueeyedclowns\.com\/unsubscribe\/abc/)
 
 const transactionalText = plainTextEmail({ bodyText: 'Hello' })
 assert.match(transactionalText, /Hello/)

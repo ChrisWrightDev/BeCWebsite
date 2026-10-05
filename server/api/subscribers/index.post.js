@@ -1,7 +1,9 @@
 import { honeypotTripped, validateSubscriberInput } from '#shared/publicForms.js'
+import { releaseListWelcomeDecision } from '#shared/releaseListEmail.js'
 import { allowRequest, requestRateKey } from '../../utils/rateLimit.js'
 import { useSupabaseAdmin } from '../../utils/supabaseAdmin.js'
 import { upsertCustomer } from '../../utils/customers.js'
+import { sendReleaseListWelcome } from '../../utils/releaseListMail.js'
 import { randomBytes } from 'node:crypto'
 
 const SUCCESS_MESSAGE = "You're on the list. We'll email you when new morphs and batches are released."
@@ -16,7 +18,7 @@ export default defineEventHandler(async (event) => {
     throw httpError(429, 'Too many signup attempts. Please wait a few minutes and try again.')
   }
   if (honeypotTripped(body)) {
-    return { ok: true, message: SUCCESS_MESSAGE }
+    return { ok: true, already: false, welcomeSent: false, message: SUCCESS_MESSAGE }
   }
 
   const parsed = validateSubscriberInput(body)
@@ -35,26 +37,37 @@ export default defineEventHandler(async (event) => {
     throw httpError(500, 'Could not save your signup. Please try again.')
   }
 
-  if (existing?.status === 'subscribed') {
+  const decision = releaseListWelcomeDecision(existing?.status)
+  if (decision === 'skip') {
     await rememberSubscriber(supabase, parsed.value)
-    return { ok: true, message: SUCCESS_MESSAGE }
+    return { ok: true, already: true, welcomeSent: false, message: SUCCESS_MESSAGE }
   }
 
   const token = randomBytes(32).toString('hex')
-  if (existing) {
-    const { error } = await supabase
+  const storedName = decision === 'resubscribe' ? (existing.name || name) : name
+  if (decision === 'resubscribe') {
+    const { data: updated, error } = await supabase
       .from('subscribers')
       .update({
         status: 'subscribed',
-        name: existing.name || name,
+        name: storedName,
         source,
         unsubscribed_at: null,
         unsubscribe_token: token,
+        unsubscribe_reason: null,
+        unsubscribe_feedback: null,
       })
       .eq('id', existing.id)
+      .eq('status', 'unsubscribed')
+      .select('id')
+      .maybeSingle()
     if (error) {
       console.error('[subscribers] resubscribe failed', error)
       throw httpError(500, 'Could not save your signup. Please try again.')
+    }
+    if (!updated) {
+      await rememberSubscriber(supabase, parsed.value)
+      return { ok: true, already: true, welcomeSent: false, message: SUCCESS_MESSAGE }
     }
   } else {
     const { error } = await supabase.from('subscribers').insert({
@@ -66,7 +79,7 @@ export default defineEventHandler(async (event) => {
     })
     if (error?.code === '23505') {
       await rememberSubscriber(supabase, parsed.value)
-      return { ok: true, message: SUCCESS_MESSAGE }
+      return { ok: true, already: true, welcomeSent: false, message: SUCCESS_MESSAGE }
     }
     if (error) {
       console.error('[subscribers] insert failed', error)
@@ -75,13 +88,30 @@ export default defineEventHandler(async (event) => {
   }
 
   await rememberSubscriber(supabase, parsed.value)
+  const welcomeSent = await deliverWelcome({
+    email,
+    name: storedName,
+    token,
+  })
   return {
     ok: true,
-    message: existing
+    already: false,
+    welcomeSent,
+    message: decision === 'resubscribe'
       ? "You're back on the list. We'll email you about new releases."
       : SUCCESS_MESSAGE,
   }
 })
+
+async function deliverWelcome(subscriber) {
+  try {
+    const result = await sendReleaseListWelcome(subscriber)
+    return result?.sent === true
+  } catch (error) {
+    console.error('[subscribers] welcome email failed', error)
+    return false
+  }
+}
 
 async function rememberSubscriber(supabase, subscriber) {
   try {

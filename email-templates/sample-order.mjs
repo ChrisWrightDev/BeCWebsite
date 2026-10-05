@@ -55,7 +55,7 @@ if (isDirect) {
   Blue-Eyed Clowns branded email shell.
   Filled order-confirmation sample with fake data for Mission Control.
   Regenerated from shared/emailLayout.js via: node email-templates/sample-order.mjs
-  Transactional mail omits the unsubscribe line. Marketing mail passes unsubscribeUrl: '{{unsubscribe_url}}'.
+  Transactional mail omits the unsubscribe line. Marketing mail uses wrapMarketingEmail and passes unsubscribeUrl.
 -->
 `
   writeFileSync(new URL('./bec-email-shell.html', import.meta.url), `${shellBanner}${shell.html}`)

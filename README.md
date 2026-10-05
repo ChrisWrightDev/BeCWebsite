@@ -69,25 +69,31 @@ As of this branch, `npm audit fix --dry-run` indicates that remediation would ch
 
 ## Branded email layout
 
-Every Resend message uses the shared shell in `shared/emailLayout.js`. Order confirmation, the staff new-order notice, and inquiry notices already call it. Pass `unsubscribeUrl: null` (or omit it) for transactional mail. Marketing and release-list mail should pass Resend's `{{unsubscribe_url}}` placeholder.
+Every Resend message uses the shared shell in `shared/emailLayout.js`. Order confirmation, the staff new-order notice, and inquiry notices call `wrapEmail` and omit `unsubscribeUrl`, so those transactional messages have no unsubscribe line.
+
+Marketing and release-list mail should call `wrapMarketingEmail`. It requires `unsubscribeUrl` and always adds an Unsubscribe link in the footer. Pass a real link (`https://blueeyedclowns.com/unsubscribe/<token>`) or Resend's `{{unsubscribe_url}}` placeholder.
 
 ```js
-import { wrapEmail, plainTextEmail } from './shared/emailLayout.js'
+import { wrapMarketingEmail, plainTextMarketingEmail } from './shared/emailLayout.js'
 
-const html = wrapEmail({
+const html = wrapMarketingEmail({
   title: 'New captive-bred batch',
   preheader: 'Snowflake and designer clownfish just landed on the site.',
   bodyHtml: '<p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.55;color:#0f172a;">A new batch is listed at <a href="https://blueeyedclowns.com/shop" style="color:#0369a1;">blueeyedclowns.com/shop</a>.</p>',
   unsubscribeUrl: '{{unsubscribe_url}}',
 })
 
-const text = plainTextEmail({
+const text = plainTextMarketingEmail({
   bodyText: 'A new batch is listed at https://blueeyedclowns.com/shop.',
   unsubscribeUrl: '{{unsubscribe_url}}',
 })
 ```
 
 `bodyHtml` is inserted as HTML. Escape any name, address, or other untrusted text before passing it in. A filled order-confirmation sample for Mission Control is at `email-templates/bec-email-shell.html`.
+
+The release-list welcome email (`shared/releaseListEmail.js`) uses this marketing shell. It sends when someone joins for the first time or rejoins after unsubscribing, and it does not send again while they are already subscribed. The from address is `EMAIL_FROM_MARKETING`, which defaults to `Blue Eyed Clowns <hello@blueeyedclowns.com>` and falls back to `EMAIL_FROM` only if that default is blank. Set `EMAIL_FROM_MARKETING` to the same value as `EMAIL_FROM` to send welcome mail from the orders address. Welcome mail is skipped when `RESEND_API_KEY` is unset. Mission Control samples: `email-templates/bec-marketing-welcome-sample.html` and `email-templates/bec-marketing-shell-sample.html`. Regenerate them with `node email-templates/sample-marketing.mjs`. That script does not send mail.
+
+Unsubscribe reasons are stored on `public.subscribers` (`unsubscribe_reason`, `unsubscribe_feedback`). Apply `supabase/migrations/20261005113150_subscriber_unsubscribe_feedback.sql` before deploying this change. The migration does not delete rows. Admins remain select-only; the unsubscribe route updates with the service role.
 
 `email-templates/bec-order-confirmation-sample.html` is a manual Resend test payload. It is not sent by the app.
 

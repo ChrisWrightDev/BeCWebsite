@@ -169,8 +169,9 @@ const toc = [
               <li>Vercel, which hosts the website;</li>
               <li>UPS or FedEx, to deliver orders Monday through Thursday;</li>
               <li>
-                Resend, to send order confirmation emails to you, and to notify
-                blueeyedclowns@gmail.com about new orders and new inquiries;
+                Resend, to send order confirmation emails and release-list welcome
+                emails to you, and to notify blueeyedclowns@gmail.com about new
+                orders and new inquiries;
               </li>
               <li>
                 Professional advisors, such as accountants, attorneys, insurers, or compliance

@@ -1,5 +1,8 @@
+import { validateUnsubscribeInput } from '#shared/publicForms.js'
 import { useSupabaseAdmin } from '../../utils/supabaseAdmin.js'
 import { allowRequest, requestRateKey } from '../../utils/rateLimit.js'
+
+const DONE_MESSAGE = "You're off the release list. We won't email you about new morphs."
 
 function httpError(statusCode, statusMessage) {
   return createError({ statusCode, statusMessage, message: statusMessage })
@@ -11,16 +14,22 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event)
-  const token = String(body?.token || '').trim().toLowerCase()
-  if (!/^[a-f0-9]{64}$/.test(token)) {
-    throw httpError(400, 'This unsubscribe link is not valid.')
-  }
+  const parsed = validateUnsubscribeInput(body)
+  if (!parsed.ok) throw httpError(400, parsed.error)
 
+  const { token, reason, feedback } = parsed.value
   const supabase = useSupabaseAdmin()
   const now = new Date().toISOString()
+
+  // Keep the row. Status changes to unsubscribed; the address is not deleted.
   const { data: updated, error } = await supabase
     .from('subscribers')
-    .update({ status: 'unsubscribed', unsubscribed_at: now })
+    .update({
+      status: 'unsubscribed',
+      unsubscribed_at: now,
+      unsubscribe_reason: reason,
+      unsubscribe_feedback: feedback,
+    })
     .eq('unsubscribe_token', token)
     .eq('status', 'subscribed')
     .select('id')
@@ -31,12 +40,12 @@ export default defineEventHandler(async (event) => {
     throw httpError(500, 'Could not update your subscription. Please try again.')
   }
   if (updated) {
-    return { ok: true, message: 'You have been unsubscribed from the release list.' }
+    return { ok: true, already: false, message: DONE_MESSAGE }
   }
 
   const { data: existing, error: readError } = await supabase
     .from('subscribers')
-    .select('status')
+    .select('id')
     .eq('unsubscribe_token', token)
     .maybeSingle()
 
@@ -45,7 +54,22 @@ export default defineEventHandler(async (event) => {
     throw httpError(500, 'Could not update your subscription. Please try again.')
   }
   if (!existing) {
-    throw httpError(404, 'This unsubscribe link is not valid.')
+    throw httpError(404, 'This unsubscribe link is invalid or no longer works.')
   }
-  return { ok: true, message: 'You are already unsubscribed from the release list.' }
+
+  const { error: noteError } = await supabase
+    .from('subscribers')
+    .update({
+      status: 'unsubscribed',
+      unsubscribe_reason: reason,
+      unsubscribe_feedback: feedback,
+    })
+    .eq('id', existing.id)
+
+  if (noteError) {
+    console.error('[subscribers] unsubscribe note failed', noteError)
+    throw httpError(500, 'Could not update your subscription. Please try again.')
+  }
+
+  return { ok: true, already: true, message: DONE_MESSAGE }
 })
