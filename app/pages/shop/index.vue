@@ -69,9 +69,15 @@
           </button>
         </form>
         <p v-if="restockSubmitted" class="restock-success" role="status">
-          Thanks! We'll email you when new clownfish are listed.
+          {{ restockMessage }}
         </p>
         <p v-if="restockError" class="restock-error" role="alert">{{ restockError }}</p>
+        <SignupConfirmDialog
+          :open="restockConfirmOpen"
+          :already="restockAlready"
+          :welcome-sent="restockWelcomeSent"
+          @close="restockConfirmOpen = false"
+        />
       </div>
 
       <div v-else class="grid">
@@ -160,8 +166,12 @@ if (clownfish.value?.length) {
 const restockEmail = ref('')
 const restockHoneypot = ref('')
 const restockSubmitted = ref(false)
+const restockMessage = ref("Thanks! We'll email you when new clownfish are listed.")
 const restockError = ref('')
 const restockSending = ref(false)
+const restockConfirmOpen = ref(false)
+const restockAlready = ref(false)
+const restockWelcomeSent = ref(false)
 const cart = useCart()
 const cartToast = useCartToast()
 
@@ -174,9 +184,10 @@ async function handleRestockSubmit() {
   const email = restockEmail.value.trim()
   if (!email || restockSending.value) return
   restockError.value = ''
+  restockConfirmOpen.value = false
   restockSending.value = true
   try {
-    await $fetch('/api/subscribers', {
+    const result = await $fetch('/api/subscribers', {
       method: 'POST',
       body: {
         email,
@@ -184,7 +195,11 @@ async function handleRestockSubmit() {
         bec_hp: restockHoneypot.value,
       },
     })
+    restockMessage.value = result?.message || "Thanks! We'll email you when new clownfish are listed."
+    restockAlready.value = Boolean(result?.already)
+    restockWelcomeSent.value = Boolean(result?.welcomeSent)
     restockSubmitted.value = true
+    restockConfirmOpen.value = true
     restockEmail.value = ''
   } catch (err) {
     restockSubmitted.value = false

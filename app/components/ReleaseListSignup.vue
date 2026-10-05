@@ -32,6 +32,9 @@ const honeypot = ref('')
 const sending = ref(false)
 const message = ref('')
 const error = ref('')
+const confirmOpen = ref(false)
+const alreadyOnList = ref(false)
+const welcomeSent = ref(false)
 
 function errorText(err) {
   return err?.data?.statusMessage || err?.data?.message || err?.statusMessage || 'Could not save your signup. Please try again.'
@@ -41,6 +44,7 @@ async function submit() {
   if (sending.value) return
   error.value = ''
   message.value = ''
+  confirmOpen.value = false
   sending.value = true
   try {
     const result = await $fetch('/api/subscribers', {
@@ -53,8 +57,11 @@ async function submit() {
       },
     })
     message.value = result?.message || "You're on the list."
+    alreadyOnList.value = Boolean(result?.already)
+    welcomeSent.value = Boolean(result?.welcomeSent)
     email.value = ''
     name.value = ''
+    confirmOpen.value = true
   } catch (err) {
     error.value = errorText(err)
   } finally {
@@ -104,6 +111,12 @@ async function submit() {
     <p v-else-if="!compact" class="hint">New batches and designer morphs only. Unsubscribe anytime.</p>
     <p v-if="error" class="error" role="alert">{{ error }}</p>
   </form>
+  <SignupConfirmDialog
+    :open="confirmOpen"
+    :already="alreadyOnList"
+    :welcome-sent="welcomeSent"
+    @close="confirmOpen = false"
+  />
 </template>
 
 <style scoped>

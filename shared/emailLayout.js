@@ -2,22 +2,26 @@
  * Shared branded HTML shell for every Blue Eyed Clowns email sent through Resend.
  *
  * Inline styles and tables only — no flex or grid. Callers pass body HTML they
- * have already escaped. Transactional mail omits `unsubscribeUrl` (or passes
- * null). Marketing and release-list mail passes the ESP placeholder
- * `{{unsubscribe_url}}`, or a real URL.
+ * have already escaped. Transactional mail uses `wrapEmail` and omits
+ * `unsubscribeUrl` (or passes null), so the footer has no unsubscribe line.
+ *
+ * Marketing and release-list mail uses `wrapMarketingEmail`. That helper
+ * requires an unsubscribe URL — a real link such as
+ * `https://blueeyedclowns.com/unsubscribe/<token>`, or the ESP placeholder
+ * `{{unsubscribe_url}}` — and always prints a clear Unsubscribe link.
  *
  * Marketing / ops reuse:
  *
- *   import { wrapEmail, plainTextEmail } from './emailLayout.js'
+ *   import { wrapMarketingEmail, plainTextMarketingEmail } from './emailLayout.js'
  *
- *   const html = wrapEmail({
+ *   const html = wrapMarketingEmail({
  *     title: 'New captive-bred batch',
  *     preheader: 'Snowflake and designer clownfish just landed on the site.',
  *     bodyHtml: '<p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.55;color:#0f172a;">A new batch is listed at <a href="https://blueeyedclowns.com/shop" style="color:#0369a1;">blueeyedclowns.com/shop</a>.</p>',
  *     unsubscribeUrl: '{{unsubscribe_url}}',
  *   })
  *
- *   const text = plainTextEmail({
+ *   const text = plainTextMarketingEmail({
  *     bodyText: 'A new batch is listed at https://blueeyedclowns.com/shop.',
  *     unsubscribeUrl: '{{unsubscribe_url}}',
  *   })
@@ -27,7 +31,13 @@
  * email-templates/bec-order-confirmation-sample.html (subject
  * `Order BEC-TESTEMAIL01 confirmed — Blue Eyed Clowns`, from
  * `Blue Eyed Clowns <orders@blueeyedclowns.com>`). Regenerate both with
- * `node email-templates/sample-order.mjs`. Nothing there sends mail.
+ * `node email-templates/sample-order.mjs`.
+ *
+ * Marketing samples:
+ * email-templates/bec-marketing-welcome-sample.html (release-list welcome)
+ * email-templates/bec-marketing-shell-sample.html (generic marketing shell)
+ * Regenerate both with `node email-templates/sample-marketing.mjs`.
+ * Nothing there sends mail.
  */
 
 export const EMAIL_BRAND = {
@@ -77,7 +87,7 @@ function socialLinksHtml() {
 function footerHtml(unsubscribeUrl) {
   const href = unsubscribeHref(unsubscribeUrl)
   const unsubscribe = href
-    ? `<p style="margin:16px 0 0;font-family:${FONT};font-size:13px;line-height:1.5;color:${MUTED};"><a href="${escapeHtml(href)}" style="color:${LINK};text-decoration:underline;">Unsubscribe</a></p>`
+    ? `<p style="margin:16px 0 0;font-family:${FONT};font-size:13px;line-height:1.5;color:${MUTED};"><a href="${escapeHtml(href)}" style="color:${LINK};text-decoration:underline;">Unsubscribe</a> from release-list emails.</p>`
     : ''
 
   return `<tr>
@@ -183,7 +193,44 @@ export function plainTextEmail({ bodyText = '', unsubscribeUrl = null } = {}) {
     ...EMAIL_BRAND.socials.map((profile) => `${profile.name}: ${profile.href}`),
   ]
   if (href) {
-    lines.push('', `Unsubscribe: ${href}`)
+    lines.push('', `Unsubscribe from release-list emails: ${href}`)
   }
   return lines.join('\n')
+}
+
+function requireUnsubscribeUrl(unsubscribeUrl) {
+  const href = unsubscribeHref(unsubscribeUrl)
+  if (!href) {
+    throw new Error('Marketing email requires an unsubscribe URL.')
+  }
+  return href
+}
+
+/**
+ * Marketing shell. Always includes an Unsubscribe link in the footer.
+ * `unsubscribeUrl` is required: pass a real release-list URL or `{{unsubscribe_url}}`.
+ *
+ * @param {object} [options]
+ * @param {string} [options.title]
+ * @param {string} [options.preheader]
+ * @param {string} [options.bodyHtml]
+ * @param {string} options.unsubscribeUrl
+ * @returns {string}
+ */
+export function wrapMarketingEmail(options = {}) {
+  const href = requireUnsubscribeUrl(options.unsubscribeUrl)
+  return wrapEmail({ ...options, unsubscribeUrl: href })
+}
+
+/**
+ * Plain-text companion for {@link wrapMarketingEmail}. Requires `unsubscribeUrl`.
+ *
+ * @param {object} [options]
+ * @param {string} [options.bodyText]
+ * @param {string} options.unsubscribeUrl
+ * @returns {string}
+ */
+export function plainTextMarketingEmail(options = {}) {
+  const href = requireUnsubscribeUrl(options.unsubscribeUrl)
+  return plainTextEmail({ ...options, unsubscribeUrl: href })
 }

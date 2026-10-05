@@ -53,6 +53,39 @@ export function normalizeSubscriberSource(value) {
   return 'website'
 }
 
+export const UNSUBSCRIBE_REASONS = [
+  'Too many emails',
+  'Not interested right now',
+  'Never signed up',
+  'Other',
+]
+
+export function validateUnsubscribeInput(body) {
+  const token = String(body?.token || '').trim().toLowerCase()
+  if (!/^[a-f0-9]{64}$/.test(token)) {
+    return { ok: false, error: 'This unsubscribe link is invalid or no longer works.' }
+  }
+
+  const reason = cleanSingleLine(body?.reason, 80)
+  if (!UNSUBSCRIBE_REASONS.includes(reason)) {
+    return { ok: false, error: 'Choose why you are leaving the release list.' }
+  }
+
+  if (String(body?.feedback || '').trim().length > 1000) {
+    return { ok: false, error: 'Feedback must be 1,000 characters or fewer.' }
+  }
+
+  const feedback = cleanMultiline(body?.feedback, 1000)
+  return {
+    ok: true,
+    value: {
+      token,
+      reason,
+      feedback: feedback || null,
+    },
+  }
+}
+
 export function validateSubscriberInput(body) {
   const email = normalizeEmail(body?.email)
   if (!isValidEmail(email)) {
