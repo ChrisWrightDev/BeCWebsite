@@ -17,6 +17,9 @@ export function getMailSettings() {
   return { resendApiKey, emailFrom, stripeWebhookSecret }
 }
 
+// html should already be a full document from wrapEmail() in shared/emailLayout.js.
+// Order confirmation, the staff new-order notice, and inquiry notices build that
+// document before they call sendEmail. Sending is skipped when RESEND_API_KEY is unset.
 export async function sendEmail({ to, subject, html, text, replyTo }) {
   const { resendApiKey, emailFrom } = getMailSettings()
   if (!resendApiKey) {
