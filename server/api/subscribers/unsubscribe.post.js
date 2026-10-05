@@ -1,6 +1,7 @@
 import { validateUnsubscribeInput } from '#shared/publicForms.js'
 import { useSupabaseAdmin } from '../../utils/supabaseAdmin.js'
 import { allowRequest, requestRateKey } from '../../utils/rateLimit.js'
+import { syncUnsubscribedContact } from '../../utils/hatchClubResend.js'
 
 const DONE_MESSAGE = "You're off the release list. We won't email you about new morphs."
 
@@ -32,7 +33,7 @@ export default defineEventHandler(async (event) => {
     })
     .eq('unsubscribe_token', token)
     .eq('status', 'subscribed')
-    .select('id')
+    .select('id, email')
     .maybeSingle()
 
   if (error) {
@@ -40,12 +41,13 @@ export default defineEventHandler(async (event) => {
     throw httpError(500, 'Could not update your subscription. Please try again.')
   }
   if (updated) {
+    await syncHatchClub(updated.email)
     return { ok: true, already: false, message: DONE_MESSAGE }
   }
 
   const { data: existing, error: readError } = await supabase
     .from('subscribers')
-    .select('id')
+    .select('id, email')
     .eq('unsubscribe_token', token)
     .maybeSingle()
 
@@ -71,5 +73,14 @@ export default defineEventHandler(async (event) => {
     throw httpError(500, 'Could not update your subscription. Please try again.')
   }
 
+  await syncHatchClub(existing.email)
   return { ok: true, already: true, message: DONE_MESSAGE }
 })
+
+async function syncHatchClub(email) {
+  try {
+    await syncUnsubscribedContact({ email })
+  } catch (error) {
+    console.error('[subscribers] hatch club sync failed', error)
+  }
+}

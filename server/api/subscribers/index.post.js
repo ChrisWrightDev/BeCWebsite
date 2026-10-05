@@ -4,6 +4,7 @@ import { allowRequest, requestRateKey } from '../../utils/rateLimit.js'
 import { useSupabaseAdmin } from '../../utils/supabaseAdmin.js'
 import { upsertCustomer } from '../../utils/customers.js'
 import { sendReleaseListWelcome } from '../../utils/releaseListMail.js'
+import { syncSubscribedContact } from '../../utils/hatchClubResend.js'
 import { randomBytes } from 'node:crypto'
 
 const SUCCESS_MESSAGE = "You're on the list. We'll email you when new morphs and batches are released."
@@ -93,6 +94,7 @@ export default defineEventHandler(async (event) => {
     name: storedName,
     token,
   })
+  await syncHatchClub({ email, name: storedName })
   return {
     ok: true,
     already: false,
@@ -110,6 +112,14 @@ async function deliverWelcome(subscriber) {
   } catch (error) {
     console.error('[subscribers] welcome email failed', error)
     return false
+  }
+}
+
+async function syncHatchClub(subscriber) {
+  try {
+    await syncSubscribedContact(subscriber)
+  } catch (error) {
+    console.error('[subscribers] hatch club sync failed', error)
   }
 }
 

@@ -40,6 +40,7 @@ export default defineNuxtConfig({
     resendApiKey: process.env.RESEND_API_KEY || '',
     emailFrom: process.env.EMAIL_FROM || 'Blue Eyed Clowns <onboarding@resend.dev>',
     emailFromMarketing: process.env.EMAIL_FROM_MARKETING || '',
+    resendHatchClubSegmentId: process.env.RESEND_HATCH_CLUB_SEGMENT_ID || '',
     supabaseUrl: process.env.NUXT_SUPABASE_URL,
     supabaseAnonKey: process.env.NUXT_SUPABASE_ANON_KEY,
     supabaseServiceRoleKey: process.env.NUXT_SUPABASE_SERVICE_ROLE_KEY,
