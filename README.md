@@ -87,4 +87,11 @@ const text = plainTextEmail({
 })
 ```
 
-`bodyHtml` is inserted as HTML. Escape any name, address, or other untrusted text before passing it in. A filled order-confirmation sample (fake data) is at `email-templates/bec-email-shell.html`. Regenerate it with `node email-templates/sample-order.mjs`.
+`bodyHtml` is inserted as HTML. Escape any name, address, or other untrusted text before passing it in. A filled order-confirmation sample for Mission Control is at `email-templates/bec-email-shell.html`.
+
+`email-templates/bec-order-confirmation-sample.html` is a manual Resend test payload. It is not sent by the app.
+
+- Subject: `Order BEC-TESTEMAIL01 confirmed — Blue Eyed Clowns`
+- From: `Blue Eyed Clowns <orders@blueeyedclowns.com>`
+
+The buyer in that file is Riley Sample, the fish is “Sample Clownfish (test email only)”, and the totals are $10.00 merchandise, $5.00 shipping, and $15.00 total. Those amounts are fake and are not live shop prices. Regenerate both HTML files with `node email-templates/sample-order.mjs`.

@@ -23,8 +23,11 @@
  *   })
  *
  * A filled order-confirmation sample for Mission Control lives at
- * email-templates/bec-email-shell.html. Regenerate it with
- * `node email-templates/sample-order.mjs`.
+ * email-templates/bec-email-shell.html. A manual Resend test payload lives at
+ * email-templates/bec-order-confirmation-sample.html (subject
+ * `Order BEC-TESTEMAIL01 confirmed — Blue Eyed Clowns`, from
+ * `Blue Eyed Clowns <orders@blueeyedclowns.com>`). Regenerate both with
+ * `node email-templates/sample-order.mjs`. Nothing there sends mail.
  */
 
 export const EMAIL_BRAND = {

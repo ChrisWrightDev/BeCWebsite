@@ -7,7 +7,11 @@ import {
   buildOrderConfirmation,
   buildShopOrderNotice,
 } from '../shared/orderEmail.js'
-import { sampleOrderConfirmationInput } from '../email-templates/sample-order.mjs'
+import {
+  RESEND_TEST_FROM,
+  resendTestOrderConfirmationInput,
+  sampleOrderConfirmationInput,
+} from '../email-templates/sample-order.mjs'
 
 const marketing = wrapEmail({
   title: 'New captive-bred batch',
@@ -116,5 +120,24 @@ assert.match(sampleFile, /Jordan Hale/)
 assert.match(sampleFile, /BEC-SAMPLE4F8C1A/)
 assert.doesNotMatch(sampleHtml, /unsubscribe/i)
 assert.equal(sampleFile.includes('>Unsubscribe<'), false)
+
+const resendTest = buildOrderConfirmation(resendTestOrderConfirmationInput)
+assert.equal(resendTest.subject, 'Order BEC-TESTEMAIL01 confirmed — Blue Eyed Clowns')
+assert.equal(RESEND_TEST_FROM, 'Blue Eyed Clowns <orders@blueeyedclowns.com>')
+const resendTestFile = readFileSync(
+  new URL('../email-templates/bec-order-confirmation-sample.html', import.meta.url),
+  'utf8'
+)
+assert.ok(resendTestFile.includes(resendTest.html))
+assert.ok(resendTestFile.includes(`Subject: ${resendTest.subject}`))
+assert.ok(resendTestFile.includes(`From: ${RESEND_TEST_FROM}`))
+assert.match(resendTestFile, /Riley Sample/)
+assert.match(resendTestFile, /Sample Clownfish \(test email only\)/)
+assert.match(resendTestFile, /\$10\.00/)
+assert.match(resendTestFile, /\$5\.00/)
+assert.match(resendTestFile, /\$15\.00/)
+assert.match(resendTestFile, /100 Sample Reef Lane/)
+assert.doesNotMatch(resendTest.html, /unsubscribe/i)
+assert.equal(resendTestFile.includes('>Unsubscribe<'), false)
 
 console.log('email layout tests passed')
