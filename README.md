@@ -93,6 +93,37 @@ const text = plainTextMarketingEmail({
 
 The release-list welcome email (`shared/releaseListEmail.js`) uses this marketing shell. It sends when someone joins for the first time or rejoins after unsubscribing, and it does not send again while they are already subscribed. The from address is `EMAIL_FROM_MARKETING`, which defaults to `Blue Eyed Clowns <hello@blueeyedclowns.com>` and falls back to `EMAIL_FROM` only if that default is blank. Set `EMAIL_FROM_MARKETING` to the same value as `EMAIL_FROM` to send welcome mail from the orders address. Welcome mail is skipped when `RESEND_API_KEY` is unset. Mission Control samples: `email-templates/bec-marketing-welcome-sample.html` and `email-templates/bec-marketing-shell-sample.html`. Regenerate them with `node email-templates/sample-marketing.mjs`. That script does not send mail.
 
+After a successful subscribe or resubscribe, the server also upserts the address into the Resend segment named Hatch Club (`RESEND_HATCH_CLUB_SEGMENT_ID`) with `unsubscribed: false` and the first word of `name` when a name was provided. Unsubscribe sets that Resend contact to `unsubscribed: true` and removes it from the segment so broadcasts stop. `public.subscribers` stays the source of truth: the row is never deleted, and a Resend failure is logged and does not change the HTTP response. This app does not send Hatch Club or new-pair broadcasts.
+
+Create the segment once, then set the id on Vercel production and preview:
+
+```bash
+curl -X POST 'https://api.resend.com/segments' \
+  -H "Authorization: Bearer $RESEND_API_KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Hatch Club"}'
+```
+
+The same call is available in the Resend dashboard under Contacts → Segments. A send-only API key can send welcome mail and will fail these contact calls. Use a Full access key, or a key that can manage contacts and segments.
+
+Existing subscribed rows are not backfilled automatically. Dry-run the one-off seed, then apply it:
+
+```bash
+node scripts/seed-hatch-club-segment.mjs
+node scripts/seed-hatch-club-segment.mjs --apply
+```
+
+The script reads `RESEND_API_KEY`, `RESEND_HATCH_CLUB_SEGMENT_ID`, `NUXT_SUPABASE_URL`, and `NUXT_SUPABASE_SERVICE_ROLE_KEY` from the environment. It only selects `status = subscribed`, and it does not send mail. A single address can also be added with curl. If create returns “already exists”, patch the contact and add the segment:
+
+```bash
+curl -X POST 'https://api.resend.com/contacts' \
+  -H "Authorization: Bearer $RESEND_API_KEY" \
+  -H 'Content-Type: application/json' \
+  -d "{\"email\":\"person@example.com\",\"first_name\":\"Person\",\"unsubscribed\":false,\"segments\":[{\"id\":\"$RESEND_HATCH_CLUB_SEGMENT_ID\"}]}"
+```
+
+Or upload a CSV in the Resend dashboard (columns `email` and `first_name`) and assign the Hatch Club segment. Leave those contacts subscribed.
+
 Unsubscribe reasons are stored on `public.subscribers` (`unsubscribe_reason`, `unsubscribe_feedback`). Apply `supabase/migrations/20261005113150_subscriber_unsubscribe_feedback.sql` before deploying this change. The migration does not delete rows. Admins remain select-only; the unsubscribe route updates with the service role.
 
 `email-templates/bec-order-confirmation-sample.html` is a manual Resend test payload. It is not sent by the app.
