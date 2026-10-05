@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "test": "node tests/blogCatalog.test.mjs && node tests/renderMarkdown.test.mjs && node tests/retailShipping.test.mjs && node tests/bondedPairs.test.mjs && node tests/storefrontCapture.test.mjs"
+    "test": "node tests/blogCatalog.test.mjs && node tests/renderMarkdown.test.mjs && node tests/retailShipping.test.mjs && node tests/bondedPairs.test.mjs && node tests/storefrontCapture.test.mjs && node tests/emailLayout.test.mjs"
   },
   "dependencies": {
     "@stripe/stripe-js": "^8.8.0",
